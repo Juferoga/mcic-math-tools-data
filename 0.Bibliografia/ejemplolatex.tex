@@ -1,0 +1,57 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+
+
+% Para citar con apacite
+\usepackage{apacite}
+\bibliographystyle{apacite} %En caso de usar un compilador de escritorio, se debe seleccionar Bibtex en Herramientas de Compilación
+
+% Para citar con biblatex
+%\usepackage{csquotes}
+%\usepackage[backend=biber, style=ieee]{biblatex} % En caso de usar un compilador de escritorio, se debe seleccionar Biber en Herramientas de Compilación
+%\addbibresource{library.bib}
+
+
+\title{Herramientas Matemáticas para el Manejo de la Información}
+\author{Hans López}
+\date{\today}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section*{Introducción}
+	
+	Este es un ejemplo de un documento hecho en \LaTeX. Para comenzar, en la ecuación (\ref{eqinfo}) se muestra una medida de la información; y en (\ref{tfc}), se presenta el teorema fundamental del cálculo. En la ecuaciones (\ref{eqseriedefourier}) y (\ref{eqidentidad}) se muestran un par de ejemplos adicionales\footnote{Nótese que únicamente las variables de las ecuaciones aparecen en cursiva; mientras que, las funciones trigonométricas, la constante de Euler y la unidad imaginaria, no lo hacen.}. Es de aclarar que se pueden incluir ecuaciones dentro de un párrafo; por ejemplo, en la ecuación (\ref{eqseriedefourier}), $\textrm{j}$ es la unidad imaginaria $\textrm{j}=\textrm{i}=\sqrt{-1}$.
+	
+	\begin{equation}
+		\log \frac{1}{p}
+		\label{eqinfo}
+	\end{equation}
+	
+	\begin{equation}
+		\int_a^b f(t)\textrm{d}t = F(b) - F(a)
+		\label{tfc}
+	\end{equation}
+	
+	\begin{equation*}
+		F(x) = \int f(x) \textrm{d}x 
+	\end{equation*}
+	
+	\begin{equation}
+		\sum_{n=-\infty}^{\infty}C_n \textrm{e}^{\textrm{j}n\omega_0t}
+		\label{eqseriedefourier}
+	\end{equation}
+	
+	\begin{equation}
+		\cos^2\theta +\sin^2\theta = 1
+		\label{eqidentidad}
+	\end{equation}
+	
+	Por otra parte, se destaca la posibilidad de acceder al archivo \texttt{.bib} que genera automáticamente \textit{Mendeley}, para gestionar las bibliografías. A continuación, se muestran algunos ejemplos de citas referenciales \cite{Gleick2011,Xiao2019}.
+	
+	\bibliography{library} % Si se usa apacite
+	%\printbibliography % Si se usa biblatex
+\end{document}
