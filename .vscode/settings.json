@@ -1,5 +1,6 @@
 {
   "latex-workshop.latex.autoBuild.run": "onSave",
   "latex-workshop.view.pdf.viewer": "tab",
-  "latex-workshop.latex.outDir": "%DIR%/out"
+  "latex-workshop.latex.outDir": "%DIR%/out",
+  "editor.wordWrap": "on"
 }
