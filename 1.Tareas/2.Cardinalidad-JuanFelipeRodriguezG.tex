@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Demostración de la Cardinalidad del Campo Sigma en un Espacio Muestral Finito}
+\author{Juan Felipe Rodríguez G. (20261595004)}
+\date{\today}
+
+\begin{document}
+    \maketitle
+    
+    \section*{Contexto del Problema}
+    
+    Sea $\Omega$ el espacio muestral de un experimento aleatorio, definido como el conjunto de todos los resultados posibles \cite{walpole2017}. Si consideramos un experimento con $n$ resultados diferentes, tenemos:
+    $$ \Omega = \{x_1, x_2, \dots, x_n\} $$
+    
+    El objetivo es determinar la cardinalidad del campo sigma asociado. Dado que trabajamos con un conjunto finito, este corresponde al conjunto potencia $\mathcal{P}(\Omega)$, que contiene todos los subconjuntos (o eventos) posibles que se pueden formar a partir de los elementos del espacio muestral \cite{walpole2017}.
+    
+    \section*{Argumentación Lógica: El Principio de Elección}
+    
+    Para construir cualquier subconjunto $A$ a partir de $\Omega$, debemos tomar una decisión individual para cada uno de los $n$ elementos disponibles.
+    
+    Imaginemos el proceso de construcción paso a paso:
+    
+    \begin{enumerate}
+        \item Para el primer elemento $x_1$, tenemos 2 opciones: incluirlo en el subconjunto o no incluirlo.
+        \item Para el segundo elemento $x_2$, nuevamente tenemos 2 opciones: incluirlo o no.
+        \item Este proceso se repite de forma sucesiva para cada uno de los $n$ elementos.
+    \end{enumerate}
+    
+    Dado que la elección para un elemento no afecta a las posibilidades de los demás, aplicamos el principio fundamental del conteo (regla de multiplicación). Según este teorema, el número total de arreglos posibles es el producto de las opciones individuales \cite{walpole2017}:
+    
+    $$ \underbrace{2 \times 2 \times \dots \times 2}_{n \text{ veces}} = 2^n $$
+    
+    Esto explica por qué la cantidad total de subconjuntos es una potencia de 2.
+    
+    \section*{Demostración Algebraica (Binomio de Newton)}
+    
+    Otra forma de visualizar esto es agrupando los subconjuntos por su tamaño. El número de formas de elegir un subconjunto de $k$ elementos a partir de un conjunto de $n$ elementos está dado por la fórmula de combinaciones \cite{walpole2017}:
+    
+    $$ C(n,k) = \binom{n}{k} = \frac{n!}{k!(n-k)!} $$
+    
+    La cardinalidad total es la suma de todos los posibles subconjuntos desde tamaño 0 hasta tamaño $n$:
+    $$ |\mathcal{P}(\Omega)| = \sum_{k=0}^{n} \binom{n}{k} $$
+    
+    Aplicando el Teorema del Binomio, sabemos que $(a+b)^n = \sum_{k=0}^{n} \binom{n}{k} a^{n-k} b^k$. Si sustituimos los valores unitarios $a=1$ y $b=1$, obtenemos:
+    
+    $$ (1+1)^n = \sum_{k=0}^{n} \binom{n}{k} (1)^{n-k} (1)^k $$
+    $$ 2^n = \sum_{k=0}^{n} \binom{n}{k} $$
+    
+    Ambos métodos confirman que el resultado es $2^n$.
+    
+    \begin{thebibliography}{}
+    
+    \bibitem{walpole2017}
+    Walpole, R. E., Myers, R. H., Myers, S. L., \& Ye, K. (2017).
+    \textit{Probability and Statistics for Engineers and Scientists} (9th ed.).
+    Pearson.
+    
+    \end{thebibliography}
+    
+\end{document}
