@@ -1,0 +1,68 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\title{Demostración de la Regla Aditiva de la Probabilidad para la Unión de Dos Eventos}
+\author{Juan Felipe Rodríguez G. (20261595004)}
+\date{\today}
+
+\begin{document}
+    \maketitle
+    
+    \section*{Teorema}
+    
+    Sean $A$ y $B$ dos eventos cualesquiera definidos sobre un mismo espacio muestral $\Omega$. Se debe demostrar que la probabilidad de su unión está dada por:
+    $$ P(A \cup B) = P(A) + P(B) - P(A \cap B) $$
+    
+    \section*{Fundamentos Teóricos}
+    
+    Para la demostración, nos basaremos estrictamente en los Axiomas de la Probabilidad (Axiomas de Kolmogorov) y en operaciones básicas de teoría de conjuntos.
+    
+    \textbf{Axioma 3 (Aditividad):} Si $E_1$ y $E_2$ son dos eventos mutuamente excluyentes (es decir, $E_1 \cap E_2 = \emptyset$), entonces:
+    $$ P(E_1 \cup E_2) = P(E_1) + P(E_2) $$
+    
+    \section*{Demostración}
+    
+    \subsection*{Paso 1: Descomposición del evento $B$}
+    
+    Podemos expresar el evento $B$ como la unión de dos conjuntos disjuntos: la parte de $B$ que también está en $A$ ($A \cap B$) y la parte de $B$ que no está en $A$ ($B \cap A^c$).
+    
+    $$ B = (A \cap B) \cup (B \cap A^c) $$
+    
+    Es evidente que los conjuntos $(A \cap B)$ y $(B \cap A^c)$ son mutuamente excluyentes, ya que un elemento no puede estar en $A$ y en $A^c$ simultáneamente. Por lo tanto, aplicando el \textbf{Axioma 3}:
+    
+    $$ P(B) = P(A \cap B) + P(B \cap A^c) $$
+    
+    Despejando $P(B \cap A^c)$, obtenemos una expresión útil para la probabilidad de "solo $B$":
+    \begin{equation} \label{eq:1}
+        P(B \cap A^c) = P(B) - P(A \cap B)
+    \end{equation}
+    
+    \subsection*{Paso 2: Descomposición de la unión $A \cup B$}
+    
+    De manera similar, podemos expresar la unión $A \cup B$ como la unión del evento $A$ completo y la parte de $B$ que no está en $A$:
+    
+    $$ A \cup B = A \cup (B \cap A^c) $$
+    
+    Nuevamente, observamos que $A$ y $(B \cap A^c)$ son mutuamente excluyentes (disjuntos), puesto que $(B \cap A^c)$ contiene solo elementos que \textbf{no} están en $A$. Aplicando el \textbf{Axioma 3}:
+    
+    $$ P(A \cup B) = P(A) + P(B \cap A^c) $$
+    
+    \subsection*{Paso 3: Sustitución y Resultado Final}
+    
+    Sustituimos la expresión (\ref{eq:1}) que obtuvimos en el Paso 1 dentro de nuestra última ecuación:
+    
+    $$ P(A \cup B) = P(A) + \left[ P(B) - P(A \cap B) \right] $$
+    
+    Reordenando los términos, llegamos a lo que se quería demostrar:
+    
+    $$ P(A \cup B) = P(A) + P(B) - P(A \cap B) $$
+    
+    \begin{flushright}
+    \qedsymbol
+    \end{flushright}
+    
+\end{document}
