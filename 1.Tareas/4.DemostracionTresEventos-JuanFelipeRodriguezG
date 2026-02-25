@@ -1,0 +1,120 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{tikz} % El paquete hardcore
+
+\title{Demostración: Probabilidad de la Unión de Tres Eventos}
+\author{Juan Felipe Rodríguez G. (20261595004)}
+\date{\today}
+
+\begin{document}
+    \maketitle
+    
+    \section*{Contexto del Problema}
+    
+    Sean $A$, $B$ y $C$ tres eventos definidos sobre un mismo espacio muestral $\Omega$. El objetivo es deducir la probabilidad de su unión, es decir, $P(A \cup B \cup C)$, utilizando estrictamente los axiomas de Kolmogorov y la regla aditiva demostrada en la tarea anterior.
+    
+    \section*{Fundamentos Teóricos}
+    
+    Para esta demostración, nos apoyaremos en la regla aditiva para la unión de dos eventos (demostrada en la Tarea 3). Para dos eventos cualesquiera $X$ e $Y$, se cumple que:
+    $$P(X \cup Y) = P(X) + P(Y) - P(X \cap Y)$$
+    
+    Además, utilizaremos dos propiedades básicas de la teoría de conjuntos:
+    \begin{itemize}
+        \item \textbf{Propiedad asociativa:} $A \cup B \cup C = (A \cup B) \cup C$
+        \item \textbf{Propiedad distributiva de la intersección:} $(A \cup B) \cap C = (A \cap C) \cup (B \cap C)$
+    \end{itemize}
+    
+    \section*{Demostración Paso a Paso}
+    
+    \subsection*{Paso 1: Agrupación de eventos}
+    Como nuestra regla aditiva conocida solo funciona para dos eventos, el truco consiste en agrupar los dos primeros. Definimos un evento compuesto $(A \cup B)$ y lo tratamos como si fuera un solo conjunto. Así, la unión de los tres eventos se expresa como la unión de dos partes:
+    $$A \cup B \cup C = (A \cup B) \cup C$$
+    
+    \subsection*{Paso 2: Aplicación de la regla de la Tarea 3}
+    Aplicamos la regla aditiva considerando a $(A \cup B)$ como el primer evento y a $C$ como el segundo:
+    \begin{equation} \label{eq:principal}
+        P(A \cup B \cup C) = P(A \cup B) + P(C) - P((A \cup B) \cap C)
+    \end{equation}
+    
+    Para resolver esta ecuación, debemos expandir el primer y el tercer término.
+    
+    \subsection*{Paso 3: Expansión de los términos compuestos}
+    
+    \textbf{1. Expandiendo $P(A \cup B)$:}
+    Aplicamos directamente la regla de la Tarea 3:
+    $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
+    
+    \textbf{2. Expandiendo $P((A \cup B) \cap C)$:}
+    Primero, aplicamos la propiedad distributiva de los conjuntos en el interior de la probabilidad:
+    $$P((A \cup B) \cap C) = P((A \cap C) \cup (B \cap C))$$
+    
+    Ahora, observamos que tenemos nuevamente la probabilidad de la unión de dos eventos: el evento $(A \cap C)$ y el evento $(B \cap C)$. Aplicamos la regla de la Tarea 3 una vez más:
+    $$P((A \cap C) \cup (B \cap C)) = P(A \cap C) + P(B \cap C) - P((A \cap C) \cap (B \cap C))$$
+    
+    Dado que intersecar $C$ consigo mismo no altera el conjunto ($C \cap C = C$), el último término se simplifica a la intersección de los tres eventos:
+    $$P((A \cup B) \cap C) = P(A \cap C) + P(B \cap C) - P(A \cap B \cap C)$$
+    
+    \subsection*{Paso 4: Sustitución y conclusión}
+    Tomamos las expansiones obtenidas en el Paso 3 y las sustituimos de vuelta en nuestra ecuación (\ref{eq:principal}):
+    
+    $$P(A \cup B \cup C) = \left[ P(A) + P(B) - P(A \cap B) \right] + P(C) - \left[ P(A \cap C) + P(B \cap C) - P(A \cap B \cap C) \right]$$
+    
+    Distribuimos el signo negativo del último corchete y reordenamos los términos para obtener la expresión final:
+    
+    $$P(A \cup B \cup C) = P(A) + P(B) + P(C) - P(A \cap B) - P(A \cap C) - P(B \cap C) + P(A \cap B \cap C)$$
+    
+    \begin{flushright}
+        \qedsymbol
+    \end{flushright}
+
+    \newpage
+    \section*{Representación Gráfica y Convenciones}
+    
+    A continuación, se presenta el diagrama de Venn correspondiente al sistema de tres eventos, modelado para ilustrar visualmente la demostración matemática anterior.
+    
+    \vspace{0.5cm}
+    \begin{center}
+    \begin{tikzpicture}[thick, scale=1.2,
+        set/.style={circle, minimum size=4cm, draw=black, fill opacity=0.2, text opacity=1}]
+        
+        % Espacio muestral
+        \draw[thick, fill=gray!5] (-3.5,-4.5) rectangle (4.5,3) node[below left, font=\large] {$\Omega$};
+        
+        % Coordenadas de los centros
+        \coordinate (A) at (0,0);
+        \coordinate (B) at (2,0);
+        \coordinate (C) at (1,-1.732);
+        
+        % Círculos con colores suaves
+        \node[set, fill=cyan] (CircleA) at (A) {};
+        \node[set, fill=magenta] (CircleB) at (B) {};
+        \node[set, fill=yellow] (CircleC) at (C) {};
+        
+        % Etiquetas de los conjuntos
+        \node[font=\Large\bfseries] at (-0.5, 1) {$A$};
+        \node[font=\Large\bfseries] at (2.7, 1) {$B$};
+        \node[font=\Large\bfseries] at (1, -3) {$C$};
+        
+        % Etiquetas de las intersecciones
+        \node at (1, 0.4) {$A \cap B$};
+        \node at (0, -1) {$A \cap C$};
+        \node at (2, -1) {$B \cap C$};
+        \node[font=\footnotesize] at (1, -0.6) {$A \cap B \cap C$};
+        
+    \end{tikzpicture}
+    \end{center}
+    \vspace{0.5cm}
+    
+    \textbf{Convenciones del Diagrama:}
+    \begin{itemize}
+        \item \textbf{Rectángulo exterior ($\Omega$):} Representa el espacio muestral universal del experimento.
+        \item \textbf{Círculos coloreados ($A, B, C$):} Representan cada evento. La zona cubierta por los tres círculos en su totalidad corresponde al evento de interés: $A \cup B \cup C$.
+        \item \textbf{Áreas de intersección doble ($A \cap B$, etc.):} Regiones donde ocurren dos eventos simultáneamente. Al sumar las probabilidades individuales ($P(A)+P(B)+P(C)$), estas áreas se cuentan dos veces, justificando por qué en la fórmula demostrada se deben restar una vez.
+        \item \textbf{Área central ($A \cap B \cap C$):} Región donde los tres eventos ocurren al mismo tiempo. Al restar las tres intersecciones dobles en la fórmula matemática, esta región central se resta en exceso (se elimina por completo). Por ello, el último paso lógico de la fórmula exige volver a sumarla para que la probabilidad total sea exacta.
+    \end{itemize}
+
+\end{document}
