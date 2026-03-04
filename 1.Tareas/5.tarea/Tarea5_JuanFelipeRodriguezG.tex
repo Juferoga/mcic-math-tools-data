@@ -1,0 +1,307 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+% Configuración para código MATLAB
+\lstset{
+    language=Matlab,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black}\itshape,
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{black!30},
+    breaklines=true,
+    breakatwhitespace=false,
+    tabsize=4,
+    captionpos=b,
+    xleftmargin=1.5em,
+    framexleftmargin=1.2em,
+    showstringspaces=false
+}
+
+\title{Simulación de Variables Aleatorias Discretas mediante el Método de la Transformada Inversa}
+\author{Juan Felipe Rodríguez G. (20261595004)}
+\date{\today}
+
+\begin{document}
+    \maketitle
+    
+    \section*{Introducción}
+    
+    La simulación de variables aleatorias es fundamental en el análisis estadístico y la validación de modelos matemáticos. En el contexto de las Ciencias de la Información, generar observaciones sintéticas que sigan distribuciones de probabilidad específicas permite evaluar el comportamiento de sistemas complejos sin necesidad de experimentación costosa o impráctica \cite{walpole2017}.
+    
+    El presente trabajo implementa un generador de variables aleatorias discretas en MATLAB/GNU Octave, utilizando el método de la transformada inversa. Este método garantiza que las muestras generadas respeten exactamente la distribución de probabilidad especificada. La validación se realiza mediante simulación Monte Carlo, verificando la convergencia de las frecuencias relativas hacia las probabilidades teóricas.
+    
+    \section*{Marco Teórico}
+    
+    \subsection*{Variable Aleatoria Discreta}
+    
+    Una variable aleatoria discreta $X$ es una función que asigna un valor numérico a cada resultado de un espacio muestral discreto $\Omega$ \cite{walpole2017}. Su comportamiento se caracteriza completamente por su función de masa de probabilidad (PMF):
+    $$ p(x_i) = P(X = x_i), \quad i = 1, 2, \ldots, n $$
+    sujeta a las restricciones:
+    $$ p(x_i) \geq 0 \quad \text{y} \quad \sum_{i=1}^{n} p(x_i) = 1 $$
+    
+    \subsection*{Método de la Transformada Inversa}
+    
+    El teorema de la transformada inversa establece que si $U$ es una variable aleatoria con distribución uniforme en $(0,1)$ y $F$ es la función de distribución de una variable aleatoria $X$, entonces:
+    $$ X = F^{-1}(U) = \min\{x : F(x) \geq U\} $$
+    tiene distribución $F$ \cite{walpole2017}.
+    
+    Para el caso discreto, el algoritmo consiste en:
+    \begin{enumerate}
+        \item Generar $u \sim \text{Uniforme}(0,1)$
+        \item Calcular los intervalos acumulados: $I_i = \sum_{k=1}^{i} p(x_k)$
+        \item Retornar $x_i$ donde $I_{i-1} < u \leq I_i$
+    \end{enumerate}
+    
+    Este método garantiza que $P(X = x_i) = p(x_i)$, preservando exactamente la distribución especificada.
+    
+    \section*{Implementación}
+    
+    \subsection*{Función \texttt{va(x,p)}}
+    
+    La función recibe dos parámetros:
+    \begin{itemize}
+        \item \textbf{x}: Vector con los valores posibles de la variable aleatoria
+        \item \textbf{p}: Vector con las probabilidades asociadas a cada valor
+    \end{itemize}
+    
+    Y retorna un elemento de $x$ seleccionado aleatoriamente según la distribución $p$.
+    
+    \subsection*{Lógica de la Solución}
+    
+    La implementación sigue estos pasos fundamentales:
+    
+    \paragraph{1. Determinación automática del tamaño:}
+    Se utiliza la función \texttt{length(x)} para identificar dinámicamente la cantidad de elementos, permitiendo que la función opere con vectores de cualquier dimensión.
+    
+    \paragraph{2. Normalización de probabilidades:}
+    Se divide cada elemento de $p$ por su suma total para garantizar $\sum p_i = 1$, evitando errores por aproximación numérica.
+    
+    \paragraph{3. Generación de número aleatorio:}
+    Se genera $u \sim \text{Uniforme}(0,1)$ mediante \texttt{rand()}.
+    
+    \paragraph{4. Comparación con intervalos acumulados:}
+    Se utiliza una estructura \texttt{if-elseif-else} para comparar $u$ con los intervalos de probabilidad acumulada, similar al método visto en clase para simular dados y eventos. Esta estructura determina a qué intervalo pertenece el número aleatorio generado.
+    
+    \subsection*{Código de la Función}
+    
+    \begin{lstlisting}[caption={Función va(x,p) - Generador de variables aleatorias discretas}]
+function valor = va(x, p)
+    % Determinar automaticamente la cantidad de elementos
+    n = length(x);
+    
+    % Normalizar probabilidades para que sumen 1
+    p = p / sum(p);
+    
+    % Generar numero aleatorio uniforme entre 0 y 1
+    u = rand;
+    
+    % Calcular intervalos acumulados y buscar donde cae u
+    % Primer intervalo: [0, p(1))
+    if u < p(1)
+        valor = x(1);
+    % Segundo intervalo: [p(1), p(1)+p(2))
+    elseif u < (p(1) + p(2))
+        valor = x(2);
+    % Para el resto de elementos, calcular la suma acumulada
+    else
+        suma_acumulada = p(1) + p(2);
+        for i = 3:n
+            if u < (suma_acumulada + p(i))
+                valor = x(i);
+                return;
+            end
+            suma_acumulada = suma_acumulada + p(i);
+        end
+        % Si no cayó en ninguno anterior, es el último
+        valor = x(n);
+    end
+end
+    \end{lstlisting}
+    
+    La función emplea una lógica similar a la implementación del dado y los partidos vista en clase, donde se compara un número aleatorio con intervalos predefinidos para determinar el resultado.
+    
+    \section*{Validación mediante Simulación}
+    
+    Para verificar el correcto funcionamiento, se desarrolló un script de validación que estima frecuencias relativas mediante $N = 50\,000$ ejecuciones independientes. Esta metodología se fundamenta en la Ley de los Grandes Números.
+    
+    \subsection*{Ley de los Grandes Números}
+    
+    \textbf{Teorema:} Sea $X_1, X_2, \ldots, X_N$ una sucesión de variables aleatorias independientes e idénticamente distribuidas. Si definimos la frecuencia relativa como:
+    $$ \hat{p}_j = \frac{\text{cantidad de veces que } X = x_j}{N} $$
+    entonces:
+    $$ \lim_{N \to \infty} \hat{p}_j = p_j \quad \text{(casi seguramente)} $$
+    
+    Esto significa que al realizar muchas simulaciones, las frecuencias observadas convergen a las probabilidades teóricas.
+    
+    \subsection*{Ejemplos Implementados}
+    
+    Se validaron tres casos de estudio diferentes:
+    
+    \subsubsection*{Ejemplo 1: Dado Justo}
+    Distribución uniforme discreta con:
+    $$ x = \{1, 2, 3, 4, 5, 6\}, \quad p_i = \frac{1}{6} \quad \forall i $$
+    
+    Este caso representa un dado equilibrado donde todos los resultados son equiprobables, similar al ejercicio visto en clase.
+    
+    \subsubsection*{Ejemplo 2: Moneda Sesgada}
+    Distribución de Bernoulli con:
+    $$ x = \{0, 1\}, \quad p = (0.7, 0.3) $$
+    donde $0$ representa ``cara'' (70\%) y $1$ representa ``sello'' (30\%). Este caso ilustra una distribución asimétrica.
+    
+    \subsubsection*{Ejemplo 3: Distribución Arbitraria}
+    Distribución no uniforme con:
+    $$ x = \{10, 20, 30, 40, 50\}, \quad p = (0.1, 0.15, 0.35, 0.25, 0.15) $$
+    
+    Este ejemplo demuestra la versatilidad del método para cualquier distribución discreta.
+    
+    \subsection*{Estructura del Script de Validación}
+    
+    El script emplea la misma estructura vista en clase para el ejercicio \texttt{pruebaPartido()}:
+    
+    \begin{enumerate}
+        \item Se inicializan contadores en cero
+        \item Se ejecuta un \texttt{for} con $N$ repeticiones
+        \item En cada iteración se llama a \texttt{va(x,p)} y se incrementa el contador correspondiente usando \texttt{if-elseif}
+        \item Se calculan las frecuencias relativas: \texttt{frecuencias = conteo / N}
+        \item Se generan gráficas con barras comparando probabilidades teóricas vs. frecuencias observadas
+        \item Se personalizan colores y se agregan etiquetas con porcentajes
+    \end{enumerate}
+    
+    \subsection*{Fragmento del Script de Validación}
+    
+    \begin{lstlisting}[caption={Extracto del script de validación - similar a lo visto en clase}]
+% Inicializar contadores
+conteo1 = [0, 0, 0, 0, 0, 0];
+
+% Realizar simulaciones
+for i = 1:N
+    resultado = va(x1, p1);
+    
+    % Contar cual valor salio
+    if resultado == 1
+        conteo1(1) = conteo1(1) + 1;
+    elseif resultado == 2
+        conteo1(2) = conteo1(2) + 1;
+    elseif resultado == 3
+        conteo1(3) = conteo1(3) + 1;
+    elseif resultado == 4
+        conteo1(4) = conteo1(4) + 1;
+    elseif resultado == 5
+        conteo1(5) = conteo1(5) + 1;
+    else
+        conteo1(6) = conteo1(6) + 1;
+    end
+end
+
+% Calcular frecuencias relativas
+frecuencias1 = conteo1 / N;
+
+% Graficar resultados
+figure;
+b1 = bar([p1; frecuencias1]');
+xlabel('Valor del dado');
+ylabel('Probabilidad');
+title(['Dado justo - ' num2str(N) ' lanzamientos']);
+legend('P(teorica)', 'Frecuencia observada');
+grid on;
+    \end{lstlisting}
+    
+    \section*{Resultados}
+    
+    Al ejecutar el script de validación con $N = 50\,000$ simulaciones, se observa que:
+    
+    \begin{enumerate}
+        \item \textbf{Convergencia numérica:} Los errores absolutos $|p_i - \hat{p}_i|$ son típicamente menores a $0.005$, confirmando la convergencia.
+        
+        \item \textbf{Consistencia visual:} Las gráficas de barras muestran una superposición prácticamente perfecta entre las probabilidades teóricas y las frecuencias observadas.
+        
+        \item \textbf{Validación del método:} Los tres ejemplos confirman que la función \texttt{va(x,p)} respeta las distribuciones especificadas.
+    \end{enumerate}
+    
+    \subsection*{Gráficas de Validación}
+    
+    Las siguientes gráficas comparan las probabilidades teóricas (azul) con las frecuencias relativas observadas (naranja) para cada uno de los tres ejemplos implementados:
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{grafica_dado.png}
+        \caption{Ejemplo 1: Dado justo con distribución uniforme. Se observa que las seis caras tienen frecuencias relativas cercanas a $1/6 \approx 0.1667$.}
+        \label{fig:dado}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{grafica_moneda.png}
+        \caption{Ejemplo 2: Moneda sesgada con $P(\text{Cara}) = 0.7$ y $P(\text{Sello}) = 0.3$. La asimetría de la distribución se respeta correctamente.}
+        \label{fig:moneda}
+    \end{figure}
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.6\textwidth]{grafica_arbitraria.png}
+        \caption{Ejemplo 3: Distribución arbitraria no uniforme con cinco valores. Las frecuencias observadas replican fielmente las probabilidades especificadas, demostrando la versatilidad del método.}
+        \label{fig:arbitraria}
+    \end{figure}
+    
+    En las tres figuras se aprecia la superposición prácticamente perfecta entre las barras azules (probabilidades teóricas) y las barras naranjas (frecuencias observadas), validando empíricamente la correcta implementación del método de la transformada inversa.
+    
+    \section*{Conclusiones}
+    
+    La implementación desarrollada constituye una herramienta fundamental para la simulación de variables aleatorias discretas. El método de la transformada inversa, implementado mediante una estructura simple de \texttt{if-elseif} similar a los ejercicios vistos en clase, proporciona una solución computacionalmente eficiente y conceptualmente clara.
+    
+    La validación empírica mediante simulación Monte Carlo confirma que la función \texttt{va(x,p)} respeta rigurosamente las distribuciones de probabilidad especificadas, cumpliendo con el objetivo de aprendizaje del curso: validar modelos matemáticos mediante técnicas de simulación estadística.
+    
+    Este ejercicio ilustra cómo conceptos teóricos de probabilidad pueden traducirse en algoritmos computacionales funcionales utilizando estructuras de programación básicas. La Ley de los Grandes Números se manifiesta empíricamente en la convergencia de las frecuencias observadas hacia las probabilidades teóricas.
+    
+    Finalmente, la implementación es compatible tanto con MATLAB como con GNU Octave, garantizando accesibilidad y reproducibilidad en diferentes plataformas.
+    
+    \section*{Instrucciones de Uso}
+    
+    El archivo \texttt{Tarea5\_JuanFelipeRodriguezG.m} contiene tanto la función \texttt{va(x,p)} como el script de validación completo.
+    
+    \subsection*{Para ejecutar la validación completa:}
+    \begin{verbatim}
+    >> validar_tarea5
+    \end{verbatim}
+    
+    Esto ejecutará los tres ejemplos, mostrará las tablas de resultados y generará las gráficas correspondientes.
+    
+    \subsection*{Para usar la función directamente:}
+    \begin{verbatim}
+    >> lanzarDado = va([1,2,3,4,5,6], [1/6,1/6,1/6,1/6,1/6,1/6])
+    >> moneda = va([0,1], [0.7,0.3])
+    >> resultado = va([10,20,30,40,50], [0.1,0.15,0.35,0.25,0.15])
+    \end{verbatim}
+    
+    \subsection*{En GNU Octave desde terminal:}
+    \begin{verbatim}
+    $ octave Tarea5_JuanFelipeRodriguezG.m
+    \end{verbatim}
+    
+    \begin{thebibliography}{9}
+    
+    \bibitem{walpole2017}
+    Walpole, R. E., Myers, R. H., Myers, S. L., \& Ye, K. (2017).
+    \textit{Probability and Statistics for Engineers and Scientists} (9th ed.).
+    Pearson.
+    
+    \end{thebibliography}
+    
+\end{document}
