@@ -1,0 +1,255 @@
+%% Matriz extraída de: la-goualante-du-pauvre-jean.mid
+%% Pista: Acoustic Guitar
+format rat;
+
+melodia = [...
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  3  1/8   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  3  1/8   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 10  1/2   ; ... % Nota: D5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  4  1/8   ; ... % Nota: G#4
+    -1 -1 -1 -1 -1  5  1/8   ; ... % Nota: A4
+     3 -1 -1 -1 -1 -1  1/4   ; ... % Nota: G2
+    -1 -1 -1 -1 -1  5  1/2   ; ... % Nota: A4
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  4  1/8   ; ... % Nota: G#4
+    -1 -1 -1 -1 -1  5  1/8   ; ... % Nota: A4
+     3 -1 -1 -1 -1 -1  1/4   ; ... % Nota: G2
+    -1 -1 -1 -1 -1  5  1/2   ; ... % Nota: A4
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  4  1/8   ; ... % Nota: G#4
+    -1 -1 -1 -1 -1  5  1/8   ; ... % Nota: A4
+    -1 -1  2 -1 -1 -1  1/4   ; ... % Nota: E3
+    -1 -1 -1 -1 -1  5  1/2   ; ... % Nota: A4
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1  3 -1 -1 -1 -1  1/4   ; ... % Nota: C3
+    -1 -1 -1 -1 -1  0  1/2   ; ... % Nota: E4
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1  2 -1 -1 -1 -1  1/4   ; ... % Nota: B2
+    -1 -1 -1 -1  4 -1  1/2   ; ... % Nota: E-4
+    -1 -1 -1 -1  4 -1  1/4   ; ... % Nota: E-4 (Acorde simplificado)
+    -1  3 -1 -1 -1 -1  1/4   ; ... % Nota: C3
+    -1 -1 -1 -1 -1  0  1/2   ; ... % Nota: E4
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/2   ; ... % Silencio
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  6  1/4   ; ... % Nota: B-4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  3  1/4   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  1  1/2   ; ... % Nota: F4
+    -1  0 -1 -1 -1 -1  1/4   ; ... % Nota: A2
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4 (Acorde simplificado)
+    -1 -1 -1 -1  3 -1  1/8   ; ... % Nota: D4
+    -1 -1 -1 -1 -1  0  1/8   ; ... % Nota: E4
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  3  1/4   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 10  3/8   ; ... % Nota: D5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/8   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  3  1/4   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4 (Acorde simplificado)
+    -1 -1 -1  2 -1 -1  1/4   ; ... % Nota: A3 (Acorde simplificado)
+    -1 -1 -1 -1  0 -1  1/4   ; ... % Nota: B3 (Acorde simplificado)
+    -1  3 -1 -1 -1 -1  1/4   ; ... % Nota: C3
+    -1 -1 -1 -1 -1  0  1     ; ... % Nota: E4
+    -1 -1 -1 -1  1 -1  1/8   ; ... % Nota: C4 (Acorde simplificado)
+    -1 -1  2 -1 -1 -1  1/4   ; ... % Nota: E3
+    -1 -1 -1 -1  1 -1  1/8   ; ... % Nota: C4 (Acorde simplificado)
+    -1 -1  2 -1 -1 -1  1/4   ; ... % Nota: E3
+    -1 -1 -1 -1 -1  3  1/4   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4
+    -1 -1 -1  2 -1 -1  1/4   ; ... % Nota: A3 (Acorde simplificado)
+    -1 -1 -1 -1  0 -1  1/4   ; ... % Nota: B3
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/4   ; ... % Silencio
+    -1 -1 -1 -1  1 -1  1/4   ; ... % Nota: C4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/2   ; ... % Nota: C5
+    -1  3 -1 -1 -1 -1  1/4   ; ... % Nota: C3
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  4  1/8   ; ... % Nota: G#4
+    -1 -1 -1 -1 -1  5  1/8   ; ... % Nota: A4
+     3 -1 -1 -1 -1 -1  1/4   ; ... % Nota: G2 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/2   ; ... % Nota: A4
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  4  1/8   ; ... % Nota: G#4
+    -1 -1 -1 -1 -1  5  1/8   ; ... % Nota: A4
+     3 -1 -1 -1 -1 -1  1/4   ; ... % Nota: G2 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/2   ; ... % Nota: A4
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  4  1/8   ; ... % Nota: G#4
+    -1 -1 -1 -1 -1  5  1/8   ; ... % Nota: A4
+    -1 -1  2 -1 -1 -1  1/4   ; ... % Nota: E3 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/2   ; ... % Nota: A4
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1  3 -1 -1 -1 -1  1/4   ; ... % Nota: C3 (Acorde simplificado)
+    -1 -1 -1 -1 -1  0  1/2   ; ... % Nota: E4
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1  2 -1 -1 -1 -1  1/4   ; ... % Nota: B2 (Acorde simplificado)
+    -1 -1 -1 -1  4 -1  1/2   ; ... % Nota: E-4
+    -1 -1 -1 -1  4 -1  1/4   ; ... % Nota: E-4 (Acorde simplificado)
+    -1  3 -1 -1 -1 -1  1/4   ; ... % Nota: C3 (Acorde simplificado)
+    -1 -1 -1 -1 -1  0  1/2   ; ... % Nota: E4
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/2   ; ... % Silencio
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  6  1/4   ; ... % Nota: B-4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  3  1/4   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  1  1/2   ; ... % Nota: F4
+    -1  0 -1 -1 -1 -1  1/4   ; ... % Nota: A2 (Acorde simplificado)
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4 (Acorde simplificado)
+    -1 -1 -1 -1  3 -1  1/8   ; ... % Nota: D4
+    -1 -1 -1 -1 -1  0  1/8   ; ... % Nota: E4
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  3  1/4   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 10  3/8   ; ... % Nota: D5 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/4   ; ... % Nota: C2
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  8  1/8   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  3  1/4   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4 (Acorde simplificado)
+    -1 -1 -1  2 -1 -1  1/4   ; ... % Nota: A3 (Acorde simplificado)
+    -1 -1 -1 -1  0 -1  1/4   ; ... % Nota: B3 (Acorde simplificado)
+    -1  3 -1 -1 -1 -1  1/4   ; ... % Nota: C3 (Acorde simplificado)
+    -1 -1 -1 -1 -1  0  1     ; ... % Nota: E4
+    -1 -1 -1 -1  1 -1  1/8   ; ... % Nota: C4 (Acorde simplificado)
+    -1 -1  2 -1 -1 -1  1/4   ; ... % Nota: E3
+    -1 -1 -1 -1  1 -1  1/8   ; ... % Nota: C4 (Acorde simplificado)
+    -1 -1  2 -1 -1 -1  1/4   ; ... % Nota: E3
+    -1 -1 -1 -1 -1  3  1/4   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  1  1/4   ; ... % Nota: F4 (Acorde simplificado)
+    -1 -1 -1  2 -1 -1  1/4   ; ... % Nota: A3 (Acorde simplificado)
+    -1 -1 -1 -1  0 -1  1/4   ; ... % Nota: B3 (Acorde simplificado)
+    -1 -1 -1 -1 -1  0  1/4   ; ... % Nota: E4 (Acorde simplificado)
+    -1  3 -1 -1 -1 -1  1/2   ; ... % Nota: C3
+    -1 -1 -1 -1 -1 -1  1/4   ; ... % Silencio
+    -1 -1 -1 -1  1 -1  1/4   ; ... % Nota: C4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/2   ; ... % Nota: C5
+    -1  3 -1 -1 -1 -1  1/4   ; ... % Nota: C3
+    -1 -1 -1 -1 -1 -1  1/2   ; ... % Silencio
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  4  1/8   ; ... % Nota: G#4
+    -1 -1 -1 -1 -1  5  1/8   ; ... % Nota: A4
+     3 -1 -1 -1 -1 -1  1/4   ; ... % Nota: G2
+    -1 -1 -1 -1 -1  5  1/2   ; ... % Nota: A4
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  4  1/8   ; ... % Nota: G#4
+    -1 -1 -1 -1 -1  5  1/8   ; ... % Nota: A4
+     3 -1 -1 -1 -1 -1  1/4   ; ... % Nota: G2
+    -1 -1 -1 -1 -1  5  1/2   ; ... % Nota: A4
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/4   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  7  1/4   ; ... % Nota: B4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  3/4   ; ... % Silencio
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  4  1/8   ; ... % Nota: G#4
+    -1 -1 -1 -1 -1  5  1/8   ; ... % Nota: A4
+     3 -1 -1 -1 -1 -1  1/4   ; ... % Nota: G2
+    -1 -1 -1 -1 -1  5  1     ; ... % Nota: A4
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1  0 -1 -1 -1  1/4   ; ... % Nota: D3
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+     3 -1 -1 -1 -1 -1  1/4   ; ... % Nota: G2
+    -1 -1 -1 -1 -1  7  1/2   ; ... % Nota: B4
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1  0 -1 -1 -1  1/4   ; ... % Nota: D3
+    -1 -1 -1 -1 -1  3  1/2   ; ... % Nota: G4
+    -1 -1 -1 -1  3 -1  1/4   ; ... % Nota: D4 (Acorde simplificado)
+    -1 -1 -1 -1  1 -1  1/4   ; ... % Nota: C4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/2   ; ... % Nota: C5
+    -1 -1 -1 -1 -1  3  1/8   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/2   ; ... % Silencio
+    -1 -1 -1 -1 -1  3  1/8   ; ... % Nota: G4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  5  1/4   ; ... % Nota: A4 (Acorde simplificado)
+    -1 -1 -1 -1 -1  8  1/2   ; ... % Nota: C5 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/2   ; ... % Silencio
+    -1 -1 -1 -1  1 -1  1/2   ; ... % Nota: C4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/2   ; ... % Nota: C2
+    -1 -1 -1 -1  1 -1  1/2   ; ... % Nota: C4 (Acorde simplificado)
+    -1 -1 -1 -1 -1 -1  1/2   ; ... % Silencio
+];
+
+%% Reproducción automática
+tempo_bpm = 120;
+generamelodia(melodia, tempo_bpm, 1);
