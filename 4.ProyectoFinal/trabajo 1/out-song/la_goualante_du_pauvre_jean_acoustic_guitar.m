@@ -252,4 +252,4 @@ melodia = [...
 
 %% Reproducción automática
 tempo_bpm = 120;
-generamelodia(melodia, tempo_bpm, 1);
+generamelodia(melodia, tempo_bpm, 2);

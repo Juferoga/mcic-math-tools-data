@@ -96,7 +96,7 @@ def main():
     salida_matlab += "];\n\n"
     salida_matlab += f"%% Reproducción automática\n"
     salida_matlab += f"tempo_bpm = {bpm};\n"
-    salida_matlab += "generamelodia(melodia, tempo_bpm, 1);\n"
+    salida_matlab += "generamelodia(melodia, tempo_bpm, 2);\n"
 
     out_dir = "out-song"
     os.makedirs(out_dir, exist_ok=True)
