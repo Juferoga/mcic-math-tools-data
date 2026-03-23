@@ -3,3 +3,7 @@ venv/
 *.aux
 *.log
 *.out
+.atl/# Ignore large wav files inside the phases to avoid bloating the repo
+4.ProyectoFinal/trabajo 1/fase2/*.wav
+4.ProyectoFinal/trabajo 1/fase3/*.wav
+4.ProyectoFinal/trabajo 1/fase5/*.wav
