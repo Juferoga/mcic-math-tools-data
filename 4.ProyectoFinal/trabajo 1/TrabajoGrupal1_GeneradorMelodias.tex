@@ -620,10 +620,41 @@ El proceso matemático y computacional para la síntesis de la nueva melodía se
 \end{figure}
 % -----------------------------------------------------------
 
+\subsection*{Espacio de Estados y Matriz de Transición}
+El algoritmo detectó un total de $N = 209$ estados únicos en todo el corpus. Debido a las dimensiones de la matriz de transición resultante ($209 \times 209$), no es viable representarla como una tabla numérica tradicional. En su lugar, se visualiza su dispersión (sparsity) en la Figura \ref{fig:act7_sparsidad}. De la misma forma, el grafo de todos los estados resulta visualmente incomprensible, por lo que en la Figura \ref{fig:act7_grafo_estados} se presenta un sub-grafo modelando exclusivamente la red de transiciones de los 25 macro-estados más frecuentes.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/actividad7/act7_6_top_estados.png}
+	\caption{Distribución de los 15 estados (acordes/notas completas) más frecuentes extraídos del corpus. Estos estados actúan como nodos primarios en el proceso de generación markoviano.}
+	\label{fig:act7_top_estados}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\linewidth]{imagenes/actividad7/act7_2_sparsidad_estados.png}
+	\caption{Dispersión de la Matriz de Transición de Estados Completos ($209 \times 209$). La alta cantidad de espacio en blanco (ceros) demuestra que las progresiones armónicas no son aleatorias, sino que siguen trayectorias sumamente restringidas y lógicas dictadas por el estilo musical original.}
+	\label{fig:act7_sparsidad}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{imagenes/actividad7/act7_8_grafo_estados.png}
+	\caption{Sub-grafo dirigido de red que ilustra las probabilidades de transición entre los 25 macro-estados más frecuentes ($P > 0.05$). Las aristas más gruesas indican caminos fuertemente predecibles de conducción de voces (resoluciones de tensión).}
+	\label{fig:act7_grafo_estados}
+\end{figure}
+
 \subsection*{Resultados}
 Como resultado del algoritmo, se obtuvo una pieza musical nueva conformada por 200 notas.
 
 Analizando la matriz de transición resultante, se evidenció que es altamente dispersa (posee muchos ceros). Esto indica que el modelo no genera ruido descontrolado, sino que restringe fuertemente las progresiones inválidas y prioriza caminos musicales lógicos. Cualitativamente, al escuchar la salida, la melodía conserva las progresiones de acordes y la coherencia rítmica local de las canciones originales, evidenciando una excelente capacidad de generalización estocástica sin llegar a ser una copia exacta de la obra original.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{imagenes/actividad7/act7_4_piano_roll.png}
+	\caption{Comparación visual tipo Piano Roll entre un segmento de la melodía base original y la nueva obra generada. El modelo conserva la textura de ``acorde-melodía'' sin que haya disonancias evidentes en los eventos múltiples.}
+	\label{fig:act7_piano_roll}
+\end{figure}
 
 \section*{Conclusiones}
 
