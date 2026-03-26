@@ -17,7 +17,7 @@ fprintf('=======================================================================
 
 % ======== CONFIGURACIÓN GENERAL ========
 archivos_entrada = {
-    'songs/m and wav files/la_foule.m', ...
+    'songs/m and wav files/lhymne_a_lamour_acoustic_guitar.m', ...
     'songs/m and wav files/la_goualante_du_pauvre_jean.m', ...
     'songs/m and wav files/la_vie_en_rose_by_edith_piaf.m'
 };
@@ -62,7 +62,7 @@ for i = 1:3
     end
 
     contenido = fileread(ruta);
-    tokens = regexp(contenido, 'melodia\s*=\s*\[([\s\S]*?)\];', 'tokens', 'once');
+    tokens = regexp(contenido, 'melodia\s*=\s*\[([\s\S]*?)\]', 'tokens', 'once');
 
     if isempty(tokens)
         error('No se encontró el bloque "melodia = [ ... ];" en: %s', ruta);

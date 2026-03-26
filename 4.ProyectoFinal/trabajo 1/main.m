@@ -40,6 +40,13 @@ try
     run('fase5_generador_final.m');
     fprintf('>>> FASE 5 finalizada correctamente.\n\n');
 
+    % ======== GENERACIÓN DE GRÁFICAS ========
+    fprintf('>>> Generando banco de gráficas analíticas (Actividades 4 a 7)...\n');
+    run('plot_imagenes_actividades.m');
+    fprintf('>>> Generando banco EXTRA de gráficas de correlación...\n');
+    run('plot_imagenes_extra.m');
+    fprintf('>>> Gráficas generadas correctamente.\n\n');
+
     tiempo_ejecucion = toc(tiempo_total_inicio);
 
     % ======== RESUMEN FINAL ========
@@ -50,7 +57,8 @@ try
     fprintf('Archivos generados:\n');
     fprintf('  - Fase 2 (.m y .wav): carpeta fase2/\n');
     fprintf('  - Fase 3 (.m y .wav): carpeta fase3/\n');
-    fprintf('  - Fase 5 (.m y .wav): carpeta fase5/\n\n');
+    fprintf('  - Fase 5 (.m y .wav): carpeta fase5/\n');
+    fprintf('  - Gráficas (PNGs alta resolución): carpeta imagenes/\n\n');
     fprintf('Ruta base de trabajo: 4.ProyectoFinal/trabajo 1/\n');
     fprintf('Listo. Puedes revisar y reproducir los resultados generados.\n');
     fprintf('==========================================================================\n\n');

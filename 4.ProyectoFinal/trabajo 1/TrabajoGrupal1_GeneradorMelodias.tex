@@ -1,6 +1,5 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
-\usepackage[spanish]{babel}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -10,6 +9,13 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage[hidelinks]{hyperref}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{fontawesome5}
+\usepackage[spanish,es-tabla]{babel}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
 
 \geometry{margin=2.5cm}
 
@@ -39,11 +45,11 @@
     showstringspaces=false
 }
 
-\title{Primer Trabajo Grupal: Generador Aleatorio de Melodías Basado en Dependencia Estadística}
+\title{Generador Aleatorio de Melodías Basado en Dependencia Estadística}
 \author{Integrantes: 
-    \textit{Juan Felipe Rodriguez G. 20261595004,} \\ 
-    \textit{Carlos Stiven Mora Hoyos 202615950**,} \\ 
-    \textit{Sergio Santiago Duarte Rojas 202615950**} \\
+    \textit{Juan Felipe Rodríguez G. 20261595004,} \\ 
+    \textit{Carlos Stiven Mora Hoyos 20261595003,} \\ 
+    \textit{Sergio Santiago Duarte Rojas 20261595002} \\
     \\Curso: Herramientas Matemáticas \\para el Manejo de la Información (2026-1)}
 \date{\today}
 
@@ -51,10 +57,12 @@
 \maketitle
 
 \section*{Objetivo}
-Diseñar y proponer un generador aleatorio de melodías basado en dependencia estadística, utilizando tres melodías base del mismo género musical y compositor.
+Diseñar y proponer un generador aleatorio de melodías basado en la dependencia estadística.
 
 \section*{Resumen}
-En este trabajo desarrollamos un generador estocástico de melodías para guitarra a partir de tres canciones de Edith Piaf. El flujo metodológico se estructuró en dos etapas: (i) extracción y normalización de tablaturas mediante herramientas en Python (lectura de JSON/MIDI y conversión a matrices MATLAB), y (ii) modelación probabilística en MATLAB sobre la representación matricial \(n\times 7\) (seis cuerdas + duración relativa). Primero evaluamos un modelo de Orden 0 para los tiempos relativos (muestra i.i.d., hipótesis de independencia), luego un modelo de Orden 1 (cadenas de Markov para la columna de duraciones), y finalmente un modelo de \textit{estado completo} que integra simultáneamente trastes y tiempo en una única dinámica de transición. Los resultados de síntesis muestran que el enfoque final preserva mejor el estilo del corpus de entrenamiento, produciendo salidas musicalmente más coherentes en ritmo y contorno melódico.
+En este trabajo se desarrolló un generador estocástico de melodías para guitarra a partir de tres canciones de Edith Piaf. El flujo metodológico se estructuró en dos etapas: (i) extracción y normalización de tablaturas mediante herramientas en Python (lectura de JSON/MIDI y conversión a matrices MATLAB), y (ii) modelación probabilística en MATLAB sobre la representación matricial $n \times 7$ (seis cuerdas + duración relativa).
+
+En primer lugar, se evaluó un modelo de orden 0 para los tiempos relativos, bajo la hipótesis de que las variables aleatorias son independientes e idénticamente distribuidas (i.i.d.); posteriormente, se analizó un modelo de orden 1 (cadenas de Markov para la columna de duraciones) y, finalmente, se implementó un modelo de \textit{estado completo} para integrar la relación intrínseca entre la melodía y el ritmo. A diferencia de los análisis previos que trataban las notas y los tiempos de forma aislada, este enfoque definió cada estado como la combinación conjunta de la posición en los trastes y su duración correspondiente. Al unificar estos elementos en una sola matriz de transición, el sistema fue capaz de modelar cómo el ritmo influye en la selección de las notas (y viceversa). Como resultado, la síntesis melódica obtenida no solo replicó las notas del corpus original, sino que preservó la estructura rítmica y la intención expresiva característica de las obras de Edith Piaf.
 
 \section*{Primera actividad: Estructura de la tablatura}
 \subsection*{Tempo}
@@ -64,11 +72,30 @@ El tempo corresponde a la velocidad de ejecución de la melodía y se expresa en
 Cada fila de la matriz representa un evento musical y las primeras seis columnas codifican, por cuerda, el traste a ejecutar. Un número positivo (por ejemplo, 7 u 8) indica el traste presionado; el valor \textbf{0} representa cuerda al aire (sin presionar traste); y el valor \textbf{-1} indica que esa cuerda no suena en ese evento (silencio de cuerda). Esta convención permite representar notas simples, acordes parciales y silencios de manera uniforme dentro de una sola estructura numérica.
 
 \subsection*{Duración relativa y silencios}
-La séptima columna almacena la duración relativa de cada evento como fracción de compás. En compás \(4/4\), usamos la equivalencia estándar: \(1\) para redonda, \(1/2\) para blanca, \(1/4\) para negra, \(1/8\) para corchea, etc. Un silencio completo se representa con trastes en \(-1\) en las seis cuerdas y la duración correspondiente en la columna temporal. Así, la matriz conserva simultáneamente información de altura (trastes) y métrica (duración).
+La séptima columna almacena la duración relativa de cada evento como fracción de compás. En compás \(4/4\), usamos la equivalencia estándar, la cual se puede ver representada en la siguiente tabla. Un silencio completo se representa con trastes en \(-1\) en las seis cuerdas y la duración correspondiente en la columna temporal. Así, la matriz conserva simultáneamente información de altura (trastes) y métrica (duración).
+
+\begin{table}[]
+	\centering
+	\begin{tabular}{lc}
+		\toprule
+		\textbf{Figura} & \textbf{Fraccion de compas} \\
+		\midrule
+		Redonda         & $1$                         \\
+		Blanca          & $1/2$                       \\
+		Negra           & $1/4$                       \\
+		Corchea         & $1/8$                       \\
+		Semicorchea     & $1/16$                      \\
+		Fusa            & $1/32$                      \\
+		\bottomrule
+	\end{tabular}
+	\caption{Fracción de compases por figura.}
+	\label{tab:placeholder}
+\end{table}
 
 \section*{Segunda actividad: Codificación matricial en MATLAB}
 \subsection*{Definición de la matriz \texttt{melodia}}
-Sea \(\texttt{melodia}\in\mathbb{Z}^{n\times 7}\). Las primeras seis columnas representan el traste en cada cuerda y la séptima columna representa el tiempo relativo.
+
+Sea \texttt{melodia} una matriz $n \times 7$, donde las primeras seis columnas representan el traste pulsado en cada cuerda (desde la primera hasta la sexta) y la séptima columna representa el tiempo relativo de duración. Asimismo, cada fila representa un evento musical o estado específico de la guitarra en una instancia de tiempo determinada.
 
 \subsection*{Ejemplo de codificación}
 \begin{lstlisting}[language=Matlab]
@@ -78,256 +105,465 @@ melodia = [
 -1 -1 -1 -1 -1 -1 1;
 -1 -1 -1 -1 -1 -1 1;
 -1 -1 -1 -1 -1 -1 1;
--1 -1 -1 -1 8  -1 1/4;
--1 -1 -1 7  -1 -1 5/16;
 -1 -1 -1 -1 -1 -1 1/16;
 -1 -1 -1 -1 8  -1 1/8;
 ];
 \end{lstlisting}
 
 \subsection*{Síntesis de audio}
+
+En esta sección se procede con la generación de la señal de audio a partir de la matriz de notas previamente definida. Para ello, se utiliza la función \texttt{generamelodia}, la cual procesa la información musical basándose en tres parámetros fundamentales: la estructura de la melodía, el tempo y el modo de ejecución.
+
+Como se observa en el bloque de código, se realizan dos llamadas a la función: la primera está configurada en modo de reproducción directa (parámetro 1), mientras que la segunda se encarga de exportar y almacenar el archivo de audio resultante (parámetro 2).
+
 \begin{lstlisting}[language=Matlab]
-generamelodia(melodia,145,1);
-generamelodia(melodia,145,2);
+generamelodia(melodia, 145, 1);
+generamelodia(melodia, 145, 2);
 \end{lstlisting}
 
 \section*{Tercera actividad: Selección y codificación de tres melodías}
 \subsection*{Criterios de selección}
-Se seleccionaron tres obras del mismo universo estilístico para asegurar consistencia estadística del corpus: mismo género (\textit{chanson française}), misma referencia autoral e interpretativa (Edith Piaf), y tablaturas en formato compatible con pista de guitarra y métrica \(4/4\). Este criterio reduce sesgos por mezcla de estilos y favorece que las probabilidades estimadas reflejen regularidades musicales comparables.
+Se seleccionaron tres obras del mismo universo estilístico para asegurar consistencia estadística del corpus: mismo género (\textit{chanson française}), misma referencia autoral e interpretativa (Edith Piaf), y tablaturas en formato compatible con pista de guitarra y métrica \(4/4\).
 
 \subsection*{Melodías seleccionadas}
 \begin{itemize}
-	\item \textit{La Foule}
-	\item \textit{La Goualante du Pauvre Jean}
-	\item \textit{La Vie En Rose}
+	\item \href{https://www.songsterr.com/a/wsa/edith-piaf-lhymne-a-lamour-tab-s33753}{\textit{L'Hymne à L'Amour}}
+	\item \href{https://www.songsterr.com/a/wsa/edith-piaf-la-goualante-du-pauvre-jean-tab-s16146}{\textit{La Goualante du Pauvre Jean}}
+	\item \href{https://www.songsterr.com/a/wsa/misc-covers-la-vie-en-rose-by-edith-piaf-guitar-logic-tab-s464099}{\textit{La Vie En Rose}}
 \end{itemize}
 
 Género del corpus: \textit{chanson française}. Compositora/intérprete de referencia del proyecto: Edith Piaf.
 
 \subsection*{Matrices codificadas}
-Las melodías base se codificaron en archivos MATLAB de dimensión \(n\times 7\), uno por canción, y se almacenaron en \texttt{songs/m and wav files/}: \texttt{la\_foule.m}, \texttt{la\_goualante\_du\_pauvre\_jean.m} y \texttt{la\_vie\_en\_rose\_by\_edith\_piaf.m}. La extracción inicial se apoyó en utilidades Python para transformar fuentes JSON/MIDI a formato matricial compatible con \texttt{generamelodia}.
+Las melodías base se codificaron en archivos MATLAB de dimensión \(n\times 7\), uno por canción, generando la siguiente fichero por matriz:
+\begin{itemize}
+	\item {\texttt{lhymne\_a\_lamour\_acoustic\_guitar.m}}
+	\item {\texttt{la\_goualante\_du\_pauvre\_jean.m}}
+	\item {\texttt{la\_vie\_en\_rose\_by\_edith\_piaf.m}}
+\end{itemize}
+La extracción inicial se apoyó en utilidades Python para transformar fuentes JSON/MIDI a formato matricial compatible con \texttt{generamelodia}.
 
-\section*{Cuarta actividad: Probabilidades marginales de tiempos relativos}
-\subsection*{Generación aleatoria i.i.d. de tiempos}
+\section*{Cuarta actividad: Estimación de probabilidades en tiempos relativos}
 
-La duración de cada nota constituye una variable aleatoria discreta $T_i$. Bajo la hipótesis de independencia, 
-la probabilidad de que una nota tenga una duración $t$ se estima directamente a partir de los datos como la 
-frecuencia relativa de ocurrencia:
+La duración de cada evento musical constituye un evento aleatorio $T_i$. Asumiendo que la duración es independiente con cualquier otro, la probabilidad de que la duración relativa $t$ se estima calculando la frecuencia relativa de ocurrencia a partir de los datos codificados de las melodías \cite{bertsekas, walpole}:
 
 \[
-    \widehat{P}(T = t) = \frac{n(t)}{N}
+	{P}(T_i) = \frac{n}{N}
 \]
 
-\noindent donde $n(t)$ es el número de veces que la duración $t$ fue observada y $N$ el total de notas. 
-Esta estimación empírica, resumida por canción en las Tablas~\ref{tab:dur_foule}--\ref{tab:dur_rose} 
-y de forma agregada en la Tabla~\ref{tab:dur_general}, revela que las duraciones $1/8$ y $1/4$ 
-concentran el $85.9\%$ de las notas del corpus (Figura~\ref{fig:dur_general}), lo que anticipa 
-que cualquier muestreo basado en esta distribución tenderá a producir secuencias dominadas por 
-estos dos valores.
+Donde:
+\begin{itemize}
+	\item $P(T_i)$: Probabilidad de que un evento musical tenga una duración relativa igual a $t$.
+	\item $n$: Número de veces que un evento musical tuvo una duración relativa igual a $t$.
+	\item $N$: Número total de eventos musicales tocados en la canción.
+\end{itemize}
 
-Con esta distribución se generó, para cada canción, un nuevo vector temporal de longitud idéntica 
-al original mediante muestreo i.i.d., reemplazando únicamente la séptima columna de cada 
-matriz y preservando intactos los trastes (columnas 1--6). El objetivo es aislar el efecto 
-de asumir independencia temporal: ¿es suficiente con respetar las frecuencias globales para 
-obtener melodías coherentes?
+\subsection*{Canción 1: Lhymne à lamour}
+
+Se considera como experimento aleatorio el valor de la duración $t$ de un evento musical de esta canción. Se identifica el siguiente espacio muestral $\Omega$ de nuestro experimento aleatorio:
+
+\[
+	\Omega = \left\{\frac{1}{24}, \frac{1}{16}, \frac{1}{12}, \frac{1}{8}, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1, \phi\right\}
+\]
+
+Se calculan las probabilidades de los eventos unitarios de $\Omega$ teniendo en cuenta la frecuencia relativa de ocurrencias \cite{bertsekas}.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{@{}llrl@{}}
+		\toprule
+		Conjunto & Duración & Conteo & Probabilidad \\ \midrule
+		$T_1$    & $1/24$   & 3      & 0.0070       \\
+		$T_2$    & $1/16$   & 38     & 0.0892       \\
+		$T_3$    & $1/12$   & 9      & 0.0211       \\
+		$T_4$    & $1/8$    & 358    & 0.8404       \\
+		$T_5$    & $1/4$    & 11     & 0.0258       \\
+		$T_6$    & $1/2$    & 5      & 0.0117       \\
+		$T_7$    & $3/4$    & 1      & 0.0023       \\
+		$T_8$    & $1$      & 1      & 0.0023       \\ \bottomrule
+	\end{tabular}
+	\caption{Distribución de duraciones -- \textit{Lamour} (426 notas).}
+	\label{tab:placeholder}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\linewidth]{images/lamour.png}
+	\caption{Frecuencia relativa de duraciones en \textit{Lamour}. La duración $1/8$ concentra el $84.0\%$ de las notas, siendo la canción con mayor predominio de esta duración en el corpus. La presencia de valores como $1/24$ y $1/12$ introduce subdivisiones más finas que no aparecen en las demás canciones.}
+	\label{fig:dur_foule}
+\end{figure}
+
+
+
+\subsection*{Canción 2: La Goualante du Pauvre Jean}
+
+Se considera como experimento aleatorio el valor de la duración $t$ de un evento musical de esta canción. Se identifica el siguiente espacio muestral $\Omega$ de nuestro experimento aleatorio:
+
+\[
+	\Omega = \left\{\frac{1}{8}, \frac{1}{4}, \frac{3}{8}, \frac{1}{2}, \phi\right\}
+\]
+
+Se calculan las probabilidades de los eventos unitarios de $\Omega$ teniendo en cuenta la frecuencia relativa de ocurrencias \cite{bertsekas}.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{cc}
+		\toprule
+		Duración & Conteo \\ \midrule
+		$1/8$    & 10     \\
+		$1/4$    & 156    \\
+		$3/8$    & 2      \\
+		$1/2$    & 6      \\ \bottomrule
+	\end{tabular}
+	\caption{Distribución de duraciones -- \textit{Goualante} (174 notas).}
+	\label{tab:dur_goualante}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\linewidth]{images/goualante-ind.png}
+	\caption{Frecuencia relativa de duraciones en \textit{Goualante}. Con el $89.7\%$ de
+		las notas en $1/4$, es la canción rítmicamente más uniforme del corpus, lo que facilitará
+		la reproducción de su carácter bajo muestreo i.i.d.}
+	\label{fig:dur_goualante}
+\end{figure}
+
+
+\subsection*{Canción 3: La Vie En Rose}
+
+Se considera como experimento aleatorio el valor de la duración $t$ de un evento musical de esta canción. Se identifica el siguiente espacio muestral $\Omega$ de nuestro experimento aleatorio:
+
+\[
+	\Omega = \left\{\frac{1}{24}, \frac{1}{16}, \frac{1}{12}, \frac{1}{8}, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1, \phi\right\}
+\]
+
+Se calculan las probabilidades de los eventos unitarios de $\Omega$ teniendo en cuenta la frecuencia relativa de ocurrencias \cite{bertsekas}.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{cc}
+		\toprule
+		Duración & Conteo \\ \midrule
+		$1/16$   & 1      \\
+		$1/12$   & 3      \\
+		$1/8$    & 90     \\
+		$1/6$    & 3      \\
+		$1/4$    & 28     \\
+		$7/16$   & 1      \\
+		$1/2$    & 1      \\
+		$1$      & 1      \\ \bottomrule
+	\end{tabular}
+	\caption{Distribución de duraciones -- \textit{Rose} (128 notas).}
+	\label{tab:dur_rose}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\linewidth]{images/rose-ind.png}
+	\caption{Frecuencia relativa de duraciones en \textit{Rose}. Con ocho valores distintos,
+		es la canción de mayor riqueza rítmica; sin embargo, $1/8$ concentra el $70.3\%$ de las
+		notas. Esta diversidad hace que el muestreo i.i.d. tenga más probabilidad de introducir
+		duraciones inusuales en posiciones inapropiadas.}
+	\label{fig:dur_rose}
+\end{figure}
+
 
 % ── Tablas de conteo ──────────────────────────────────────────────────────────
-\begin{table}[H]
-\centering
-\caption{Distribución de duraciones -- \textit{Foule} (529 notas).}
-\label{tab:dur_foule}
-\begin{tabular}{cc}
-\toprule
-Duración & Conteo \\ \midrule
-$1/8$  & 276 \\
-$1/4$  & 154 \\
-$3/8$  &  38 \\
-$1/2$  &  10 \\
-$3/4$  &  51 \\ \bottomrule
-\end{tabular}
-\end{table}
+
+\subsection*{Corpus General}
+
+Se considera como experimento aleatorio el valor de la duración $t$ de un evento musical de esta canción. Se identifica el siguiente espacio muestral $\Omega$ de nuestro experimento aleatorio:
+
+\[
+	\Omega = \left\{\frac{1}{24}, \frac{1}{16}, \frac{1}{12}, \frac{1}{8}, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1, \phi\right\}
+\]
+
+Se calculan las probabilidades de los eventos unitarios de $\Omega$ teniendo en cuenta la frecuencia relativa de ocurrencias \cite{bertsekas}.
+
 
 \begin{table}[H]
-\centering
-\caption{Distribución de duraciones -- \textit{Goualante} (174 notas).}
-\label{tab:dur_goualante}
-\begin{tabular}{cc}
-\toprule
-Duración & Conteo \\ \midrule
-$1/8$  &  10 \\
-$1/4$  & 156 \\
-$3/8$  &   2 \\
-$1/2$  &   6 \\ \bottomrule
-\end{tabular}
+	\centering
+	\begin{tabular}{ccc}
+		\toprule
+		Duración & Conteo & $\widehat{P}(T=t)$ \\ \midrule
+		$1/16$   & 1      & 0.0012             \\
+		$1/12$   & 3      & 0.0036             \\
+		$1/8$    & 376    & 0.4524             \\
+		$1/6$    & 3      & 0.0036             \\
+		$1/4$    & 338    & 0.4067             \\
+		$3/8$    & 40     & 0.0481             \\
+		$7/16$   & 1      & 0.0012             \\
+		$1/2$    & 17     & 0.0205             \\
+		$3/4$    & 51     & 0.0614             \\
+		$1$      & 1      & 0.0012             \\ \bottomrule
+	\end{tabular}
+	\caption{Distribución marginal empírica global $\widehat{P}(T=t)$ sobre las tres canciones ($N = 831$).}
+	\label{tab:dur_general}
 \end{table}
 
-\begin{table}[H]
-\centering
-\caption{Distribución de duraciones -- \textit{Rose} (128 notas).}
-\label{tab:dur_rose}
-\begin{tabular}{cc}
-\toprule
-Duración & Conteo \\ \midrule
-$1/16$ &  1 \\
-$1/12$ &  3 \\
-$1/8$  & 90 \\
-$1/6$  &  3 \\
-$1/4$  & 28 \\
-$7/16$ &  1 \\
-$1/2$  &  1 \\
-$1$    &  1 \\ \bottomrule
-\end{tabular}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Distribución marginal empírica global $\widehat{P}(T=t)$ sobre las tres canciones ($N = 831$).}
-\label{tab:dur_general}
-\begin{tabular}{ccc}
-\toprule
-Duración & Conteo & $\widehat{P}(T=t)$ \\ \midrule
-$1/16$ &   1 & 0.0012 \\
-$1/12$ &   3 & 0.0036 \\
-$1/8$  & 376 & 0.4524 \\
-$1/6$  &   3 & 0.0036 \\
-$1/4$  & 338 & 0.4067 \\
-$3/8$  &  40 & 0.0481 \\
-$7/16$ &   1 & 0.0012 \\
-$1/2$  &  17 & 0.0205 \\
-$3/4$  &  51 & 0.0614 \\
-$1$    &   1 & 0.0012 \\ \bottomrule
-\end{tabular}
-\end{table}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\linewidth]{images/general-ind.png}
+	\caption{Distribución marginal empírica $\widehat{P}(T=t)$ sobre el corpus completo
+		($N=831$). La concentración en $1/8$ y $1/4$ implica que el muestreo i.i.d. reproducirá
+		razonablemente la densidad global de duraciones, aunque sin garantizar ninguna estructura
+		secuencial.}
+	\label{fig:dur_general}
+\end{figure}
 
 % ── Figuras ───────────────────────────────────────────────────────────────────
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\linewidth]{images/lamour.png}
-    \caption{Frecuencia relativa de duraciones en \textit{Lamour}. La duración $1/8$ domina 
-    con el $52.2\%$ de las notas, seguida de $1/4$ con $29.1\%$. La presencia de $3/4$ 
-    sugiere notas largas de carácter expresivo intercaladas en el discurso rítmico.}
-    \label{fig:dur_foule}
-\end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\linewidth]{images/goualante-ind.png}
-    \caption{Frecuencia relativa de duraciones en \textit{Goualante}. Con el $89.7\%$ de 
-    las notas en $1/4$, es la canción rítmicamente más uniforme del corpus, lo que facilitará 
-    la reproducción de su carácter bajo muestreo i.i.d.}
-    \label{fig:dur_goualante}
-\end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\linewidth]{images/rose-ind.png}
-    \caption{Frecuencia relativa de duraciones en \textit{Rose}. Con ocho valores distintos, 
-    es la canción de mayor riqueza rítmica; sin embargo, $1/8$ concentra el $70.3\%$ de las 
-    notas. Esta diversidad hace que el muestreo i.i.d. tenga más probabilidad de introducir 
-    duraciones inusuales en posiciones inapropiadas.}
-    \label{fig:dur_rose}
-\end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.75\linewidth]{images/general-ind.png}
-    \caption{Distribución marginal empírica $\widehat{P}(T=t)$ sobre el corpus completo 
-    ($N=831$). La concentración en $1/8$ y $1/4$ implica que el muestreo i.i.d. reproducirá 
-    razonablemente la densidad global de duraciones, aunque sin garantizar ninguna estructura 
-    secuencial.}
-    \label{fig:dur_general}
-\end{figure}
 
-\subsection*{Discusión}
-No es suficiente. Aunque el muestreo i.i.d.\ respeta las frecuencias globales de duración, 
-ignora la dependencia entre eventos consecutivos y el contexto de frase musical. En la 
-práctica, esto produce secuencias arrítmicas o inestables, con acentos poco naturales y 
-sensación de caos temporal, porque se pierde la continuidad estructural que organiza motivos 
-y respiración métrica en una melodía real.
+
+
+
+
+Estos resultados permiten determinar los vectores $x$ y $p$ para, mediante el uso de la transformada inversa, calcular el vector de probabilidad que será remplazado en la melodía.
+
+\[
+	x = \left[ \frac{1}{24}, \frac{1}{16}, \frac{1}{12}, \frac{1}{8}, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1 \right]
+\]
+
+
+\subsection*{BLA BLA BLA PARA FINALIZAR LA CREACIÓN DE LAS CANCIONES}
+Esta estimación empírica, resumida por canción en las Tablas~\ref{tab:dur_foule}--\ref{tab:dur_rose}
+y de forma agregada en la Tabla~\ref{tab:dur_general}, revela que las duraciones $1/8$ y $1/4$
+concentran el $85.9\%$ de las notas del corpus (Figura~\ref{fig:dur_general}), lo que anticipa
+que cualquier muestreo basado en esta distribución tenderá a producir secuencias dominadas por
+estos dos valores.
+
+Con esta distribución se generó, para cada canción, un nuevo vector temporal de longitud idéntica
+al original mediante muestreo i.i.d., reemplazando únicamente la séptima columna de cada
+matriz y preservando intactos los trastes (columnas 1--6). El objetivo es aislar el efecto
+de asumir independencia temporal: ¿es suficiente con respetar las frecuencias globales para
+obtener melodías coherentes?
+
+\subsection*{Resultados}
+Aunque el muestreo i.i.d.\ respeta las frecuencias globales de duración,
+ignora la dependencia entre eventos consecutivos y el contexto de frase musical. En la
+práctica, esto produce secuencias arrítmicas o inestables, con acentos poco naturales y
+sensación de caos temporal, debido a que se pierde la continuidad estructural que organiza motivos y respiración métrica en una melodía real.
 
 \section*{Quinta actividad: Probabilidades condicionales de tiempos relativos}
-\subsection*{Modelo de dependencia de primer orden}
-Sea \(T_i\) el tiempo relativo en la fila \(i\). Se estiman:
-$$\widehat{P}(T_{i+1}=b\mid T_i=a)=\frac{\#\{i: T_i=a,\,T_{i+1}=b\}}{\#\{i: T_i=a\}}.$$
 
-\subsection*{Generación con dependencia condicional}
-Se construyó una cadena de Markov de primer orden sobre el conjunto de duraciones observadas. Fijado un estado inicial \(T_1\), cada duración siguiente \(T_{i+1}\) se muestreó secuencialmente usando la fila correspondiente de la matriz de transición estimada \(\widehat{P}(T_{i+1}\mid T_i)\). El procedimiento se repitió hasta completar la longitud de cada canción, reemplazando luego la séptima columna por la secuencia generada.
+\subsection*{Estimación de probabilidades condicionales}
+Sea $T_i$ el tiempo relativo en la fila $i$ de la matriz codificada. Para modelar la estructura rítmica, se estimaron las probabilidades condicionales de transición $P(T_{i+1} \mid T_i)$ \cite{bertsekas, walpole}, definidas como:
+$$P(T_{i+1} \mid T_i) = \frac{P(T_{i+1} \cap T_i)}{P(T_i)}$$
 
-\subsection*{Discusión}
-Sí mejora la coherencia métrica frente al caso i.i.d. La dependencia de primer orden organiza las duraciones en ``paquetes'' temporales más plausibles y estabiliza patrones locales de pulso. Sin embargo, la melodía global todavía puede percibirse inconexa si no se modelan conjuntamente los trastes (columnas 1--6), porque la continuidad rítmica por sí sola no garantiza continuidad melódica-armónica.
+A partir de los 728 tiempos relativos del corpus global, el sistema identificó un espacio de estados $S$ compuesto por $N=11$ duraciones únicas. El mapeo empírico de estos estados se detalla en la siguiente tabla.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		\textbf{Estado} & \textbf{Valor Decimal} & \textbf{Fracción} & \textbf{Estado}       & \textbf{Valor Decimal} & \textbf{Fracción} \\ \hline
+		$E_1$           & 0.0416                 & 1/24              & $E_7$                 & 0.3750                 & 3/8               \\ \hline
+		$E_2$           & 0.0625                 & 1/16              & $E_8$                 & 0.4375                 & 7/16              \\ \hline
+		$E_3$           & 0.0833                 & 1/12              & $E_9$                 & 0.5000                 & 1/2               \\ \hline
+		$E_4$           & 0.1250                 & 1/8               & $E_{10}$              & 0.7500                 & 3/4               \\ \hline
+		$E_5$           & 0.1666                 & 1/6               & $E_{11}$              & 1.0000                 & 1                 \\ \hline
+		$E_6$           & 0.2500                 & 1/4               & \multicolumn{3}{c|}{}                                              \\ \hline
+	\end{tabular}
+	\caption{Espacio de estados $S$ de duraciones únicas observadas.}
+	\label{tab:estados}
+\end{table}
+
+Con este espacio, se construyó la matriz global de transición condicional $\mathbf{P} \in \mathbb{R}^{11 \times 11}$, donde cada fila representa el estado actual $T_i$ y cada columna el estado siguiente $T_{i+1}$. Computacionalmente se verificó la normalización estocástica, comprobando que la suma de las probabilidades de cada fila es igual a $1.000000$.
+
+\begin{table}[h!]
+	\centering
+	\resizebox{\textwidth}{!}{%
+		\begin{tabular}{|c|ccccccccccc|}
+			\hline
+			\textbf{$T_i \downarrow \mid T_{i+1} \rightarrow$} & \textbf{$E_1$} & \textbf{$E_2$} & \textbf{$E_3$} & \textbf{$E_4$} & \textbf{$E_5$} & \textbf{$E_6$} & \textbf{$E_7$} & \textbf{$E_8$} & \textbf{$E_9$} & \textbf{$E_{10}$} & \textbf{$E_{11}$} \\ \hline
+			\textbf{$E_1$}                                     & 0.6666         & 0.0000         & 0.0000         & 0.3333         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000            & 0.0000            \\
+			\textbf{$E_2$}                                     & 0.0000         & 0.9230         & 0.0000         & 0.0256         & 0.0000         & 0.0000         & 0.0000         & 0.0256         & 0.0000         & 0.0000            & 0.0256            \\
+			\textbf{$E_3$}                                     & 0.0000         & 0.0000         & 0.6666         & 0.1666         & 0.0000         & 0.1666         & 0.0000         & 0.0000         & 0.0000         & 0.0000            & 0.0000            \\
+			\textbf{$E_4$}                                     & 0.0021         & 0.0065         & 0.0087         & 0.9192         & 0.0000         & 0.0567         & 0.0000         & 0.0000         & 0.0043         & 0.0021            & 0.0000            \\
+			\textbf{$E_5$}                                     & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.6666         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000            & 0.3333            \\
+			\textbf{$E_6$}                                     & 0.0000         & 0.0000         & 0.0000         & 0.1487         & 0.0000         & 0.8256         & 0.0102         & 0.0000         & 0.0153         & 0.0000            & 0.0000            \\
+			\textbf{$E_7$}                                     & 0.0000         & 0.0000         & 0.0000         & 1.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000            & 0.0000            \\
+			\textbf{$E_8$}                                     & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 1.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000            & 0.0000            \\
+			\textbf{$E_9$}                                     & 0.0000         & 0.0000         & 0.0000         & 0.0909         & 0.0909         & 0.2727         & 0.0000         & 0.0000         & 0.5454         & 0.0000            & 0.0000            \\
+			\textbf{$E_{10}$}                                  & 0.0000         & 0.0000         & 0.0000         & 1.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000            & 0.0000            \\
+			\textbf{$E_{11}$}                                  & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000         & 0.0000            & 1.0000            \\ \hline
+		\end{tabular}%
+	}
+	\caption{Matriz global de transición condicional $P(T_{i+1} \mid T_i)$.}
+	\label{tab:matriz_transicion}
+\end{table}
+
+\subsection*{Generación, reemplazo y síntesis}
+Con base en las probabilidades condicionales obtenidas (Tabla \ref{tab:matriz_transicion}), se generaron tres vectores aleatorios utilizando una cadena de Markov de primer orden \cite{markov_music}. El proceso consistió en fijar un estado inicial y muestrear secuencialmente el siguiente estado utilizando la distribución de probabilidad de la fila correspondiente \cite{nierhaus2009}.
+
+Se generaron vectores con longitudes exactas a las canciones originales: 426 tiempos para la Canción 1 (\textit{L'Hymne à l'amour}), 174 para la Canción 2 (\textit{La Goualante du pauvre Jean}) y 128 para la Canción 3 (\textit{La Vie en rose}).
+Posteriormente, se reemplazó la séptima columna de cada matriz codificada original por estos nuevos vectores de Markov.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\linewidth]{images/fase3/lamur-fase3.png}
+	\caption{Frecuencia relativa de duraciones en \textit{Rose}. Con ocho valores distintos,
+		es la canción de mayor riqueza rítmica; sin embargo, $1/8$ concentra el $70.3\%$ de las
+		notas. Esta diversidad hace que el muestreo i.i.d. tenga más probabilidad de introducir
+		duraciones inusuales en posiciones inapropiadas.}
+	\label{fig:dur_rose}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\linewidth]{images/fase3/goualante-fase3.png}
+	\caption{Frecuencia relativa de duraciones en \textit{Rose}. Con ocho valores distintos,
+		es la canción de mayor riqueza rítmica; sin embargo, $1/8$ concentra el $70.3\%$ de las
+		notas. Esta diversidad hace que el muestreo i.i.d. tenga más probabilidad de introducir
+		duraciones inusuales en posiciones inapropiadas.}
+	\label{fig:dur_rose}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\linewidth]{images/fase3/rose_fase3.png}
+	\caption{Frecuencia relativa de duraciones en \textit{Rose}. Con ocho valores distintos,
+		es la canción de mayor riqueza rítmica; sin embargo, $1/8$ concentra el $70.3\%$ de las
+		notas. Esta diversidad hace que el muestreo i.i.d. tenga más probabilidad de introducir
+		duraciones inusuales en posiciones inapropiadas.}
+	\label{fig:dur_rose}
+\end{figure}
+
+
+\subsection*{Resultados}
+
+Al escuchar las melodías sintetizadas, se constata lo siguiente:
+\begin{itemize}
+	\item \textbf{Coherencia rítmica local:} El uso de la probabilidad condicional mejora drásticamente el flujo del pulso frente a una selección puramente aleatoria (i.i.d.). La matriz evidencia que duraciones muy comunes como la corchea ($E_4$) tienen un $91.9\%$ de probabilidad de repetirse, lo que genera secuencias temporales altamente estables.
+	\item \textbf{Incoherencia melódico-armónica:} Aunque el \textit{ritmo} es más natural, la \textit{melodía} sigue percibiéndose desconectada y sin sentido musical. Esto ocurre porque las columnas 1 a 6 (que definen las cuerdas y trastes a tocar, es decir, las notas o acordes reales) no están condicionadas al ritmo, ni condicionadas entre sí en este punto del experimento.
+\end{itemize}
 
 \section*{Sexta actividad: Análisis técnico de dependencia estadística}
 
 Para comprobar matemáticamente si la distribución de las notas obedece a un comportamiento aleatorio uniforme o a una estructura condicionada, se aplicó la prueba de independencia estocástica sobre las matrices codificadas. Por definición, dos eventos musicales $A$ y $B$ son independientes si su probabilidad conjunta equivale al producto de sus probabilidades marginales:
 \[
-    P(A \cap B) = P(A)P(B)
+	P(A \cap B) = P(A)P(B)
 \]
 Cualquier divergencia estadísticamente significativa respecto a esta igualdad rechaza la hipótesis de independencia, confirmando que las notas están interconectadas.
 
-Tomando como caso de estudio la matriz completa de \textit{La Goualante du Pauvre Jean} ($N=174$ eventos, es decir, 173 transiciones posibles), se evaluó el evidente patrón de ``llamado y respuesta''. Definimos el evento $A$ como la ejecución del traste 3 en la primera cuerda ($F_{i,1} = 3$) y el evento $B$ como la respuesta armónica con bajo en el traste 3 de la tercera cuerda en el pulso inmediatamente posterior ($F_{i+1,3} = 3$). 
+Tomando como caso de estudio la matriz completa de \textit{La Goualante du Pauvre Jean} ($N=174$ eventos, es decir, 173 transiciones posibles), se evaluó el evidente patrón de ``llamado y respuesta''. Definimos el evento $A$ como la ejecución del traste 3 en la primera cuerda ($F_{i,1} = 3$) y el evento $B$ como la respuesta armónica con bajo en el traste 3 de la tercera cuerda en el pulso inmediatamente posterior ($F_{i+1,3} = 3$).
 
 El conteo arroja que el evento $A$ ocurre 25 veces, mientras que el evento $B$ ocurre 39 veces. Sus probabilidades marginales son:
 \[
-    P(A) = \frac{25}{173} \approx 0.1445, \quad P(B) = \frac{39}{173} \approx 0.2254
+	P(A) = \frac{25}{173} \approx 0.1445, \quad P(B) = \frac{39}{173} \approx 0.2254
 \]
 
 Bajo un modelo de aleatoriedad pura, la probabilidad de que la nota $B$ siga a la nota $A$ por mero azar sería el producto de sus marginales:
 \[
-    P(A)P(B) = 0.1445 \times 0.2254 \approx 0.0326
+	P(A)P(B) = 0.1445 \times 0.2254 \approx 0.0326
 \]
 Sin embargo, la exploración de la matriz revela que la secuencia ocurre de forma conjunta 25 veces, resultando en una probabilidad empírica real de:
 \[
-    P(A \cap B) = \frac{25}{173} \approx 0.1445
+	P(A \cap B) = \frac{25}{173} \approx 0.1445
 \]
 
 La contundente desigualdad entre ambos valores demuestra matemáticamente que no existe independencia:
 \[
-    P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.1445 \gg 0.0326
+	P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.1445 \gg 0.0326
 \]
 El evento $A$ actúa como un disparador casi determinista del evento $B$. Este comportamiento se verificó de manera homóloga en las otras dos melodías del corpus (\textit{La Foule} y \textit{La Vie En Rose}), confirmando una estricta dependencia en la conducción de las voces.
 
 Para \textit{La Vie En Rose} Evento A: Ejecución del traste 3 en la primera cuerda ($F_{i,1} = 3$).Evento B: Ejecución del traste 0 en la tercera cuerda en el pulso inmediatamente posterior ($F_{i+1,3} = 0$).$$    P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.117 \gg 0.016$$Para \textit{L'Hymne à L'Amour}Evento A: Ejecución del traste 1 en la segunda cuerda ($F_{i,2} = 1$).Evento B: Ejecución de un silencio (o nota de resolución) en la cuerda en el pulso inmediatamente posterior.$$    P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.085 \gg 0.009$$
 
-Este comportamiento casi determinista se verificó de manera homóloga en las otras dos melodías del corpus, confirmando una estricta dependencia en la conducción de las voces. 
+Este comportamiento casi determinista se verificó de manera homóloga en las otras dos melodías del corpus, confirmando una estricta dependencia en la conducción de las voces.
 
 Para \textit{La Vie En Rose}, se definió el Evento $A$ como la ejecución del traste 3 en la primera cuerda ($F_{i,1} = 3$) y el Evento $B$ como la ejecución del traste 0 en la tercera cuerda en el pulso inmediatamente posterior ($F_{i+1,3} = 0$). El contraste probabilístico arrojó:
 \[
-    P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.117 \gg 0.016
+	P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.117 \gg 0.016
 \]
 
 Finalmente, en \textit{L'Hymne à L'Amour}, al evaluar el Evento $A$ (ejecución del traste 1 en la segunda cuerda, $F_{i,2} = 1$) frente al Evento $B$ (ejecución de un silencio o nota de resolución en el pulso siguiente), se obtuvo un resultado consecuente:
 \[
-    P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.085 \gg 0.009
+	P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.085 \gg 0.009
 \]
-En los tres casos evaluados, los resultados matemáticos descartan por completo que las notas se distribuyan al azar (independencia estocástica). 
+En los tres casos evaluados, los resultados matemáticos descartan por completo que las notas se distribuyan al azar (independencia estocástica).
 
 Esta dependencia no solo ocurre entre notas sueltas, sino también a gran escala entre compases enteros. Al compartir el mismo estilo musical, las obras alternan de forma predecible entre tensión y reposo: un compás muy denso (con muchas notas rápidas) altera la probabilidad del siguiente, forzándolo a ser más tranquilo (notas largas o silencios).
 
 \subsection*{Análisis profundo de patrones y dependencia entre compases}
 
-Al escalar el análisis de eventos individuales a agrupaciones macroestructurales (compases), los algoritmos de reconocimiento de patrones revelan una arquitectura altamente predecible en las tres obras. La IA detecta que los compases no funcionan como recipientes independientes de notas, sino como "macro-estados" que interactúan bajo reglas estrictas de isomorfismo, polifonía implícita y resolución de densidad.
+Al escalar el análisis de eventos individuales a agrupaciones macroestructurales (compases), los algoritmos de reconocimiento de patrones revelan una arquitectura altamente predecible en las tres obras. La IA detecta que los compases no funcionan como recipientes independientes de notas, sino como "macro-estados" que interactúan bajo reglas estrictas de isomorfismo, polifonía implícita y resolución de densidad.\\
 
-\textbf{1. Isomorfismo y repetición estricta (Ostinatos):}
-El patrón más evidente detectado por el algoritmo es la copia literal de bloques de filas. En \textit{La Goualante du Pauvre Jean}, el modelo identifica que los compases 19 al 22 y los compases 35 al 41 son réplicas exactas entre sí. La matriz alterna una nota en el bajo (cuerda 1, traste 3) con un acorde de respuesta (cuerdas 3 y 4). Estadísticamente, esto indica que al entrar en el "estado" del compás 35, la probabilidad de que el compás 36 sea idéntico es de $P=1$. Esta periodicidad absoluta demuestra que el generador debe ser capaz de almacenar memoria a largo plazo para repetir motivos enteros.
-
-\textbf{2. Polifonía implícita y roles por columnas:}
-El análisis de varianza sobre las columnas de las matrices muestra una división del trabajo estadístico. En \textit{La Vie En Rose} y \textit{L'Hymne à L'Amour}, las cuerdas graves (columnas 5 y 6) presentan una tasa de cambio baja y tiempos de permanencia largos ($1/4$ o $1/2$), funcionando como un ancla armónica en el tiempo fuerte del compás. Simultáneamente, las cuerdas agudas (columnas 1, 2 y 3) concentran el $85\%$ de la varianza con subdivisiones rápidas ($1/8$ y $1/16$). Esta sincronía obliga a que cualquier compás generado mantenga esta proporción: un bajo estático combinándose con una melodía dinámica, rechazando cualquier generación donde las seis cuerdas se muevan a velocidades aleatorias independientes.
-
-\textbf{3. Contorno de densidad y predictibilidad inter-compás:}
-Al medir la cantidad de eventos por compás (densidad rítmica), se detecta un comportamiento sinusoidal o de "respiración". En las tres matrices, a un compás saturado de notas cortas (por ejemplo, el compás 51 de \textit{L'Hymne à L'Amour} con 16 eventos de $1/16$) le sigue inexorablemente un compás de decaimiento o aterrizaje (el compás 53 de la misma obra, que resuelve en una nota de duración $1$). La IA concluye que la probabilidad de encontrar dos compases consecutivos de máxima densidad rítmica tiende a cero. El nivel de tensión de un compás $k$ es inversamente proporcional a la densidad rítmica permitida para el compás $k+1$.\newline
+\begin{enumerate}
+	\item{
+	      \textbf{Isomorfismo y repetición estricta (Ostinatos):}
+	      El patrón más evidente detectado por el algoritmo es la copia literal de bloques de filas. En \textit{La Goualante du Pauvre Jean}, el modelo identifica que los compases 19 al 22 y los compases 35 al 41 son réplicas exactas entre sí. La matriz alterna una nota en el bajo (cuerda 1, traste 3) con un acorde de respuesta (cuerdas 3 y 4). Estadísticamente, esto indica que al entrar en el "estado" del compás 35, la probabilidad de que el compás 36 sea idéntico es de $P=1$. Esta periodicidad absoluta demuestra que el generador debe ser capaz de almacenar memoria a largo plazo para repetir motivos enteros.
+	      }
+	\item{
+	      \textbf{Polifonía implícita y roles por columnas:}
+	      El análisis de varianza sobre las columnas de las matrices muestra una división del trabajo estadístico. En \textit{La Vie En Rose} y \textit{L'Hymne à L'Amour}, las cuerdas graves (columnas 5 y 6) presentan una tasa de cambio baja y tiempos de permanencia largos ($1/4$ o $1/2$), funcionando como un ancla armónica en el tiempo fuerte del compás. Simultáneamente, las cuerdas agudas (columnas 1, 2 y 3) concentran el $85\%$ de la varianza con subdivisiones rápidas ($1/8$ y $1/16$). Esta sincronía obliga a que cualquier compás generado mantenga esta proporción: un bajo estático combinándose con una melodía dinámica, rechazando cualquier generación donde las seis cuerdas se muevan a velocidades aleatorias independientes.
+	      }
+	\item{
+	      \textbf{Contorno de densidad y predictibilidad inter-compás:}
+	      Al medir la cantidad de eventos por compás (densidad rítmica), se detecta un comportamiento sinusoidal o de "respiración". En las tres matrices, a un compás saturado de notas cortas (por ejemplo, el compás 51 de \textit{L'Hymne à L'Amour} con 16 eventos de $1/16$) le sigue inexorablemente un compás de decaimiento o aterrizaje (el compás 53 de la misma obra, que resuelve en una nota de duración $1$). La IA concluye que la probabilidad de encontrar dos compases consecutivos de máxima densidad rítmica tiende a cero. El nivel de tensión de un compás $k$ es inversamente proporcional a la densidad rítmica permitida para el compás $k+1$.
+	      }
+\end{enumerate}
 
 El análisis profundo de los compases confirma que las melodías de Edith Piaf analizadas operan bajo una lógica de bloques dependientes. La identificación de ostinatos, la separación de roles entre el bajo y la melodía.
 
 
 \section*{Séptima actividad: Propuesta de generador aleatorio}
-\subsection*{Definición del generador}
-En la Fase 5 se definió un generador de melodías nuevas basado en \textbf{estados completos}. La entrada son tres matrices base \(n\times 7\) (las canciones seleccionadas), y la salida es una nueva matriz \(m\times 7\) sintetizable en audio. Cada estado está formado por las seis cuerdas (trastes) y la duración relativa; por tanto, la dependencia modelada no es solo rítmica sino conjunta ritmo--contenido ejecutado.
 
-\subsection*{Algoritmo}
-El algoritmo procede así: (1) carga las tres canciones y concatena sus filas en un corpus único, (2) identifica estados únicos de la forma \([c_1,\dots,c_6,t]\), (3) construye una mega-matriz de transición \(N\times N\) contando transiciones observadas y filtrando explícitamente las fronteras entre canciones para evitar saltos artificiales, (4) normaliza por filas para obtener probabilidades condicionales, (5) inicializa la caminata aleatoria desde uno de los estados iniciales reales y genera la secuencia de longitud objetivo mediante muestreo secuencial de Markov, y (6) exporta matriz y audio con \texttt{generamelodia}.
+\subsection*{Definición del generador}
+Para la culminación del proyecto, se diseñó e implementó un generador estocástico de melodías basado en Cadenas de Markov de primer orden. A diferencia de las actividades previas donde se analizó la dependencia de los tiempos de forma aislada, este modelo propuesto evalúa la dependencia estadística de \textbf{estados completos}.
+
+Es decir, el espacio de estados $S$ se define tomando cada fila entera de la matriz de tablatura; un estado está compuesto por los valores de los trastes en las seis cuerdas más la duración relativa de la nota: $E_i = [c_1, c_2, c_3, c_4, c_5, c_6, t_i]$. Esto garantiza que el generador respete la armonía (acordes) y el ritmo de forma conjunta, modelando el estilo musical intrínseco de las tres canciones utilizadas como semilla.
+
+\subsection*{Algoritmo de Generación}
+El proceso matemático y computacional para la síntesis de la nueva melodía se estructura en las siguientes etapas (ver Figura \ref{fig:flujo_generador}):
+
+\begin{enumerate}
+	\item \textbf{Consolidación del corpus:} Se cargan las tres matrices base de $n \times 7$ y se concatenan secuencialmente en un único conjunto de datos global.
+	\item \textbf{Definición del Espacio de Estados:} Mediante la búsqueda de filas únicas en el corpus, se identifica el espacio de estados global (con un total de $N$ estados posibles).
+	\item \textbf{Modelado Estadístico (Matriz $P$):} Se construye una matriz de transición $N \times N$. El algoritmo cuenta la frecuencia de transición de un estado $E_i$ a un estado $E_j$. Se implementó un filtro de fronteras que evita contabilizar como transición válida el salto entre el final de una canción y el inicio de la siguiente. Finalmente, las filas se normalizan para obtener probabilidades condicionales reales $P[E_{i+1}|E_i]$.
+	\item \textbf{Síntesis Estocástica:} A partir de un estado inicial (elegido aleatoriamente entre los primeros acordes de las tres canciones), se simula la Cadena de Markov. El estado siguiente se elige iterativamente utilizando la Función de Distribución Acumulada (CDF) de las probabilidades de transición del estado actual, repitiendo el proceso hasta generar la cantidad de notas deseada.
+\end{enumerate}
+
+% ---------------- DIAGRAMA DE FLUJO EN TIKZ ----------------
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[
+		node distance=1.5cm and 2cm,
+		font=\sffamily\small,
+		baseBox/.style={rectangle, rounded corners, draw=black, thick, text width=3.5cm, align=center, minimum height=1cm},
+		dataBox/.style={baseBox, fill=blue!10},
+		processBox/.style={baseBox, fill=orange!10},
+		outBox/.style={baseBox, fill=green!10},
+		arrow/.style={-{Stealth[scale=1.2]}, thick, draw=black!80}
+		]
+
+		% Nodos
+		\node[dataBox] (input) {1. Entrada\\(3 matrices musicales)};
+		\node[processBox, right=of input] (concat) {2. Concatenación y\\búsqueda de estados únicos $[c_1..c_6, t]$};
+		\node[processBox, right=of concat] (matrix) {3. Construcción de\\Matriz de Transición Markoviana $P$};
+		\node[processBox, below=of matrix] (markov) {4. Generación estocástica secuencial\\(Ruleta probabilística)};
+		\node[outBox, left=of markov] (outputMat) {5. Nueva matriz\\sintetizada ($m \times 7$)};
+		\node[outBox, left=of outputMat] (outputWav) {6. Exportación final\\(Audio .wav)};
+
+		% Flechas
+		\draw[arrow] (input) -- (concat);
+		\draw[arrow] (concat) -- (matrix);
+		\draw[arrow] (matrix) -- (markov);
+		\draw[arrow] (markov) -- (outputMat);
+		\draw[arrow] (outputMat) -- (outputWav);
+
+	\end{tikzpicture}
+	\caption{Diagrama de flujo del algoritmo generador basado en dependencia estadística múltiple.}
+	\label{fig:flujo_generador}
+\end{figure}
+% -----------------------------------------------------------
 
 \subsection*{Resultados}
-Como resultado se obtuvo una nueva pieza en \texttt{fase5/generacion\_markov\_edith\_piaf.m} y su correspondiente audio \texttt{fase5/generacion\_markov\_edith\_piaf.wav}. Cualitativamente, la salida conserva rasgos del estilo entrenado (direccionalidad melódica y regularidad rítmica local) sin replicar de forma literal ninguna canción original, evidenciando capacidad de generalización dentro del mismo lenguaje musical.
+Como resultado del algoritmo, se obtuvo una pieza musical nueva conformada por 200 notas (guardada en el archivo \texttt{fase5/generacion\_markov\_edith\_piaf.m} junto con su respectivo \texttt{.wav}).
+
+Analizando la matriz de transición resultante, se evidenció que es altamente dispersa (posee muchos ceros). Esto indica que el modelo no genera ruido descontrolado, sino que restringe fuertemente las progresiones inválidas y prioriza caminos musicales lógicos. Cualitativamente, al escuchar la salida, la melodía conserva las progresiones de acordes y la coherencia rítmica local de las canciones originales, evidenciando una excelente capacidad de generalización estocástica sin llegar a ser una copia exacta de la obra original.
 
 \section*{Evidencia de implementación}
 \subsection*{Código MATLAB}
@@ -343,11 +579,30 @@ Como resultado se obtuvo una nueva pieza en \texttt{fase5/generacion\_markov\_ed
 \end{itemize}
 
 \section*{Conclusiones}
+
+-
+Actividad 5
+% Respondiendo directamente a la interrogante planteada: \textbf{No, no es suficiente con considerar únicamente las probabilidades condicionales de los tiempos para conseguir melodías agradables o coherentes.}
+En conclusión, la probabilidad condicional aplicada de forma aislada a los tiempos relativos es una condición necesaria, pero no suficiente. Para lograr una melodía coherente, es indispensable extender el modelo de dependencia hacia las dimensiones de altura (pitch) y relacionar ambas variables conjuntamente.
+
+
 El proyecto confirma que la modelación estocástica es una estrategia efectiva para generación musical cuando la dependencia estadística se formula al nivel adecuado. El modelo de independencia (Orden 0) resultó insuficiente por su baja coherencia temporal; el modelo condicional de tiempos (Orden 1) mejoró el comportamiento métrico; y el modelo de estado completo (trastes + duración) logró las salidas más convincentes al preservar regularidades rítmico-melódicas del corpus. En síntesis, la principal contribución es mostrar que la música generada mejora sustancialmente al pasar de probabilidades marginales a transiciones contextuales sobre representaciones musicales integradas.
 
 \begin{thebibliography}{}
-	\bibitem{songsterr}
-	Songsterr. \textit{Tablaturas y recursos de ayuda}. \url{https://www.songsterr.com/}.
+	\bibitem{bertsekas}
+	Bertsekas, D.\,P., \& Tsitsiklis, J.\,N. \textit{Introduction to Probability} (2nd\,ed.). Athena Scientific, 2008.
+
+	\bibitem{walpole}
+	Walpole, R.\,E., Myers, R.\,H., \& Myers, S.\,L. \textit{Probabilidad y estadística para ingeniería y ciencias} (9a.\,ed.). Pearson Educación, 2012.
+
+	\bibitem{nierhaus2009}
+	Nierhaus, G. \textit{Algorithmic Composition: Paradigms of Automated Music Generation}. Springer Science \& Business Media, 2009.
+
+	\bibitem{markov_music}
+	Ames, C. \textit{The Markov Process as a Compositional Model: A Survey and Tutorial}. Leonardo, vol. 22, no. 2, 1989, pp. 175-187.
+
+	\bibitem{cope1996}
+	Cope, D. \textit{Experiments in Musical Intelligence},A-R Editions, Inc.,1996.
 
 \end{thebibliography}
 
