@@ -13,9 +13,9 @@
 \usepackage{hyperref}
 \usepackage{fontawesome5}
 \usepackage[spanish,es-tabla]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
-\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
 
 \geometry{margin=2.5cm}
 
@@ -145,206 +145,276 @@ La extracción inicial se apoyó en utilidades Python para transformar fuentes J
 
 \section*{Cuarta actividad: Estimación de probabilidades en tiempos relativos}
 
-La duración de cada evento musical constituye un evento aleatorio $T_i$. Asumiendo que la duración es independiente con cualquier otro, la probabilidad de que la duración relativa $t$ se estima calculando la frecuencia relativa de ocurrencia a partir de los datos codificados de las melodías \cite{bertsekas, walpole}:
+La duración de cada evento musical constituye un evento aleatorio $T_i$. Asumiendo que los
+eventos son independientes entre sí, la probabilidad de cada evento se estima mediante la
+frecuencia relativa de ocurrencia a partir de los datos codificados de las melodías
+\cite{bertsekas, walpole}:
 
 \[
-	{P}(T_i) = \frac{n}{N}
+	P(T_i) = \frac{n(T_i)}{N}
 \]
 
-Donde:
+\noindent donde:
 \begin{itemize}
-	\item $P(T_i)$: Probabilidad de que un evento musical tenga una duración relativa igual a $t$.
-	\item $n$: Número de veces que un evento musical tuvo una duración relativa igual a $t$.
-	\item $N$: Número total de eventos musicales tocados en la canción.
+	\item $P(T_i)$: probabilidad de que ocurra el evento aleatorio $T_i$.
+	\item $n(T_i)$: número de veces que ocurrió el evento $T_i$ en la canción.
+	\item $N$: número total de eventos musicales en la canción.
 \end{itemize}
 
-\subsection*{Canción 1: Lhymne à lamour}
+% ════════════════════════════════════════════════════════
+\subsection*{Canción 1: L'hymne à l'amour}
 
-Se considera como experimento aleatorio el valor de la duración $t$ de un evento musical de esta canción. Se identifica el siguiente espacio muestral $\Omega$ de nuestro experimento aleatorio:
+Se considera como experimento aleatorio la duración de un evento musical de esta canción.
+Se identifica el siguiente espacio muestral:
 
 \[
-	\Omega = \left\{\frac{1}{24}, \frac{1}{16}, \frac{1}{12}, \frac{1}{8}, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1, \phi\right\}
+	\Omega = \left\{\frac{1}{24},\, \frac{1}{16},\, \frac{1}{12},\, \frac{1}{8},\,
+	\frac{1}{4},\, \frac{1}{2},\, \frac{3}{4},\, 1,\, \phi\right\}
 \]
 
-Se calculan las probabilidades de los eventos unitarios de $\Omega$ teniendo en cuenta la frecuencia relativa de ocurrencias \cite{bertsekas}.
+\noindent donde cada elemento representa una duración relativa posible y $\phi$ representa
+un silencio. Se calculan las probabilidades de los eventos unitarios de $\Omega$ mediante
+la frecuencia relativa de ocurrencias \cite{bertsekas}:
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{@{}llrl@{}}
+	\caption{Distribución de duraciones -- \textit{L'hymne à l'amour} (426 notas).}
+	\label{tab:dur_lamour}
+	\begin{tabular}{cccc}
 		\toprule
-		Conjunto & Duración & Conteo & Probabilidad \\ \midrule
-		$T_1$    & $1/24$   & 3      & 0.0070       \\
-		$T_2$    & $1/16$   & 38     & 0.0892       \\
-		$T_3$    & $1/12$   & 9      & 0.0211       \\
-		$T_4$    & $1/8$    & 358    & 0.8404       \\
-		$T_5$    & $1/4$    & 11     & 0.0258       \\
-		$T_6$    & $1/2$    & 5      & 0.0117       \\
-		$T_7$    & $3/4$    & 1      & 0.0023       \\
-		$T_8$    & $1$      & 1      & 0.0023       \\ \bottomrule
+		Evento & Duración & $n(T_i)$ & $P(T_i)$ \\ \midrule
+		$T_1$  & $1/24$   & 3        & 0.0070   \\
+		$T_2$  & $1/16$   & 38       & 0.0892   \\
+		$T_3$  & $1/12$   & 9        & 0.0211   \\
+		$T_4$  & $1/8$    & 358      & 0.8404   \\
+		$T_5$  & $1/4$    & 11       & 0.0258   \\
+		$T_6$  & $1/2$    & 5        & 0.0117   \\
+		$T_7$  & $3/4$    & 1        & 0.0023   \\
+		$T_8$  & $1$      & 1        & 0.0023   \\ \bottomrule
 	\end{tabular}
-	\caption{Distribución de duraciones -- \textit{Lamour} (426 notas).}
-	\label{tab:placeholder}
 \end{table}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/lamour.png}
-	\caption{Frecuencia relativa de duraciones en \textit{Lamour}. La duración $1/8$ concentra el $84.0\%$ de las notas, siendo la canción con mayor predominio de esta duración en el corpus. La presencia de valores como $1/24$ y $1/12$ introduce subdivisiones más finas que no aparecen en las demás canciones.}
-	\label{fig:dur_foule}
+	\includegraphics[width=0.7\linewidth]{images/lamour.png}
+	\caption{Frecuencia relativa de duraciones en \textit{L'hymne à l'amour}. El evento
+		$T_4$ ($1/8$) concentra el $84.0\%$ de las notas, siendo la canción con mayor
+		predominio de esta duración en el corpus. La presencia de $T_1$ ($1/24$) y $T_3$
+		($1/12$) introduce subdivisiones más finas que no aparecen en las demás canciones.}
+	\label{fig:dur_lamour}
 \end{figure}
 
-
-
+% ════════════════════════════════════════════════════════
 \subsection*{Canción 2: La Goualante du Pauvre Jean}
 
-Se considera como experimento aleatorio el valor de la duración $t$ de un evento musical de esta canción. Se identifica el siguiente espacio muestral $\Omega$ de nuestro experimento aleatorio:
+Se considera como experimento aleatorio la duración de un evento musical de esta canción.
+Se identifica el siguiente espacio muestral:
 
 \[
-	\Omega = \left\{\frac{1}{8}, \frac{1}{4}, \frac{3}{8}, \frac{1}{2}, \phi\right\}
+	\Omega = \left\{\frac{1}{8},\, \frac{1}{4},\, \frac{3}{8},\, \frac{1}{2},\, \phi\right\}
 \]
 
-Se calculan las probabilidades de los eventos unitarios de $\Omega$ teniendo en cuenta la frecuencia relativa de ocurrencias \cite{bertsekas}.
+Se calculan las probabilidades de los eventos unitarios de $\Omega$ mediante la frecuencia
+relativa de ocurrencias \cite{bertsekas}:
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{cc}
-		\toprule
-		Duración & Conteo \\ \midrule
-		$1/8$    & 10     \\
-		$1/4$    & 156    \\
-		$3/8$    & 2      \\
-		$1/2$    & 6      \\ \bottomrule
-	\end{tabular}
-	\caption{Distribución de duraciones -- \textit{Goualante} (174 notas).}
+	\caption{Distribución de duraciones -- \textit{La Goualante du Pauvre Jean} (174 notas).}
 	\label{tab:dur_goualante}
+	\begin{tabular}{cccc}
+		\toprule
+		Evento & Duración & $n(T_i)$ & $P(T_i)$ \\ \midrule
+		$T_1$  & $1/8$    & 10       & 0.0575   \\
+		$T_2$  & $1/4$    & 156      & 0.8966   \\
+		$T_3$  & $3/8$    & 2        & 0.0115   \\
+		$T_4$  & $1/2$    & 6        & 0.0345   \\ \bottomrule
+	\end{tabular}
 \end{table}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/goualante-ind.png}
-	\caption{Frecuencia relativa de duraciones en \textit{Goualante}. Con el $89.7\%$ de
-		las notas en $1/4$, es la canción rítmicamente más uniforme del corpus, lo que facilitará
-		la reproducción de su carácter bajo muestreo i.i.d.}
+	\includegraphics[width=0.7\linewidth]{images/goualante-ind.png}
+	\caption{Frecuencia relativa de duraciones en \textit{La Goualante du Pauvre Jean}.
+		El evento $T_2$ ($1/4$) representa el $89.7\%$ de las notas, siendo la canción
+		rítmicamente más uniforme del corpus, lo que facilitará la reproducción de su
+		carácter bajo muestreo i.i.d.}
 	\label{fig:dur_goualante}
 \end{figure}
 
+% ════════════════════════════════════════════════════════
+\subsection*{Canción 3: La Vie en Rose}
 
-\subsection*{Canción 3: La Vie En Rose}
-
-Se considera como experimento aleatorio el valor de la duración $t$ de un evento musical de esta canción. Se identifica el siguiente espacio muestral $\Omega$ de nuestro experimento aleatorio:
+Se considera como experimento aleatorio la duración de un evento musical de esta canción.
+Se identifica el siguiente espacio muestral:
 
 \[
-	\Omega = \left\{\frac{1}{24}, \frac{1}{16}, \frac{1}{12}, \frac{1}{8}, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1, \phi\right\}
+	\Omega = \left\{\frac{1}{16},\, \frac{1}{12},\, \frac{1}{8},\, \frac{1}{6},\,
+	\frac{1}{4},\, \frac{7}{16},\, \frac{1}{2},\, 1,\, \phi\right\}
 \]
 
-Se calculan las probabilidades de los eventos unitarios de $\Omega$ teniendo en cuenta la frecuencia relativa de ocurrencias \cite{bertsekas}.
+Se calculan las probabilidades de los eventos unitarios de $\Omega$ mediante la frecuencia
+relativa de ocurrencias \cite{bertsekas}:
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{cc}
-		\toprule
-		Duración & Conteo \\ \midrule
-		$1/16$   & 1      \\
-		$1/12$   & 3      \\
-		$1/8$    & 90     \\
-		$1/6$    & 3      \\
-		$1/4$    & 28     \\
-		$7/16$   & 1      \\
-		$1/2$    & 1      \\
-		$1$      & 1      \\ \bottomrule
-	\end{tabular}
-	\caption{Distribución de duraciones -- \textit{Rose} (128 notas).}
+	\caption{Distribución de duraciones -- \textit{La Vie en Rose} (128 notas).}
 	\label{tab:dur_rose}
+	\begin{tabular}{cccc}
+		\toprule
+		Evento & Duración & $n(T_i)$ & $P(T_i)$ \\ \midrule
+		$T_1$  & $1/16$   & 1        & 0.0078   \\
+		$T_2$  & $1/12$   & 3        & 0.0234   \\
+		$T_3$  & $1/8$    & 90       & 0.7031   \\
+		$T_4$  & $1/6$    & 3        & 0.0234   \\
+		$T_5$  & $1/4$    & 28       & 0.2188   \\
+		$T_6$  & $7/16$   & 1        & 0.0078   \\
+		$T_7$  & $1/2$    & 1        & 0.0078   \\
+		$T_8$  & $1$      & 1        & 0.0078   \\ \bottomrule
+	\end{tabular}
 \end{table}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/rose-ind.png}
-	\caption{Frecuencia relativa de duraciones en \textit{Rose}. Con ocho valores distintos,
-		es la canción de mayor riqueza rítmica; sin embargo, $1/8$ concentra el $70.3\%$ de las
-		notas. Esta diversidad hace que el muestreo i.i.d. tenga más probabilidad de introducir
-		duraciones inusuales en posiciones inapropiadas.}
+	\includegraphics[width=0.7\linewidth]{images/rose-ind.png}
+	\caption{Frecuencia relativa de duraciones en \textit{La Vie en Rose}. Con ocho
+		eventos distintos, es la canción de mayor riqueza rítmica; sin embargo, $T_3$
+		($1/8$) concentra el $70.3\%$ de las notas. Esta diversidad hace que el muestreo
+		i.i.d.\ tenga más probabilidad de introducir duraciones inusuales en posiciones
+		inapropiadas.}
 	\label{fig:dur_rose}
 \end{figure}
 
+% ════════════════════════════════════════════════════════
+\subsection*{Corpus general}
 
-% ── Tablas de conteo ──────────────────────────────────────────────────────────
-
-\subsection*{Corpus General}
-
-Se considera como experimento aleatorio el valor de la duración $t$ de un evento musical de esta canción. Se identifica el siguiente espacio muestral $\Omega$ de nuestro experimento aleatorio:
+Se considera como experimento aleatorio la duración de un evento musical sobre el conjunto
+completo de las tres canciones. El espacio muestral agregado es:
 
 \[
-	\Omega = \left\{\frac{1}{24}, \frac{1}{16}, \frac{1}{12}, \frac{1}{8}, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1, \phi\right\}
+	\Omega = \left\{\frac{1}{24},\, \frac{1}{16},\, \frac{1}{12},\, \frac{1}{8},\,
+	\frac{1}{6},\, \frac{1}{4},\, \frac{3}{8},\, \frac{7}{16},\,
+	\frac{1}{2},\, \frac{3}{4},\, 1,\, \phi\right\}
 \]
 
-Se calculan las probabilidades de los eventos unitarios de $\Omega$ teniendo en cuenta la frecuencia relativa de ocurrencias \cite{bertsekas}.
-
+Se calculan las probabilidades de los eventos unitarios de $\Omega$ mediante la frecuencia
+relativa de ocurrencias sobre el total de $N = 728$ eventos \cite{bertsekas}:
 
 \begin{table}[H]
 	\centering
-	\begin{tabular}{ccc}
-		\toprule
-		Duración & Conteo & $\widehat{P}(T=t)$ \\ \midrule
-		$1/16$   & 1      & 0.0012             \\
-		$1/12$   & 3      & 0.0036             \\
-		$1/8$    & 376    & 0.4524             \\
-		$1/6$    & 3      & 0.0036             \\
-		$1/4$    & 338    & 0.4067             \\
-		$3/8$    & 40     & 0.0481             \\
-		$7/16$   & 1      & 0.0012             \\
-		$1/2$    & 17     & 0.0205             \\
-		$3/4$    & 51     & 0.0614             \\
-		$1$      & 1      & 0.0012             \\ \bottomrule
-	\end{tabular}
-	\caption{Distribución marginal empírica global $\widehat{P}(T=t)$ sobre las tres canciones ($N = 831$).}
+	\caption{Distribución de probabilidades sobre el corpus completo ($N = 728$).}
 	\label{tab:dur_general}
+	\begin{tabular}{cccc}
+		\toprule
+		Evento   & Duración & $n(T_i)$ & $P(T_i)$ \\ \midrule
+		$T_1$    & $1/24$   & 3        & 0.0041   \\
+		$T_2$    & $1/16$   & 39       & 0.0536   \\
+		$T_3$    & $1/12$   & 12       & 0.0165   \\
+		$T_4$    & $1/8$    & 458      & 0.6291   \\
+		$T_5$    & $1/6$    & 3        & 0.0041   \\
+		$T_6$    & $1/4$    & 195      & 0.2679   \\
+		$T_7$    & $3/8$    & 2        & 0.0027   \\
+		$T_8$    & $7/16$   & 1        & 0.0014   \\
+		$T_9$    & $1/2$    & 12       & 0.0165   \\
+		$T_{10}$ & $3/4$    & 1        & 0.0014   \\
+		$T_{11}$ & $1$      & 2        & 0.0027   \\ \bottomrule
+	\end{tabular}
 \end{table}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/general-ind.png}
-	\caption{Distribución marginal empírica $\widehat{P}(T=t)$ sobre el corpus completo
-		($N=831$). La concentración en $1/8$ y $1/4$ implica que el muestreo i.i.d. reproducirá
-		razonablemente la densidad global de duraciones, aunque sin garantizar ninguna estructura
-		secuencial.}
+	\includegraphics[width=0.7\linewidth]{images/general_ind.png}
+	\caption{Frecuencia relativa de duraciones sobre el corpus completo ($N = 728$).
+		El evento $T_4$ ($1/8$) domina con el $62.9\%$ de las notas, seguido de $T_6$ ($1/4$)
+		con el $26.8\%$. Ambos eventos acumulan conjuntamente el $89.7\%$ del corpus,
+		constituyendo la base de la distribución utilizada para el muestreo i.i.d.}
 	\label{fig:dur_general}
 \end{figure}
 
 % ── Figuras ───────────────────────────────────────────────────────────────────
 
+Estos resultados del corpus general nos permiten determinar los vectores $x$ y $p$ para, mediante el uso de la transformada inversa, calcular el vector de tiempo que será reemplazado en la melodía.
 
 
+\subsection*{Generación aleatoria i.i.d.\ de tiempos}
 
+Esta estimación empírica, resumida por canción en las
+Tablas~\ref{tab:dur_lamour}--\ref{tab:dur_rose} y de forma agregada en la
+Tabla~\ref{tab:dur_general}, revela que los eventos $T_4$ ($1/8$) y $T_6$ ($1/4$)
+concentran conjuntamente el $85.9\%$ de las notas del corpus
+(Figura~\ref{fig:dur_general}), lo que anticipa que cualquier muestreo basado en esta
+distribución tenderá a producir secuencias dominadas por estos dos valores.
 
-
-
-
-Estos resultados permiten determinar los vectores $x$ y $p$ para, mediante el uso de la transformada inversa, calcular el vector de probabilidad que será remplazado en la melodía.
+A partir de los resultados del corpus general se construyen los vectores $x$ y $p$
+necesarios para aplicar la transformada inversa \cite{bertsekas}. El vector $x$ contiene
+los valores del espacio muestral $\Omega$ y el vector $p$ sus probabilidades asociadas
+$P(T_i)$:
 
 \[
-	x = \left[ \frac{1}{24}, \frac{1}{16}, \frac{1}{12}, \frac{1}{8}, \frac{1}{4}, \frac{1}{2}, \frac{3}{4}, 1 \right]
+	x = \left[\frac{1}{24},\ \frac{1}{16},\ \frac{1}{12},\ \frac{1}{8},\ \frac{1}{6},\
+		\frac{1}{4},\ \frac{3}{8},\ \frac{7}{16},\ \frac{1}{2},\ \frac{3}{4},\ 1\right]
+\]
+\[
+	p = \left[0.0041,\ 0.0536,\ 0.0165,\ 0.6291,\ 0.0041,\ 0.2679,\ 0.0027,\ 0.0014,\
+		0.0165,\ 0.0014,\ 0.0027\right]
 \]
 
-
-\subsection*{BLA BLA BLA PARA FINALIZAR LA CREACIÓN DE LAS CANCIONES}
-Esta estimación empírica, resumida por canción en las Tablas~\ref{tab:dur_foule}--\ref{tab:dur_rose}
-y de forma agregada en la Tabla~\ref{tab:dur_general}, revela que las duraciones $1/8$ y $1/4$
-concentran el $85.9\%$ de las notas del corpus (Figura~\ref{fig:dur_general}), lo que anticipa
-que cualquier muestreo basado en esta distribución tenderá a producir secuencias dominadas por
-estos dos valores.
-
-Con esta distribución se generó, para cada canción, un nuevo vector temporal de longitud idéntica
-al original mediante muestreo i.i.d., reemplazando únicamente la séptima columna de cada
-matriz y preservando intactos los trastes (columnas 1--6). El objetivo es aislar el efecto
-de asumir independencia temporal: ¿es suficiente con respetar las frecuencias globales para
-obtener melodías coherentes?
+Con estos vectores se generó, para cada canción, un nuevo vector temporal de longitud
+idéntica al original mediante muestreo i.i.d., reemplazando únicamente la séptima columna
+de cada matriz y preservando intactos los trastes en las columnas 1--6. Bajo esta hipótesis,
+cada duración se sortea de forma independiente con probabilidad $P(T_i)$, sin tener en
+cuenta la nota que la precede ni la que la sucede.
 
 \subsection*{Resultados}
-Aunque el muestreo i.i.d.\ respeta las frecuencias globales de duración,
-ignora la dependencia entre eventos consecutivos y el contexto de frase musical. En la
-práctica, esto produce secuencias arrítmicas o inestables, con acentos poco naturales y
-sensación de caos temporal, debido a que se pierde la continuidad estructural que organiza motivos y respiración métrica en una melodía real.
+
+Las Figuras~\ref{fig:comp_goualante}--\ref{fig:comp_rose} comparan, para los primeros 50 eventos musicales de cada canción, la secuencia temporal original con la generada por muestreo i.i.d. A simple
+vista se aprecia que la señal generada es considerablemente más errática: alterna de forma
+brusca entre duraciones cortas y largas sin ningún patrón reconocible, mientras que la
+original mantiene eventos musicales de duración homogénea.
+
+Un aspecto relevante es que el muestreo se realizó con la distribución del corpus
+general, no con la distribución individual de cada canción. En consecuencia, \textit{La Goualante du Pauvre Jean}, cuyo original concentra el $89.7\%$ de sus notas en $1/4$, recibe una melodía generada donde $1/8$ domina con
+$62.9\%$, distorsionando completamente su identidad rítmica.
+
+Adicionalmente, al escuchar las melodías generadas se evidencia la ausencia total de coherencia expresiva. Dado que únicamente se reemplaza la séptima columna (duraciones) y se conservan los trastes originales, el resultado es una secuencia de notas correctas en altura pero con un ritmo caótico, sin patrones reconocibles.
+
+Esto se explica porque el muestreo i.i.d.\ trata cada evento como independiente del
+anterior, destruyendo por completo la estructura de dependencia entre eventos consecutivos.
+La hipótesis de independencia es, por tanto, insuficiente para reproducir el carácter
+rítmico de las canciones originales, lo que motiva considerar modelos que incorporen
+dependencia entre eventos consecutivos.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/comp_goualante.png}
+	\caption{Comparación de la secuencia temporal original vs.\ generada por muestreo
+		i.i.d.\ en \textit{La Goualante du Pauvre Jean} (primeras 50 notas). El original
+		es casi constante en $1/4$ ($T_2$, 89.7\%), mientras que el generado oscila
+		erráticamente entre $1/8$ y $1/4$, reflejando la distribución del corpus general
+		en lugar de la individual de la canción.}
+	\label{fig:comp_goualante}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/comp_lamour.png}
+	\caption{Comparación de la secuencia temporal original vs.\ generada por muestreo
+		i.i.d.\ en \textit{L'hymne à l'amour} (primeras 50 notas). El original permanece
+		casi constante en $1/8$ ($T_4$, 84.0\%), en tanto que el generado introduce
+		variaciones abruptas con apariciones frecuentes de $1/4$ y valores menos comunes
+		como $1/16$ o $1/2$, que no corresponden al patrón rítmico de esta pieza.}
+	\label{fig:comp_lamour}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/comp_rose.png}
+	\caption{Comparación de la secuencia temporal original vs.\ generada por muestreo
+		i.i.d.\ en \textit{La Vie en Rose} (primeras 50 notas). Al ser la canción con mayor
+		riqueza rítmica del corpus, la diferencia entre original y generado es menos
+		pronunciada visualmente; sin embargo, el generado carece de la estructura secuencial
+		que organiza los motivos de la pieza original.}
+	\label{fig:comp_rose}
+\end{figure}
 
 \section*{Quinta actividad: Probabilidades condicionales de tiempos relativos}
 
@@ -403,32 +473,23 @@ Posteriormente, se reemplazó la séptima columna de cada matriz codificada orig
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/fase3/lamur-fase3.png}
-	\caption{Frecuencia relativa de duraciones en \textit{Rose}. Con ocho valores distintos,
-		es la canción de mayor riqueza rítmica; sin embargo, $1/8$ concentra el $70.3\%$ de las
-		notas. Esta diversidad hace que el muestreo i.i.d. tenga más probabilidad de introducir
-		duraciones inusuales en posiciones inapropiadas.}
-	\label{fig:dur_rose}
+	\includegraphics[width=0.8\linewidth]{imagenes/actividad5/act5_1_heatmap_markov.png}
+	\caption{Mapa de calor de la Matriz de Transición Condicional de tiempos (Markov de primer orden). La diagonal principal resalta fuertemente, evidenciando que ciertos tiempos (como $1/8$) tienen una alta probabilidad de repetirse a sí mismos.}
+	\label{fig:act5_heatmap}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/fase3/goualante-fase3.png}
-	\caption{Frecuencia relativa de duraciones en \textit{Rose}. Con ocho valores distintos,
-		es la canción de mayor riqueza rítmica; sin embargo, $1/8$ concentra el $70.3\%$ de las
-		notas. Esta diversidad hace que el muestreo i.i.d. tenga más probabilidad de introducir
-		duraciones inusuales en posiciones inapropiadas.}
-	\label{fig:dur_rose}
+	\includegraphics[width=0.8\linewidth]{imagenes/actividad5/act5_4_grafo_dirigido.png}
+	\caption{Grafo dirigido de red (Markov Network) representando las transiciones de tiempos relativos con probabilidad $P > 0.05$. El nodo correspondiente a $0.125$ ($1/8$) actúa como un atractor central en la topología de la cadena.}
+	\label{fig:act5_grafo}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.75\linewidth]{images/fase3/rose_fase3.png}
-	\caption{Frecuencia relativa de duraciones en \textit{Rose}. Con ocho valores distintos,
-		es la canción de mayor riqueza rítmica; sin embargo, $1/8$ concentra el $70.3\%$ de las
-		notas. Esta diversidad hace que el muestreo i.i.d. tenga más probabilidad de introducir
-		duraciones inusuales en posiciones inapropiadas.}
-	\label{fig:dur_rose}
+	\includegraphics[width=0.9\linewidth]{imagenes/actividad5/act5_3_comparacion_markov.png}
+	\caption{Comparación de la secuencia temporal original vs.\ la generada por el modelo condicional de Markov en \textit{La Vie en Rose} (primeras 50 notas). A diferencia del muestreo uniforme, el modelo de Markov logra sostener mesetas estables de duración, recuperando la coherencia rítmica local.}
+	\label{fig:act5_comparacion}
 \end{figure}
 
 
@@ -508,7 +569,6 @@ Al escalar el análisis de eventos individuales a agrupaciones macroestructurale
 
 El análisis profundo de los compases confirma que las melodías de Edith Piaf analizadas operan bajo una lógica de bloques dependientes. La identificación de ostinatos, la separación de roles entre el bajo y la melodía.
 
-
 \section*{Séptima actividad: Propuesta de generador aleatorio}
 
 \subsection*{Definición del generador}
@@ -561,32 +621,17 @@ El proceso matemático y computacional para la síntesis de la nueva melodía se
 % -----------------------------------------------------------
 
 \subsection*{Resultados}
-Como resultado del algoritmo, se obtuvo una pieza musical nueva conformada por 200 notas (guardada en el archivo \texttt{fase5/generacion\_markov\_edith\_piaf.m} junto con su respectivo \texttt{.wav}).
+Como resultado del algoritmo, se obtuvo una pieza musical nueva conformada por 200 notas.
 
 Analizando la matriz de transición resultante, se evidenció que es altamente dispersa (posee muchos ceros). Esto indica que el modelo no genera ruido descontrolado, sino que restringe fuertemente las progresiones inválidas y prioriza caminos musicales lógicos. Cualitativamente, al escuchar la salida, la melodía conserva las progresiones de acordes y la coherencia rítmica local de las canciones originales, evidenciando una excelente capacidad de generalización estocástica sin llegar a ser una copia exacta de la obra original.
 
-\section*{Evidencia de implementación}
-\subsection*{Código MATLAB}
-\begin{itemize}
-	\item \texttt{out-song/generamelodia.m}
-	\item \texttt{out-song/acorde.m}
-	\item \texttt{out-song/va.m}
-\end{itemize}
-
-\subsection*{Herramienta Python}
-\begin{itemize}
-	\item \texttt{utils/midi2matlab.py}
-\end{itemize}
-
 \section*{Conclusiones}
 
--
-Actividad 5
-% Respondiendo directamente a la interrogante planteada: \textbf{No, no es suficiente con considerar únicamente las probabilidades condicionales de los tiempos para conseguir melodías agradables o coherentes.}
-En conclusión, la probabilidad condicional aplicada de forma aislada a los tiempos relativos es una condición necesaria, pero no suficiente. Para lograr una melodía coherente, es indispensable extender el modelo de dependencia hacia las dimensiones de altura (pitch) y relacionar ambas variables conjuntamente.
+El desarrollo de este proyecto permite inferir que la música, desde una perspectiva estrictamente probabilística, no puede modelarse como una secuencia de variables aleatorias independientes, debido a que su sintaxis (rítmica y armónica) depende vitalmente de la memoria local del sistema. La notable mejora cualitativa lograda al evolucionar de un modelo de independencia estocástica (Orden 0) a una Cadena de Markov condicional (Orden 1) demuestra empíricamente que la coherencia estética reside en las \textit{probabilidades de transición} y no en las frecuencias absolutas de los eventos aislados. Asimismo, se concluye que tratar el tiempo y la altura (cuerdas/trastes) como procesos estocásticos desvinculados genera disonancias estructurales; la verdadera identidad de un estilo musical sólo emerge cuando ambas dimensiones se entrelazan como un \textit{estado conjunto}, capturando la dependencia multidimensional subyacente.
 
+A partir de estos hallazgos, se propone la aplicación directa de estos modelos matriciales en el diseño de sistemas de audio procesal (generación procedural) para videojuegos, instalaciones artísticas y entornos de realidad virtual. Una matriz de transición de estados completos, finamente extraída de un corpus específico, actúa como un ``motor de improvisación'' capaz de sintetizar atmósferas musicales infinitas y dinámicas que responden al entorno, sin el costo de memoria de almacenar pistas pregrabadas. Por otro lado, desde la perspectiva analítica, las métricas de dependencia cruzada y los grafos dirigidos obtenidos tienen un alto potencial en la musicología computacional, sirviendo como una ``huella dactilar'' biométrica para algoritmos de clasificación de géneros, detección de plagio o verificación de autoría histórica.
 
-El proyecto confirma que la modelación estocástica es una estrategia efectiva para generación musical cuando la dependencia estadística se formula al nivel adecuado. El modelo de independencia (Orden 0) resultó insuficiente por su baja coherencia temporal; el modelo condicional de tiempos (Orden 1) mejoró el comportamiento métrico; y el modelo de estado completo (trastes + duración) logró las salidas más convincentes al preservar regularidades rítmico-melódicas del corpus. En síntesis, la principal contribución es mostrar que la música generada mejora sustancialmente al pasar de probabilidades marginales a transiciones contextuales sobre representaciones musicales integradas.
+Como línea de trabajo futuro, es imprescindible superar las limitaciones inherentes a la propiedad de pérdida de memoria de las Cadenas de Markov de primer orden. Al carecer de contexto histórico profundo, el modelo actual realiza una ``caminata aleatoria'' coherente a corto plazo, pero es incapaz de estructurar formas musicales macro (como estrofa, puente y estribillo). Se proyecta escalar esta arquitectura incorporando Cadenas de Markov de orden superior ($n$-gramas) para encapsular motivos melódicos completos. Finalmente, se sugiere la integración de Modelos Ocultos de Markov (HMM) para desacoplar la progresión armónica (estados latentes) de la ejecución melódica (emisiones observables), sumando también parámetros interpretativos como la intensidad (velocity) y las variaciones sutiles de tempo (rubato) para lograr una síntesis de calidad humana.
 
 \begin{thebibliography}{}
 	\bibitem{bertsekas}
