@@ -551,6 +551,58 @@ La contundente desigualdad entre ambos valores demostró matemáticamente que no
 \[
     P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.1445 \gg 0.0326
 \]
+
+\begin{center}
+    
+\begin{tikzpicture}
+
+    % Definición de radios y distancia entre centros
+    \def\ra{2.8}
+    \def\rb{3.5}
+    \def\d{2.5}
+
+    % Círculo B: Relleno sólido
+    \fill[blue!10] (\d,0) circle (\rb);
+
+    % Círculo A: Patrón de rayas
+    \fill[pattern=north east lines, pattern color=red] (0,0) circle (\ra);
+
+    % Intersección: Superposición de color sólido
+    \begin{scope}
+        \clip (0,0) circle (\ra);
+        \fill[purple!30] (\d,0) circle (\rb);
+    \end{scope}
+    
+    % Contornos gruesos para definir los conjuntos
+    \draw[red, thick] (0,0) circle (\ra);
+    \draw[blue, thick] (\d,0) circle (\rb);
+
+    % Etiqueta: Solo A (Exclusivo)
+    \node[fill=white, draw=red, thick, inner sep=3pt, rounded corners, align=center] at (-1.2, 0) {
+        $A \setminus B$\\
+        $n=0$\\
+        $P = 0$
+    };
+    
+    % Etiqueta: Intersección (A y B)
+    \node[fill=white, draw=purple, thick, inner sep=3pt, rounded corners, align=center] at (\d/2, 0) {
+        $A \cap B$\\
+        $n=25$\\
+        $P \approx 0.1445$
+    };
+
+    % Etiqueta: Solo B (Exclusivo)
+    \node[fill=white, draw=blue, thick, inner sep=3pt, rounded corners, align=center] at (\d+1.5, 0) {
+        $B \setminus A$\\
+        $n=14$\\
+        $P \approx 0.0809$
+    };
+
+    % Títulos generales de los conjuntos
+    \node[text=red!80!black, font=\bfseries] at (0, \ra+0.4) {Conjunto $A$ ($P \approx 0.1445$)};
+    \node[text=blue!80!black, font=\bfseries] at (\d, \rb+0.4) {Conjunto $B$ ($P \approx 0.2254$)};
+\end{tikzpicture}
+\end{center}
 Esto indicó que la ocurrencia del evento $A$ condicionó fuertemente la aparición del evento $B$ en el pulso siguiente. Este patrón de dependencia se verificó de manera homóloga en las otras dos melodías del corpus, confirmando una estricta direccionalidad en la conducción de las voces.
 
 Para \textit{La Vie En Rose}, se definió el Evento $A$ como la ejecución del traste 3 en la primera cuerda ($F_{i,1} = 3$) y el Evento $B$ como la ejecución del traste 0 en la tercera cuerda en el pulso inmediatamente posterior ($F_{j,3} = 0$):
@@ -562,25 +614,6 @@ Para \textit{L'Hymne à L'Amour}, se definió el Evento $A$ como la ejecución d
 \[
     P(A \cap B) \gg P(A)P(B) \quad \Longrightarrow \quad 0.085 \gg 0.009
 \]
-
-\begin{tikzpicture}
-
-    % Conjunto B: Círculo exterior (Mayor probabilidad)
-    % Color azul, fondo sólido claro
-    \filldraw[fill=blue!20, draw=blue, thick] (0,0) circle (4cm);
-    \node[text=blue!80!black, font=\bfseries] at (0, 3.2) {Conjunto $B$ ($n=39, P \approx 0.2254$)};
-
-    % Conjunto A e Intersección: Círculo interior
-    % Patrón de líneas rojas (rayitas) para diferenciarlo
-    \filldraw[pattern=north east lines, pattern color=red, draw=red, thick] (0,-0.5) circle (3cm);
-    
-    % Etiqueta del Conjunto A (Fondo opaco para garantizar legibilidad sobre el patrón)
-    \node[fill=white, draw=black, thick, rounded corners, align=center, inner sep=5pt] at (0,-0.5) {
-        \textbf{Conjunto $A \equiv A \cap B$}\\
-        ($n=25, P \approx 0.1445$)
-    };
-
-\end{tikzpicture}
 
 En los tres casos evaluados, los resultados matemáticos descartaron por completo que las notas se distribuyeran al azar (independencia estocástica).
 
@@ -721,9 +754,6 @@ Como línea de trabajo futuro, es imprescindible superar las limitaciones inhere
 
     \bibitem{markov_music}
     Ames, C. \textit{The Markov Process as a Compositional Model: A Survey and Tutorial}. Leonardo, vol. 22, no. 2, 1989, pp. 175-187.
-
-    \bibitem{cope1996}
-    Cope, D. \textit{Experiments in Musical Intelligence},A-R Editions, Inc.,1996. 
 
 \end{thebibliography}
 
