@@ -1,5 +1,7 @@
 ## Trabajo 1 - Entregado el 26 Marzo
 
+Nota: 4.75
+
 Con los siguientes comentarios del profesor, se reviso el .PDF:
 
 Positivo: Presentación. => Buena repetir para la siguiente expo.
