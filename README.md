@@ -15,6 +15,10 @@
 
 Dentro de este repositorio encontrarás el desarrollo de las tareas, talleres y otras cosas para la materia de HMPMI.
 
+## Para los trabajos en grupo coautoria de
+> Carlos Stiven Mora Hoyos - **20261595003**
+> Sergio Santiago Duarte Rojas - **20261595002**
+
 ---
 <h1>License ⚖️  </h1>
 
