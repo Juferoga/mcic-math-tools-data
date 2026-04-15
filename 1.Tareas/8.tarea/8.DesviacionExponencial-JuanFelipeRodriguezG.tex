@@ -1,0 +1,184 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{geometry}
+
+\geometry{margin=2.5cm}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definición}
+\newtheorem{lemma}{Lema}
+
+\title{Cálculo de la Desviación Estándar de la Distribución Exponencial}
+\author{Juan Felipe Rodríguez G. (20261595004)}
+\date{\today}
+
+\begin{document}
+    \maketitle
+
+    \section*{Contexto del Problema}
+
+    Sea $X$ una variable aleatoria continua que sigue una distribución exponencial con parámetro de tasa $\lambda > 0$. El objetivo de este documento es calcular su desviación estándar $\sigma_X$, desarrollando de forma completa cada momento necesario y, al final, interpretar el significado del resultado obtenido.
+
+    \section*{Fundamentos Teóricos}
+
+    \begin{definition}[Distribución exponencial]
+    Decimos que $X \sim \mathrm{Exp}(\lambda)$, con $\lambda > 0$, si su función de densidad de probabilidad es:
+    \begin{equation} \label{eq:pdf}
+        f(x) =
+        \begin{cases}
+            \lambda e^{-\lambda x}, & x \geq 0, \\[4pt]
+            0,                       & x < 0.
+        \end{cases}
+    \end{equation}
+    \end{definition}
+
+    \begin{definition}[Varianza y desviación estándar]
+    La varianza de una variable aleatoria $X$ se define mediante la identidad de König-Huygens:
+    \begin{equation} \label{eq:varianza}
+        \operatorname{Var}(X) = E[X^2] - \left(E[X]\right)^2,
+    \end{equation}
+    donde $E[X]$ es el primer momento (esperanza) y $E[X^2]$ es el segundo momento. La desviación estándar es la raíz cuadrada no negativa de la varianza:
+    \begin{equation} \label{eq:sigma}
+        \sigma_X = \sqrt{\operatorname{Var}(X)}.
+    \end{equation}
+    \end{definition}
+
+    \begin{definition}[Integración por partes]
+    Para funciones diferenciables $u(x)$ y $v(x)$, se cumple:
+    \begin{equation} \label{eq:parts}
+        \int_a^b u \, dv = \Bigl[ u v \Bigr]_a^b - \int_a^b v \, du.
+    \end{equation}
+    \end{definition}
+
+    \begin{lemma}[Límite fundamental] \label{lem:limite}
+    Para todo entero $n \geq 0$ y todo $\lambda > 0$:
+    \begin{equation}
+        \lim_{x \to \infty} x^n e^{-\lambda x} = 0.
+    \end{equation}
+    \end{lemma}
+
+    \begin{proof}
+    Se aplica la regla de L'Hôpital $n$ veces al cociente $\dfrac{x^n}{e^{\lambda x}}$. El numerador eventualmente se convierte en una constante $n!$, mientras que el denominador siempre contiene $e^{\lambda x}$, que diverge. Por tanto, el límite es $0$.
+    \end{proof}
+
+    \section*{Demostración Paso a Paso}
+
+    \subsection*{Paso 1: Cálculo de la esperanza $E[X]$}
+
+    Partimos de la definición del valor esperado para una variable continua:
+    $$ E[X] = \int_{0}^{\infty} x \, f(x) \, dx = \int_{0}^{\infty} x \, \lambda e^{-\lambda x} \, dx. $$
+
+    Aplicamos integración por partes (\ref{eq:parts}) con:
+    $$ u = x \quad \Rightarrow \quad du = dx, $$
+    $$ dv = \lambda e^{-\lambda x} \, dx \quad \Rightarrow \quad v = -e^{-\lambda x}. $$
+
+    Sustituyendo en (\ref{eq:parts}):
+    \begin{align*}
+        E[X] &= \Bigl[ -x e^{-\lambda x} \Bigr]_0^\infty - \int_{0}^{\infty} (-e^{-\lambda x}) \, dx \\[4pt]
+             &= \Bigl[ -x e^{-\lambda x} \Bigr]_0^\infty + \int_{0}^{\infty} e^{-\lambda x} \, dx.
+    \end{align*}
+
+    Evaluamos el término de frontera. En el límite superior, por el Lema~\ref{lem:limite} con $n=1$, tenemos $\lim_{x \to \infty} x e^{-\lambda x} = 0$. En el límite inferior, $0 \cdot e^{0} = 0$. Por tanto, el término de frontera se anula completamente:
+    $$ \Bigl[ -x e^{-\lambda x} \Bigr]_0^\infty = 0. $$
+
+    La integral restante es directa:
+    $$ \int_{0}^{\infty} e^{-\lambda x} \, dx = \left[ -\frac{1}{\lambda} e^{-\lambda x} \right]_0^\infty = 0 - \left(-\frac{1}{\lambda}\right) = \frac{1}{\lambda}. $$
+
+    En conclusión:
+    \begin{equation} \label{eq:EX}
+        E[X] = \frac{1}{\lambda}.
+    \end{equation}
+
+    \subsection*{Paso 2: Cálculo del segundo momento $E[X^2]$}
+
+    Procedemos de manera análoga:
+    $$ E[X^2] = \int_{0}^{\infty} x^2 \, \lambda e^{-\lambda x} \, dx. $$
+
+    Aplicamos integración por partes con:
+    $$ u = x^2 \quad \Rightarrow \quad du = 2x \, dx, $$
+    $$ dv = \lambda e^{-\lambda x} \, dx \quad \Rightarrow \quad v = -e^{-\lambda x}. $$
+
+    Sustituyendo:
+    \begin{align*}
+        E[X^2] &= \Bigl[ -x^2 e^{-\lambda x} \Bigr]_0^\infty + \int_{0}^{\infty} 2x e^{-\lambda x} \, dx.
+    \end{align*}
+
+    El término de frontera se anula por el Lema~\ref{lem:limite} con $n=2$. Nos queda:
+    $$ E[X^2] = \int_{0}^{\infty} 2x e^{-\lambda x} \, dx. $$
+
+    Para conectar con la esperanza ya calculada, factorizamos y reinsertamos $\lambda$:
+    \begin{align*}
+        E[X^2] &= 2 \int_{0}^{\infty} x e^{-\lambda x} \, dx \\[4pt]
+               &= \frac{2}{\lambda} \int_{0}^{\infty} x \, \lambda e^{-\lambda x} \, dx \\[4pt]
+               &= \frac{2}{\lambda} \, E[X].
+    \end{align*}
+
+    Sustituyendo el resultado (\ref{eq:EX}):
+    \begin{equation} \label{eq:EX2}
+        E[X^2] = \frac{2}{\lambda} \cdot \frac{1}{\lambda} = \frac{2}{\lambda^2}.
+    \end{equation}
+
+    \subsection*{Paso 3: Cálculo de la varianza $\operatorname{Var}(X)$}
+
+    Sustituimos los momentos (\ref{eq:EX}) y (\ref{eq:EX2}) en la fórmula (\ref{eq:varianza}):
+    \begin{align*}
+        \operatorname{Var}(X) &= E[X^2] - \left(E[X]\right)^2 \\[4pt]
+                              &= \frac{2}{\lambda^2} - \left(\frac{1}{\lambda}\right)^2 \\[4pt]
+                              &= \frac{2}{\lambda^2} - \frac{1}{\lambda^2} \\[4pt]
+                              &= \frac{1}{\lambda^2}.
+    \end{align*}
+
+    \subsection*{Paso 4: Cálculo de la desviación estándar $\sigma_X$}
+
+    Aplicando la definición (\ref{eq:sigma}):
+    $$ \sigma_X = \sqrt{\operatorname{Var}(X)} = \sqrt{\frac{1}{\lambda^2}} = \frac{1}{\lambda}. $$
+
+    Dado que $\lambda > 0$, la raíz cuadrada retorna directamente $1/\lambda$ sin necesidad de valor absoluto.
+
+    \begin{flushright}
+        \qedsymbol
+    \end{flushright}
+
+    \section*{Interpretación del Resultado}
+
+    El cálculo nos ha llevado a que la desviación estándar de una distribución exponencial es:
+    $$ \sigma_X = \frac{1}{\lambda}. $$
+
+    Este resultado admite las siguientes interpretaciones:
+
+    \begin{enumerate}
+        \item \textbf{Coincidencia con la media.} Observamos que $\sigma_X = E[X] = \dfrac{1}{\lambda}$. Esto implica que el coeficiente de variación es exactamente $1$:
+        $$ CV = \frac{\sigma_X}{E[X]} = 1. $$
+        En otras palabras, la dispersión de los datos es del mismo orden de magnitud que el valor central. Esta es una propiedad distintiva de la exponencial y no ocurre en distribuciones como la normal, donde media y desviación estándar son parámetros independientes.
+
+        \item \textbf{Un solo parámetro controla todo.} En una distribución normal $N(\mu, \sigma^2)$, existen dos parámetros: uno de localización ($\mu$) y uno de dispersión ($\sigma$). En la exponencial, el único parámetro $\lambda$ determina simultáneamente ambos aspectos. Si $\lambda$ es grande (eventos frecuentes), tanto la media como la dispersión se reducen; si $\lambda$ es pequeño (eventos raros), ambas aumentan.
+
+        \item \textbf{Implicación práctica.} Consideremos el tiempo de espera hasta que llega un cliente a un cajero, modelado con $\lambda = 2$ clientes por minuto. La media es $E[X] = 0.5$ minutos (30 segundos) y la desviación estándar también es $\sigma_X = 0.5$ minutos. Esto significa que es perfectamente plausible observar tiempos de $1.5$ o $2$ minutos, ya que la variabilidad es tan grande como el promedio mismo. La distribución exponencial tiene una cola pesada que permite estas desviaciones significativas.
+
+        \item \textbf{Relación con la propiedad sin memoria.} La igualdad $\sigma_X = E[X]$ es coherente con la propiedad de falta de memoria estudiada en la tarea anterior. Si la distribución no ``recordara'' cuánto tiempo ha transcurrido, no tendría sentido que la dispersión dependiera de un punto de referencia distinto al origen; el proceso se ``reinicia'' constantemente con la misma escala $1/\lambda$.
+    \end{enumerate}
+
+    \section*{Conclusiones}
+
+    \begin{itemize}
+        \item La desviación estándar de $X \sim \mathrm{Exp}(\lambda)$ es $\sigma_X = \dfrac{1}{\lambda}$.
+        \item El cálculo requirió evaluar dos integrales por partes, justificando la anulación de los términos de frontera mediante límites.
+        \item La varianza resultó ser $\operatorname{Var}(X) = \dfrac{1}{\lambda^2}$.
+        \item La igualdad $\sigma_X = E[X]$ (coeficiente de variación unitario) revela que la dispersión es proporcional a la media, lo cual distingue a la exponencial de otras distribuciones continuas.
+        \item Esta propiedad tiene consecuencias prácticas directas: modelar tiempos de espera con una exponencial implica aceptar una variabilidad inherente tan grande como el valor esperado mismo.
+    \end{itemize}
+
+    \begin{thebibliography}{}
+
+    \bibitem{walpole2017}
+    Walpole, R. E., Myers, R. H., Myers, S. L., \& Ye, K. (2017).
+    \textit{Probability and Statistics for Engineers and Scientists} (9th ed.).
+    Pearson.
+
+    \end{thebibliography}
+
+\end{document}
