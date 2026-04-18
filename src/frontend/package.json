@@ -11,7 +11,9 @@
     "axios": "^1.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "recharts": "^2.6.2"
+    "recharts": "^2.6.2",
+    "html-to-image": "^1.10.7",
+    "jspdf": "^2.5.1"
   },
   "devDependencies": {
     "vite": "^4.5.0",
@@ -21,6 +23,7 @@
     "postcss": "^8.4.0",
     "autoprefixer": "^10.4.0",
     "@types/react": "^18.2.14",
-    "@types/react-dom": "^18.2.6"
+    "@types/react-dom": "^18.2.6",
+    "@types/jspdf": "^2.0.1"
   }
 }
