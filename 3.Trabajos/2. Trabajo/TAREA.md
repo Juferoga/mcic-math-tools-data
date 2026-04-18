@@ -1,76 +1,83 @@
 # Enunciado y Rúbrica — Trabajo 2
 
-## Enunciado (PEGA AQUÍ el enunciado tal como lo dejó el profesor)
+## Enunciado (definición del proyecto — extraído de la conversación con el docente / especificación del equipo)
 
-> (Pegar aquí el enunciado literal del profesor. Si ya lo tienes en un PDF o imagen, puedo extraerlo y añadirlo.)
+Actuaremos como ingenieros para desarrollar un proyecto full-stack (Backend en Python/FastAPI, Frontend en React y Core Matemático en MATLAB/Python) cuya tarea central es modelar y simular una cola de Markov (M/M/1/K) variando el parámetro de tráfico A = lambda/mu. Se debe contrastar la simulación empírica frente al modelo analítico (ecuaciones de estado estacionario) y entregar código reproducible y un informe con resultados y discusión.
 
-## Objetivos (resumidos)
+### Requisitos funcionales (resumen)
+- Implementar un motor de simulación por eventos discretos que reciba vectores de `tiempos_entre_arribos` y `tiempos_de_servicio` y devuelva tiempos de espera y la evolución del estado del sistema.
+- Implementar las fórmulas teóricas cerradas para E[Tw] (tiempo medio de espera en cola) y P_k (probabilidad de bloqueo) para M/M/1/K.
+- Generar análisis de sensibilidad variando A = lambda/mu y comparar simulación vs teoría con gráficas.
+- Incluir validación estadística (QQ-plot vs exponencial y histogramas).
+- Exponer la simulación mediante un endpoint POST /simulate (FastAPI) que devuelva coordenadas (X,Y) para graficar.
 
-- Objetivo 1: ...
-- Objetivo 2: ...
+## Especificaciones entregables
+- Código fuente en `src/` (módulos separados: `core/` para dominio matemático, `analysis/` para scripts, `backend/` para API).
+- Documentación técnica y diagrama DDD en `doc/`.
+- Scripts reproducibles para ejecutar análisis y generar figuras (`src/analysis/sensitivity.py`).
+- README y TAREA.md actualizados con instrucciones.
 
-## Entregables (plantilla)
-
-- Informe en PDF (máx 6 páginas) con resultados y discusión.
-- Código fuente reproducible en `src/`.
-- Notebook o scripts para reproducir experimentos.
-- Carpeta organizada: `data/`, `src/`, `doc/`.
-
-## Formato y nomenclatura
-
-- Carpeta del equipo: `equipo-<apellido1>-<apellido2>-...` (p. ej. `equipo-rodriguez-ramirez`).
-- Archivo principal: `trabajo2.pdf`.
-- Incluir un `README` en la raíz del paquete con pasos para reproducir.
-
-## Fecha de entrega
-
-- Fecha límite: `<PEGA_AQUI_LA_FECHA>`
-
-## Rúbrica de evaluación (plantilla — AJUSTAR según el profesor)
-
+## Rúbrica (adaptada al enunciado)
 Total: 100 puntos
 
-1) Contenido y corrección — 40 puntos
-- 36-40: Correcto, completo y sin errores conceptuales.
-- 28-35: Errores menores o falta de profundidad.
-- 0-27: Fallos conceptuales importantes.
+1) Correctitud matemática y modelado — 35 puntos
+- Precisión en las fórmulas y en la implementación (incluye manejo de casos límite).
 
-2) Implementación / Código — 25 puntos
-- 23-25: Código limpio, reproducible, documentado y probado.
-- 15-22: Funcional pero con problemas de estilo o reproducibilidad.
-- 0-14: No funcional o difícil de reproducir.
+2) Calidad del motor de simulación — 25 puntos
+- Código modular, tipado y correctamente documentado; manejo de semillas y reproducibilidad.
 
-3) Experimentos y análisis — 20 puntos
-- 18-20: Análisis sólido, visualizaciones y discusión profunda.
-- 10-17: Análisis aceptable.
-- 0-9: Análisis insuficiente.
+3) Experimentos y comparativa (simulación vs teoría) — 25 puntos
+- Análisis de sensibilidad, gráficas claras, y discusión estadística.
 
-4) Presentación y redacción — 10 puntos
-- 9-10: Excelente redacción, figuras claras y organización.
-- 5-8: Redacción aceptable.
-- 0-4: Pobre presentación.
+4) API y reproducibilidad — 10 puntos
+- Endpoint funcional /simulate; instrucciones para ejecutar el servicio.
 
-5) Colaboración y entrega a tiempo — 5 puntos
-- 5: Entregado a tiempo y buena coordinación.
-- 0-4: Retrasos o problemas de coordinación.
+5) Presentación y documentación — 5 puntos
+- README, doc/ARCHITECTURE.md y comentarios claros.
 
-### Penalizaciones y criterios especiales
-- Penalización por entrega tardía: definir (p. ej. 10% por día calendario).
-- Citas y atribuciones: citar todas las fuentes y datasets.
+## Enunciado técnico detallado (lo que implementó el agente)
 
-## Plan de trabajo inicial (lo que el agente usará para iniciar)
+- Core matemático (Python): `src/core/simulation.py`, `src/core/theory.py`.
+- Análisis y validación: `src/analysis/sensitivity.py`, `src/analysis/validation.py`.
+- Backend (FastAPI): `backend/app.py`.
+- Dependencias: `requirements.txt` (fastapi, uvicorn, numpy, scipy, matplotlib, pydantic).
 
-1. Pegar enunciado real en la sección correspondiente.
-2. Extraer requisitos explícitos (entregables, formatos, fecha, restricciones).
-3. Normalizar y ajustar la rúbrica para sumar 100 puntos según el enunciado.
-4. Crear issues y milestones:
-   - Investigación / lectura (2-3 días)
-   - Implementación / codificación (n días)
-   - Documentación y reporte (n días)
-   - Revisión y entrega (último día)
-5. Generar plantillas: `notebook.ipynb`, `main.py` o `main.tex` según el formato.
-6. Asignar responsables (si me das la lista de integrantes).
+## Cómo ejecutar (entorno de desarrollo)
+
+1. Crear un entorno virtual e instalar dependencias:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+2. Ejecutar el servidor de la API:
+
+```bash
+uvicorn backend.app:app --reload --port 8000
+```
+
+3. Ejecutar el análisis de sensibilidad (genera figuras en `doc/plots` y resultados en `data/`):
+
+```bash
+python -m src.analysis.sensitivity --mu 1.0 --K 10 --sample-size 20000 --replicates 3
+```
+
+## Diseño DDD (breve)
+
+- Bounded Context: `simulación de colas`.
+- Entidades: `Customer` (registros internos), `Server` (estado: libre/ocupado).
+- Servicios de Dominio: `SimulationService` (en `src/core/simulation.py`).
+- DTO / API: request/response en `backend/app.py` (SimRequest / SimResponse).
+- Scripts de Application: `src/analysis/*` orquestan experimentos y validaciones.
+
+## Siguiente paso
+Pega aquí si quieres que:
+- Ajuste la rúbrica con criterios cuantitativos del profesor
+- Genere un notebook de ejemplo (`notebook.ipynb`) con un análisis paso a paso
+- Arme el scaffold del frontend en React que consuma `/simulate`
 
 ---
 
-Cuando pegues el enunciado real, actualizaré `TAREA.md` con los detalles y crearé issues y milestones automáticamente.
+*TAREA.md actualizado automáticamente por Sekmeth con la especificación recibida.*
