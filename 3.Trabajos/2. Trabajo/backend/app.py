@@ -14,11 +14,28 @@ from typing import List, Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import math
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.core.simulation import simulate_from_rates
 
 app = FastAPI(title="MM1K Simulation API", version="0.1")
 
+# ==================== CORS ====================
+origins = [
+    "http://localhost:5173",      # ← Puerto donde corre Vite (frontend)
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",      # por si usas otro puerto
+    # Agrega aquí tu dominio de producción cuando deployes
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,           # o ["*"] para desarrollo (no recomendado en prod)
+    allow_credentials=True,
+    allow_methods=["*"],             # permite GET, POST, PUT, DELETE, OPTIONS, etc.
+    allow_headers=["*"],             # permite todos los headers (Authorization, Content-Type, etc.)
+)
+# =============================================
 
 class SimRequest(BaseModel):
     lam: float = Field(..., gt=0.0, description="Tasa de llegada (lambda)")
