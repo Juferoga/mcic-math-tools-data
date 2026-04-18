@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { SimRequest, SimResponse } from '../api'
 import { simulate } from '../api'
-import { mm1k_blocking_probability, mm1k_mean_wait } from '../utils/theory'
+import { mmkk_blocking_probability, mmkk_mean_wait } from '../utils/theory'
 
 export type SensitivityResult = {
   A_values: number[]
@@ -36,7 +36,7 @@ export function useSimulation() {
 
   async function runSensitivity(opts: {
     mu: number
-    K: number
+    k: number
     sample_size?: number
     replicates?: number
     a_min?: number
@@ -52,7 +52,7 @@ export function useSimulation() {
       const steps = opts.steps ?? 20
       const replicates = opts.replicates ?? 3
       const mu = opts.mu
-      const K = opts.K
+      const K = opts.k
       const sample_size = opts.sample_size ?? 10000
       const seed = opts.seed ?? 0
 
@@ -74,7 +74,7 @@ export function useSimulation() {
           const s = seed + i * 100 + r
           // small sample_size for interactive runs recommended
           // eslint-disable-next-line no-await-in-loop
-          const res = await simulate({ lam, mu, K, sample_size, seed: s })
+          const res = await simulate({ lam, mu, k: K, sample_size, seed: s })
           bvals.push(res.blocking_probability)
           wvals.push(res.mean_wait)
         }
@@ -88,9 +88,9 @@ export function useSimulation() {
         wait_sim_mean.push(wmean)
         wait_sim_std.push(wstd)
 
-        // theory
-        const p_k = mm1k_blocking_probability(lam, mu, K)
-        const { W, Wq } = mm1k_mean_wait(lam, mu, K)
+        // theory (Erlang B)
+        const p_k = mmkk_blocking_probability(lam, mu, K)
+        const { W, Wq } = mmkk_mean_wait(lam, mu, K)
         blocking_theory.push(p_k)
         wait_theory.push(Wq)
       }

@@ -1,87 +1,78 @@
 """
-Teoremas analíticos y fórmulas cerradas para colas M/M/1 y M/M/1/K.
+Fórmulas analíticas para el modelo M/M/k/k (Erlang B).
 
 Funciones:
-- mm1_waiting_time_theoretical(lam, mu) -> Wq (tiempo medio de espera en cola) para M/M/1 infinito.
-- mm1k_stationary_probs(lam, mu, K) -> array Pn (probabilidades estacionarias n=0..K)
-- mm1k_blocking_probability(lam, mu, K) -> P_K
-- mm1k_mean_wait(lam, mu, K) -> (W, Wq) tiempos medios (sistema, cola) condicionados a clientes aceptados
+- erlang_b(lam, mu, k) -> P_blocking (Erlang B)
+- mmkk_stationary_probs(lam, mu, k) -> array Pn (n = 0..k)
+- mmkk_mean_wait(lam, mu, k) -> (W, Wq) donde Wq = 0 por definición (no hay cola)
 
-Notas:
-- Maneja el caso rho == 1 numéricamente.
-- Para K finito, usamos la distribución estacionaria clásica.
+Referencias: Fórmula clásica de Erlang B.
 """
 from __future__ import annotations
 from typing import Tuple
+import math
 import numpy as np
 
 
-def mm1_waiting_time_theoretical(lam: float, mu: float) -> float:
+def _power_div_factorial(A: float, n: int) -> float:
+    # cálculo estable de A^n / n! (usa lgamma para evitar overflow si es necesario)
+    try:
+        return math.exp(n * math.log(A) - math.lgamma(n + 1))
+    except Exception:
+        # fallback (menos estable)
+        return (A ** n) / math.factorial(n)
+
+
+def erlang_b(lam: float, mu: float, k: int) -> float:
     """
-    Tiempo medio de espera en cola (Wq) para M/M/1 (cola infinita) bajo estabilidad rho < 1.
-    Si rho >= 1 devuelve np.inf (sistema inestable, tiempo medio diverge).
+    Probabilidad de bloqueo (Erlang B) para M/M/k/k.
+    A = lam / mu (tráfico ofrecido en Erlangs)
+    B(k,A) = (A^k / k!) / sum_{n=0}^k (A^n / n!)
     """
-    if lam <= 0 or mu <= 0:
-        raise ValueError("lam y mu deben ser positivos")
-    rho = lam / mu
-    if rho >= 1.0:
-        return float('inf')
-    # Wq = rho / (mu - lam)
-    return rho / (mu - lam)
+    if k < 0:
+        raise ValueError("k debe ser >= 0")
+    if mu <= 0 or lam < 0:
+        raise ValueError("lam >= 0 y mu > 0")
 
+    A = lam / mu if mu != 0 else float('inf')
 
-def mm1k_stationary_probs(lam: float, mu: float, K: int) -> np.ndarray:
-    """
-    Calcula las probabilidades estacionarias P_n (n = 0..K) para un proceso M/M/1/K.
-    Retorna un array de tamaño K+1 con P_0..P_K.
-    """
-    if K < 0:
-        raise ValueError("K debe ser >= 0")
-    if lam < 0 or mu <= 0:
-        raise ValueError("lam debe ser >=0 y mu > 0")
-
-    rho = lam / mu
-    n = np.arange(0, K + 1)
-
-    if abs(rho - 1.0) < 1e-12:
-        # caso rho == 1: P_n = 1/(K+1)
-        return np.ones(K + 1, dtype=float) / float(K + 1)
-
-    # caso general
-    # P0 = (1 - rho) / (1 - rho^(K+1)) for rho != 1
-    denom = 1.0 - rho ** (K + 1)
+    # calcular denominador de forma estable
+    terms = [_power_div_factorial(A, n) for n in range(0, k + 1)]
+    denom = float(sum(terms))
+    numer = float(terms[-1])
     if denom == 0.0:
-        # numéricamente inestable; fallback
-        raise ArithmeticError("Denominador numérico igual a cero al calcular P0")
-    P0 = (1.0 - rho) / denom
-    Pn = P0 * (rho ** n)
+        return float('nan')
+    return numer / denom
+
+
+def mmkk_stationary_probs(lam: float, mu: float, k: int) -> np.ndarray:
+    """
+    Retorna P_n (n=0..k) para M/M/k/k usando la forma P_n = (A^n / n!) / sum_{j=0}^k (A^j / j!).
+    """
+    if k < 0:
+        raise ValueError("k debe ser >= 0")
+    A = lam / mu if mu != 0 else float('inf')
+    terms = [_power_div_factorial(A, n) for n in range(0, k + 1)]
+    denom = float(sum(terms))
+    if denom == 0.0:
+        raise ArithmeticError("Denominador numérico igual a cero al calcular Pn")
+    Pn = np.array([t / denom for t in terms], dtype=float)
     return Pn
 
 
-def mm1k_blocking_probability(lam: float, mu: float, K: int) -> float:
+def mmkk_mean_wait(lam: float, mu: float, k: int) -> Tuple[float, float]:
     """
-    Probabilidad de bloqueo P_K (es decir, probabilidad estacionaria de que el sistema tenga K clientes).
+    Para M/M/k/k no hay cola: Wq = 0.
+    Calculamos W = L / lambda_eff, donde L = E[N] = sum n P_n y lambda_eff = lam * (1 - P_k).
+    Si lambda_eff == 0 devolvemos (inf, 0).
     """
-    Pn = mm1k_stationary_probs(lam, mu, K)
-    return float(Pn[-1])
-
-
-def mm1k_mean_wait(lam: float, mu: float, K: int) -> Tuple[float, float]:
-    """
-    Calcula el tiempo medio en sistema (W) y tiempo medio en cola (Wq) para M/M/1/K
-    teniendo en cuenta que algunas llegadas son bloqueadas.
-
-    W = L / lambda_eff, donde L = E[N] = sum_{n=0}^K n P_n y lambda_eff = lam * (1 - P_K)
-    Wq = W - 1/mu (tiempo medio en cola excluyendo servicio)
-    """
-    Pn = mm1k_stationary_probs(lam, mu, K)
-    n = np.arange(0, K + 1)
+    Pn = mmkk_stationary_probs(lam, mu, k)
+    n = np.arange(0, k + 1)
     L = float(np.sum(n * Pn))
     Pk = float(Pn[-1])
     lambda_eff = lam * (1.0 - Pk)
     if lambda_eff <= 0.0:
-        return float('inf'), float('inf')
-
+        return float('inf'), 0.0
     W = L / lambda_eff
-    Wq = W - 1.0 / mu
+    Wq = 0.0
     return W, Wq

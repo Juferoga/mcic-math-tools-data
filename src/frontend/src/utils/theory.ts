@@ -1,38 +1,38 @@
-export function mm1k_stationary_probs(lam: number, mu: number, K: number): number[] {
-  if (K < 0) throw new Error('K debe ser >= 0')
+function factorial(n: number): number {
+  if (n < 0) throw new Error('n must be >= 0')
+  let r = 1
+  for (let i = 2; i <= n; i++) r *= i
+  return r
+}
+
+function powerDivFactorial(A: number, n: number): number {
+  return Math.pow(A, n) / factorial(n)
+}
+
+export function mmkk_stationary_probs(lam: number, mu: number, k: number): number[] {
+  if (k < 0) throw new Error('k debe ser >= 0')
   if (mu <= 0 || lam < 0) throw new Error('lam >=0 y mu > 0')
-  const rho = lam / mu
-  const Pn: number[] = []
-  if (Math.abs(rho - 1.0) < 1e-12) {
-    const val = 1 / (K + 1)
-    for (let i = 0; i <= K; i++) Pn.push(val)
-    return Pn
-  }
-  const denom = 1 - Math.pow(rho, K + 1)
+  const A = lam / mu
+  const terms: number[] = []
+  for (let n = 0; n <= k; n++) terms.push(powerDivFactorial(A, n))
+  const denom = terms.reduce((a, b) => a + b, 0)
   if (denom === 0) throw new Error('Denominador numérico igual a cero')
-  const P0 = (1 - rho) / denom
-  for (let n = 0; n <= K; n++) Pn.push(P0 * Math.pow(rho, n))
-  return Pn
+  return terms.map((t) => t / denom)
 }
 
-export function mm1k_blocking_probability(lam: number, mu: number, K: number): number {
-  const Pn = mm1k_stationary_probs(lam, mu, K)
-  return Pn[PkIndex(Pn.length)]
+export function mmkk_blocking_probability(lam: number, mu: number, k: number): number {
+  const Pn = mmkk_stationary_probs(lam, mu, k)
+  return Pn[Pn.length - 1]
 }
 
-function PkIndex(length: number): number {
-  return length - 1
-}
-
-export function mm1k_mean_wait(lam: number, mu: number, K: number): { W: number; Wq: number } {
-  const Pn = mm1k_stationary_probs(lam, mu, K)
-  const nArr = new Array(Pn.length).fill(0).map((_, i) => i)
+export function mmkk_mean_wait(lam: number, mu: number, k: number): { W: number; Wq: number } {
+  const Pn = mmkk_stationary_probs(lam, mu, k)
   let L = 0
   for (let i = 0; i < Pn.length; i++) L += i * Pn[i]
   const Pk = Pn[Pn.length - 1]
   const lambda_eff = lam * (1 - Pk)
-  if (lambda_eff <= 0) return { W: Infinity, Wq: Infinity }
+  if (lambda_eff <= 0) return { W: Infinity, Wq: 0 }
   const W = L / lambda_eff
-  const Wq = W - 1 / mu
+  const Wq = 0
   return { W, Wq }
 }

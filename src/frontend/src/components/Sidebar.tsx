@@ -4,13 +4,13 @@ type Props = {
   onSimulate: (params: {
     lam: number
     mu: number
-    K: number
+    k: number
     sample_size?: number
     seed?: number
   }) => void
   onSensitivity: (opts: {
     mu: number
-    K: number
+    k: number
     sample_size?: number
     replicates?: number
     a_min?: number
@@ -24,7 +24,7 @@ type Props = {
 const Sidebar: React.FC<Props> = ({ onSimulate, onSensitivity, loading = false }) => {
   const [lam, setLam] = useState<number>(0.8)
   const [mu, setMu] = useState<number>(1.0)
-  const [K, setK] = useState<number>(10)
+  const [k, setK] = useState<number>(10)
   const [sampleSize, setSampleSize] = useState<number>(10000)
   const [seed, setSeed] = useState<number | undefined>(42)
   const [scenario, setScenario] = useState<string>('Cola Simple Teórica')
@@ -47,8 +47,8 @@ const Sidebar: React.FC<Props> = ({ onSimulate, onSensitivity, loading = false }
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-medium">Capacidad K</label>
-        <input value={String(K)} onChange={(e) => setK(parseInt(e.target.value || '0'))} type="number" min={1} className="mt-1 block w-full rounded border-gray-200" />
+        <label className="block text-sm font-medium">Servidores (k)</label>
+        <input value={String(k)} onChange={(e) => setK(parseInt(e.target.value || '0'))} type="number" min={1} className="mt-1 block w-full rounded border-gray-200" />
       </div>
 
       <div className="mb-4">
@@ -67,7 +67,7 @@ const Sidebar: React.FC<Props> = ({ onSimulate, onSensitivity, loading = false }
 
       <div className="flex gap-2">
         <button
-          onClick={() => onSimulate({ lam, mu, K, sample_size: sampleSize, seed })}
+          onClick={() => onSimulate({ lam, mu, k, sample_size: sampleSize, seed })}
           disabled={loading}
           className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-60"
         >
@@ -75,7 +75,7 @@ const Sidebar: React.FC<Props> = ({ onSimulate, onSensitivity, loading = false }
         </button>
 
         <button
-          onClick={() => onSensitivity({ mu, K, sample_size: sampleSize, replicates, a_min: aMin, a_max: aMax, steps, seed })}
+          onClick={() => onSensitivity({ mu, k, sample_size: sampleSize, replicates, a_min: aMin, a_max: aMax, steps, seed })}
           disabled={loading}
           className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-60"
         >

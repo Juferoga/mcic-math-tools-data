@@ -3,7 +3,7 @@ import axios from 'axios'
 export interface SimRequest {
   lam: number
   mu: number
-  K: number
+  k: number
   sample_size?: number
   seed?: number | null
 }

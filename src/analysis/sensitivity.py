@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 from src.core.simulation import simulate_from_rates
-from src.core.theory import mm1k_blocking_probability, mm1k_mean_wait
+from src.core.theory import erlang_b, mmkk_mean_wait
 
 
-def run_sensitivity(mu: float = 1.0, K: int = 10, sample_size: int = 20000, replicates: int = 3, a_min: float = 0.1, a_max: float = 1.5, steps: int = 20, seed: int = 0):
+def run_sensitivity(mu: float = 1.0, k: int = 10, sample_size: int = 20000, replicates: int = 3, a_min: float = 0.1, a_max: float = 1.5, steps: int = 20, seed: int = 0):
     A_values = np.linspace(a_min, a_max, steps)
 
     blocking_sim_mean: List[float] = []
@@ -35,7 +35,7 @@ def run_sensitivity(mu: float = 1.0, K: int = 10, sample_size: int = 20000, repl
         sim_wait_vals = []
         for r in range(replicates):
             s = seed + i * 100 + r
-            res = simulate_from_rates(lam=lam, mu=mu, K=K, sample_size=sample_size, seed=s)
+            res = simulate_from_rates(lam=lam, mu=mu, k=k, sample_size=sample_size, seed=s)
             sim_blocking_vals.append(res.blocking_probability)
             sim_wait_vals.append(res.mean_wait)
 
@@ -45,12 +45,12 @@ def run_sensitivity(mu: float = 1.0, K: int = 10, sample_size: int = 20000, repl
         blocking_sim_mean.append(float(sim_blocking_vals.mean()))
         blocking_sim_std.append(float(sim_blocking_vals.std(ddof=0)))
 
-        wait_sim_mean.append(float(sim_wait_vals.mean()))
-        wait_sim_std.append(float(sim_wait_vals.std(ddof=0)))
+        wait_sim_mean.append(float(wait_sim_vals.mean()))
+        wait_sim_std.append(float(wait_sim_vals.std(ddof=0)))
 
-        # theory
-        p_k = mm1k_blocking_probability(lam, mu, K)
-        _, wq = mm1k_mean_wait(lam, mu, K)
+        # theory (Erlang B)
+        p_k = erlang_b(lam, mu, k)
+        _, wq = mmkk_mean_wait(lam, mu, k)
 
         blocking_theory.append(float(p_k))
         wait_theory.append(float(wq))
@@ -112,7 +112,7 @@ def run_sensitivity(mu: float = 1.0, K: int = 10, sample_size: int = 20000, repl
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Análisis de sensibilidad A=lambda/mu')
     parser.add_argument('--mu', type=float, default=1.0)
-    parser.add_argument('--K', type=int, default=10)
+    parser.add_argument('--k', type=int, default=10, help='Número de servidores (k)')
     parser.add_argument('--sample-size', type=int, default=20000)
     parser.add_argument('--replicates', type=int, default=3)
     parser.add_argument('--a-min', type=float, default=0.1)
@@ -121,4 +121,4 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=0)
     args = parser.parse_args()
 
-    run_sensitivity(mu=args.mu, K=args.K, sample_size=args.sample_size, replicates=args.replicates, a_min=args.a_min, a_max=args.a_max, steps=args.steps, seed=args.seed)
+    run_sensitivity(mu=args.mu, k=args.k, sample_size=args.sample_size, replicates=args.replicates, a_min=args.a_min, a_max=args.a_max, steps=args.steps, seed=args.seed)

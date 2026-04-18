@@ -23,7 +23,7 @@ app = FastAPI(title="MM1K Simulation API", version="0.1")
 class SimRequest(BaseModel):
     lam: float = Field(..., gt=0.0, description="Tasa de llegada (lambda)")
     mu: float = Field(..., gt=0.0, description="Tasa de servicio (mu)")
-    K: int = Field(10, gt=0, description="Capacidad total del sistema (incluye el que está en servicio)")
+    k: int = Field(1, gt=0, description="Número de servidores (k) — sin cola, modelo M/M/k/k")
     sample_size: int = Field(10000, gt=0, description="Número de arribos a simular")
     seed: Optional[int] = Field(None, description="Semilla opcional para reproducibilidad")
 
@@ -48,7 +48,8 @@ async def simulate(req: SimRequest):
         raise HTTPException(status_code=400, detail="lam y mu deben ser > 0")
 
     try:
-        res = simulate_from_rates(lam=req.lam, mu=req.mu, K=req.K, sample_size=req.sample_size, seed=req.seed)
+        # ahora el parámetro es k (número de servidores)
+        res = simulate_from_rates(lam=req.lam, mu=req.mu, k=req.k, sample_size=req.sample_size, seed=req.seed)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
