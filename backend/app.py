@@ -4,7 +4,7 @@ FastAPI backend para exponer la simulación como un servicio REST.
 Endpoint principal:
 POST /simulate
   cuerpo JSON: {"lam": float, "mu": float, "K": int, "sample_size": int, "seed": Optional[int]}
-  respuesta JSON: {"times": [...], "states": [...], "blocking_probability": float, "mean_wait": float}
+  respuesta JSON: {"times": [...], "states": [...], "wait_times": [...], "blocking_probability": float, "mean_wait": float}
 
 Ejecutar:
 uvicorn backend.app:app --reload --port 8000
@@ -13,6 +13,7 @@ from __future__ import annotations
 from typing import List, Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+import math
 
 from src.core.simulation import simulate_from_rates
 
@@ -30,6 +31,7 @@ class SimRequest(BaseModel):
 class SimResponse(BaseModel):
     times: List[float]
     states: List[int]
+    wait_times: List[float]
     blocking_probability: float
     mean_wait: float
 
@@ -50,9 +52,14 @@ async def simulate(req: SimRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+    # limpiar wait_times (remover NaNs si los hubiera)
+    raw_waits = res.wait_times.tolist() if hasattr(res.wait_times, 'tolist') else list(res.wait_times)
+    waits = [float(w) for w in raw_waits if not (isinstance(w, float) and math.isnan(w))]
+
     return SimResponse(
         times=res.event_times.tolist(),
         states=res.system_sizes.tolist(),
+        wait_times=waits,
         blocking_probability=res.blocking_probability,
         mean_wait=res.mean_wait,
     )
