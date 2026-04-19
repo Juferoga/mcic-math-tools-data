@@ -1,7 +1,7 @@
 services:
   backend:
     build:
-      context: ./backend
+      context: "./3.Trabajos/2. Trabajo/backend"
       dockerfile: Dockerfile
     container_name: mm1k-backend
     ports:
@@ -10,7 +10,7 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: "./src/frontend"
       dockerfile: Dockerfile
     container_name: mm1k-frontend
     ports:
