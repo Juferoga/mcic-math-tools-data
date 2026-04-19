@@ -7,6 +7,7 @@ import ExportPanel from './components/ExportPanel'
 import Spinner from './components/Spinner'
 import ErlangBEquationPanel from './components/ErlangBEquationPanel'
 import ThreeDErlangBView from './components/ThreeDErlangBView'
+import MarkovChainDiagram from './components/MarkovChainDiagram'
 import { useSimulation } from './hooks/useSimulation'
 import GlassThemeToggle from './components/glass/GlassThemeToggle'
 
@@ -111,6 +112,8 @@ const App: React.FC = () => {
                 k={activeK}
                 pBlocking={result?.blocking_probability}
               />
+
+              <MarkovChainDiagram k={activeK} />
 
               {/* Sensitivity or Results */}
               {sensitivity ? (

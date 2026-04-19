@@ -78,6 +78,8 @@
     %\usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
                                 % normalem makes italics be italics, not underlines
     \usepackage{mathrsfs}
+    \usepackage{tikz}
+    \usetikzlibrary{arrows.meta,positioning}
     
 
     
@@ -111,8 +113,8 @@
 
     % commands and environments needed by pandoc snippets
     % extracted from the output of `pandoc -s`
-    \providecommand{\tightlist}{%
-      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \providecommand{}{%
+      \setlength{\bibitem{gross}sep}{0pt}\setlength{\parskip}{0pt}}
     \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
     % Add ',fontsize=\small' for more characters per line
 \newenvironment{Shaded}{}{}
@@ -395,36 +397,120 @@
 Este notebook contiene la especificaci\'on te\'orica, algoritmos y
 resultados de validaci\'on para el modelo M/M/k/k (Erlang B).
 
-\subsection{Modelo M/M/k/k (Erlang B) --- Diagrama y derivaci\'on}\label{modelo-mmkk-erlang-b-diagrama-y-derivaciuxf3n}
+\subsection{Actividad 1 --- Modelo matem\'atico M/M/k/k}\label{actividad-1-modelo-matematico-mmkk}
 
-El modelo M/M/k/k (con fuente infinita) consiste en: - k servidores
-paralelos (cada servidor atiende a un cliente con tiempo de servicio
-exponencial de par\'ametro \(\mu\)), - llegadas Poisson con tasa
-\(\lambda\), - sin espacio de espera: si llegan con los \(k\) servidores
-ocupados la llegada se bloquea y se pierde (no hay cola).
+El sistema M/M/k/k (Erlang B) se modela \cite{gross, ross} como una cadena de Markov de
+nacimiento-muerte con estados \(n=0,1,\dots,k\), donde \(n\) representa
+el n\'umero de servidores ocupados. Las llegadas siguen un proceso
+Poisson de tasa \(\lambda\), los tiempos de servicio son exponenciales de
+par\'ametro \(\mu\), y no existe cola de espera.
 
-Las tasas de transici\'on (birth--death) son: - tasa de nacimiento
-(llegada) \(\lambda_n = \lambda\) para \(n=0,\dots,k-1\);
-\(\lambda_k = 0\) (llegadas bloqueadas en \(k\)). - tasa de muerte
-(salida) \(\mu_n = n\mu\) para \(n \ge 1\) (hay \(n\) servidores
-ocupados que completan servicio con tasa total \(n\mu\)); \(\mu_0=0\).
+\subsubsection{Diagrama de transici\'on de estados}\label{diagrama-de-transicion-de-estados}
 
-En notaci\'on matem\'atica, las transiciones adyacentes son: \[
-	n \xrightarrow{\lambda} n+1\quad (0\le n\le k-1),\qquad n \xrightarrow{n\mu} n-1\quad (1\le n\le k).
+\begin{center}
+	\begin{tikzpicture}[
+			>=Latex,
+			node distance=1.9cm,
+			state/.style={circle,draw,minimum size=9mm}
+		]
+		\node[state] (s0) {0};
+		\node[state,right=of s0] (s1) {1};
+		\node[right=of s1] (sdots) {$\cdots$};
+		\node[state,right=of sdots] (skm1) {$k-1$};
+		\node[state,right=of skm1] (sk) {$k$};
+
+		\draw[->] (s0) -- node[above] {$\lambda$} (s1);
+		\draw[->] (s1) -- node[below] {$\mu$} (s0);
+
+		\draw[->] (s1) -- node[above] {$\lambda$} (sdots);
+		\draw[->] (sdots) -- node[below] {$2\mu$} (s1);
+
+		\draw[->] (sdots) -- node[above] {$\lambda$} (skm1);
+		\draw[->] (skm1) -- node[below] {$(k-1)\mu$} (sdots);
+
+		\draw[->] (skm1) -- node[above] {$\lambda$} (sk);
+		\draw[->] (sk) -- node[below] {$k\mu$} (skm1);
+	\end{tikzpicture}
+\end{center}
+
+En forma general, las transiciones adyacentes quedan:
+\[
+	n \xrightarrow{\lambda} n+1,\quad 0 \le n \le k-1,
+	\qquad
+	n \xrightarrow{n\mu} n-1,\quad 1 \le n \le k.
 \]
 
-\subsubsection{Ecuaciones de balance (resumen)}\label{ecuaciones-de-balance-resumen}
+\subsubsection{Ecuaciones de estado estacionario}\label{ecuaciones-de-estado-estacionario}
 
-\begin{itemize}
-	\tightlist
-	\item
-	      Estado n=0: \[\mu P_1 = \lambda P_0.\]
-	\item
-	      Estado 0\textless n\textless k:
-	      \[\lambda P_{n-1} + (n+1)\mu P_{n+1} = (\lambda + n\mu) P_n.\]
-	\item
-	      Estado n=k: \[\lambda P_{k-1} = k\mu P_k.\]
-\end{itemize}
+Sea \(P_n = \Pr\{N=n\}\) en r\'egimen estacionario. Las ecuaciones de
+balance global son:
+\begin{align*}
+	\mu P_1                            & = \lambda P_0,                              \\
+	\lambda P_{n-1} + (n+1)\mu P_{n+1} & = (\lambda + n\mu)P_n, \quad n=1,\dots,k-1, \\
+	\lambda P_{k-1}                    & = k\mu P_k.
+\end{align*}
+
+Para una cadena nacimiento-muerte, el balance local entre estados
+adyacentes es:
+\[
+	\lambda P_{n-1} = n\mu P_n, \quad n=1,2,\dots,k.
+\]
+
+De all\'i se obtiene recursivamente:
+\[
+	P_n = \frac{\lambda}{n\mu}P_{n-1} = \frac{1}{n!}\left(\frac{\lambda}{\mu}\right)^n P_0.
+\]
+
+Definiendo el tr\'afico ofrecido \(A=\lambda/\mu\):
+\[
+	P_n = \frac{A^n}{n!}P_0, \quad n=0,1,\dots,k.
+\]
+
+Aplicando normalizaci\'on \(\sum_{n=0}^{k}P_n=1\):
+\[
+	\sum_{n=0}^{k}\frac{A^n}{n!}P_0 = 1
+	\quad\Longrightarrow\quad
+	P_0 = \left(\sum_{n=0}^{k}\frac{A^n}{n!}\right)^{-1}.
+\]
+
+Finalmente, la probabilidad de bloqueo (estado lleno) es:
+\[
+	P_k = \frac{A^k}{k!}P_0
+	=
+	\frac{\dfrac{A^k}{k!}}{\sum_{n=0}^{k}\dfrac{A^n}{n!}},
+\]
+que corresponde exactamente a la f\'ormula de \textbf{Erlang-B}.
+
+\subsection{Actividad 2 --- Implementaci\'on de la simulaci\'on en MATLAB}\label{actividad-2-implementacion-simulacion-matlab}
+
+La Actividad 2 fue implementada en MATLAB en el archivo
+\texttt{matlab/mmkk.m}. La funci\'on
+\texttt{Pk = mmkk(tiempoentrearribos, tiemposdeservicio, k)} calcula la
+probabilidad de bloqueo simulada para un sistema M/M/k/k.
+
+La l\'ogica implementada es:
+
+	\bibitem{gross} Se reciben y validan los vectores de tiempos entre arribos y de
+	      servicio, junto con la capacidad \(k\).
+	\bibitem{gross} Se construye el reloj de arribos con suma acumulada de
+	      \texttt{tiempoentrearribos}.
+	\bibitem{gross} Se mantiene un vector \texttt{fin\_servicio} de tama\~no \(k\), con el
+	      instante de finalizaci\'on de cada servidor.
+	\bibitem{gross} Para cada arribo en tiempo \(t\):
+	      \begin{itemize}
+		      \bibitem{gross} Se determina cu\'antos servidores est\'an ocupados
+		            (\texttt{fin\_servicio > t}).
+		      \bibitem{gross} Si \texttt{busy == k}, el cliente se bloquea (se descarta).
+		      \bibitem{gross} Si hay al menos un servidor libre, se asigna el cliente al
+		            primero disponible y se actualiza su nuevo fin de servicio.
+	      \end{itemize}
+	\bibitem{gross} Al final, se reporta
+	      \(P_k = \texttt{bloqueados}/\texttt{usuarios}\).
+\end{enumerate}
+
+Esta implementaci\'on replica fielmente el comportamiento sin cola del
+modelo M/M/k/k y permite contrastar la estimaci\'on emp\'irica de
+\(P_k\) frente al valor te\'orico de Erlang-B.
 
 \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
 	\prompt{In}{incolor}{ }{\boxspacing}
@@ -489,14 +575,14 @@ A continuaci\'on calculamos las m\'etricas relevantes para el sistema
 M/M/k/k (Erlang B):
 
 \begin{itemize}
-	\tightlist
-	\item
+	
+	\bibitem{gross}
 	      Tasa efectiva de llegadas:
 	      \(\lambda_{\mathrm{eff}} = \lambda\, (1 - P_k)\) --- tasa de
 	      transacciones que efectivamente entran al sistema.
-	\item
+	\bibitem{gross}
 	      N\'umero medio de clientes en el sistema: \(L = \sum_{n=0}^k n\,P_n\).
-	\item
+	\bibitem{gross}
 	      Tiempo medio en el sistema: \(W = 1/\mu\) (ya que \(W_q=0\)).
 \end{itemize}
 
@@ -577,25 +663,20 @@ alertas APM y reglas de escalado autom\'atico basadas en m\'etricas de
 bloqueo y tr\'afico.
 
 
-\section{Referencias}
+\section{Conclusiones y Trabajos Futuros}
+El análisis del modelo M/M/k/k (Erlang B) ha demostrado la relevancia de comprender los sistemas sin cola frente a la limitación de recursos.
+\textbf{Conclusiones principales:} La probabilidad de bloqueo crece exponencialmente con la carga ofrecida $A$, afectando la tasa efectiva de servicio. Las simulaciones confirman la exactitud teórica cuando las llegadas son verdaderamente de Poisson.
+\textbf{Aplicaciones reales:} Este modelo es aplicable al dimensionamiento de microservicios, pasarelas de pago y asignación de canales de radio, donde no hay encolamiento \cite{itu}.
+\textbf{Trabajos futuros:} Como trabajo futuro se propone evaluar modelos con encolamiento finito (M/M/k/c) \cite{kleinrock} o considerar distribuciones de tiempo de servicio de cola pesada para acercar el modelo aún más al tráfico empírico de redes LAN, como el observado en los datasets de Bellcore.
 
-\begin{enumerate}
-	\tightlist
-	\item
-	      Gross, D., Shortle, J. F., Thompson, J. M., \\& Harris, C. M. (2018).
-	      \textit{Fundamentals of Queueing Theory} (5th ed.). Wiley.
-	\item
-	      Cooper, R. B. (1981). \textit{Introduction to Queueing Theory} (2nd
-	      ed.). North Holland.
-	\item
-	      Kleinrock, L. (1975). \textit{Queueing Systems, Volume 1: Theory}.
-	      Wiley.
-	\item
-	      Ross, S. M. (2019). \textit{Introduction to Probability Models} (12th
-	      ed.). Academic Press.
-	\item
-	      ITU-T Recommendation E.600 (1993). \textit{Terms and definitions of
-		      traffic engineering}.
-\end{enumerate}
+
+\section{Referencias}
+\begin{thebibliography}{9}
+\bibitem{gross} Gross, D., Shortle, J. F., Thompson, J. M., \& Harris, C. M. (2018). \textit{Fundamentals of Queueing Theory} (5th ed.). Wiley.
+\bibitem{cooper} Cooper, R. B. (1981). \textit{Introduction to Queueing Theory} (2nd ed.). North Holland.
+\bibitem{kleinrock} Kleinrock, L. (1975). \textit{Queueing Systems, Volume 1: Theory}. Wiley.
+\bibitem{ross} Ross, S. M. (2019). \textit{Introduction to Probability Models} (12th ed.). Academic Press.
+\bibitem{itu} ITU-T Recommendation E.600 (1993). \textit{Terms and definitions of traffic engineering}.
+\end{thebibliography}
 
 \end{document}

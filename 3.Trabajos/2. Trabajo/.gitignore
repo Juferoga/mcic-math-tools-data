@@ -54,3 +54,5 @@ doc/informe_matematico.pdf
 
 # Generated analysis outputs
 data/sensitivity_results_*.json
+doc/*.pdf
+doc/*.html
