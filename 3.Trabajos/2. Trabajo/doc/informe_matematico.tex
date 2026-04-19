@@ -384,18 +384,18 @@
     
 
 \begin{document}
-    
-    \maketitle
-    
-    
 
-    
-    \section{Informe Matem\'atico --- Trabajo 2}\label{informe-matemuxe1tico-trabajo-2}
+\maketitle
+
+
+
+
+\section{Informe Matem\'atico --- Trabajo 2}\label{informe-matemuxe1tico-trabajo-2}
 
 Este notebook contiene la especificaci\'on te\'orica, algoritmos y
 resultados de validaci\'on para el modelo M/M/k/k (Erlang B).
 
-    \subsection{Modelo M/M/k/k (Erlang B) --- Diagrama y derivaci\'on}\label{modelo-mmkk-erlang-b-diagrama-y-derivaciuxf3n}
+\subsection{Modelo M/M/k/k (Erlang B) --- Diagrama y derivaci\'on}\label{modelo-mmkk-erlang-b-diagrama-y-derivaciuxf3n}
 
 El modelo M/M/k/k (con fuente infinita) consiste en: - k servidores
 paralelos (cada servidor atiende a un cliente con tiempo de servicio
@@ -410,25 +410,25 @@ Las tasas de transici\'on (birth--death) son: - tasa de nacimiento
 ocupados que completan servicio con tasa total \(n\mu\)); \(\mu_0=0\).
 
 En notaci\'on matem\'atica, las transiciones adyacentes son: \[
-n \xrightarrow{\lambda} n+1\quad (0\le n\le k-1),\qquad n \xrightarrow{n\mu} n-1\quad (1\le n\le k).
+	n \xrightarrow{\lambda} n+1\quad (0\le n\le k-1),\qquad n \xrightarrow{n\mu} n-1\quad (1\le n\le k).
 \]
 
-    \subsubsection{Ecuaciones de balance (resumen)}\label{ecuaciones-de-balance-resumen}
+\subsubsection{Ecuaciones de balance (resumen)}\label{ecuaciones-de-balance-resumen}
 
 \begin{itemize}
-\tightlist
-\item
-  Estado n=0: \[\mu P_1 = \lambda P_0.\]
-\item
-  Estado 0\textless n\textless k:
-  \[\lambda P_{n-1} + (n+1)\mu P_{n+1} = (\lambda + n\mu) P_n.\]
-\item
-  Estado n=k: \[\lambda P_{k-1} = k\mu P_k.\]
+	\tightlist
+	\item
+	      Estado n=0: \[\mu P_1 = \lambda P_0.\]
+	\item
+	      Estado 0\textless n\textless k:
+	      \[\lambda P_{n-1} + (n+1)\mu P_{n+1} = (\lambda + n\mu) P_n.\]
+	\item
+	      Estado n=k: \[\lambda P_{k-1} = k\mu P_k.\]
 \end{itemize}
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{lstlisting}
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+	\prompt{In}{incolor}{ }{\boxspacing}
+	\begin{lstlisting}
 \PY{c+c1}{\PYZsh{} Preparaci\'on del entorno en el notebook (ajusta rutas si es necesario)}
 \PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{sys}
 \PY{k+kn}{from}\PY{+w}{ }\PY{n+nn}{pathlib}\PY{+w}{ }\PY{k+kn}{import} \PY{n}{Path}
@@ -439,9 +439,9 @@ n \xrightarrow{\lambda} n+1\quad (0\le n\le k-1),\qquad n \xrightarrow{n\mu} n-1
 \end{lstlisting}
 \end{tcolorbox}
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{lstlisting}
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+	\prompt{In}{incolor}{ }{\boxspacing}
+	\begin{lstlisting}
 \PY{c+c1}{\PYZsh{} Imports te\'oricos y utilidades}
 \PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{numpy}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{np}
 \PY{k+kn}{import}\PY{+w}{ }\PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot}\PY{+w}{ }\PY{k}{as}\PY{+w}{ }\PY{n+nn}{plt}
@@ -455,9 +455,9 @@ n \xrightarrow{\lambda} n+1\quad (0\le n\le k-1),\qquad n \xrightarrow{n\mu} n-1
 \end{lstlisting}
 \end{tcolorbox}
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{lstlisting}
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+	\prompt{In}{incolor}{ }{\boxspacing}
+	\begin{lstlisting}
 \PY{c+c1}{\PYZsh{} Algoritmo recursivo estable para Erlang B (B(k,A))}
 \PY{k}{def}\PY{+w}{ }\PY{n+nf}{erlang\PYZus{}b\PYZus{}recursive}\PY{p}{(}\PY{n}{A}\PY{p}{:} \PY{n+nb}{float}\PY{p}{,} \PY{n}{k}\PY{p}{:} \PY{n+nb}{int}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{float}\PY{p}{:}
     \PY{n}{B} \PY{o}{=} \PY{l+m+mf}{1.0}
@@ -472,40 +472,62 @@ n \xrightarrow{\lambda} n+1\quad (0\le n\le k-1),\qquad n \xrightarrow{n\mu} n-1
 \end{lstlisting}
 \end{tcolorbox}
 
-    \subsubsection{Validaci\'on: Teor\'ia vs Simulaci\'on (gr\'afica)}\label{validaciuxf3n-teoruxeda-vs-simulaciuxf3n-gruxe1fica}
+\subsubsection{Validaci\'on: Teor\'ia vs Simulaci\'on (gr\'afica)}\label{validaciuxf3n-teoruxeda-vs-simulaciuxf3n-gruxe1fica}
 
 La siguiente figura muestra la comparaci\'on entre la f\'ormula de Erlang B
 y los puntos emp\'iricos obtenidos por simulaci\'on.
 
 \begin{figure}
-\centering
-\includegraphics{plots/erlangb_validation_k10.png}
-\caption{Erlang B validation}
+	\centering
+	\includegraphics{plots/erlangb_validation_k10.png}
+	\caption{Erlang B validation}
 \end{figure}
 
-    \subsection{M\'etricas complementarias y Ley de Little}\label{muxe9tricas-complementarias-y-ley-de-little}
+\subsection{M\'etricas complementarias y Ley de Little}\label{muxe9tricas-complementarias-y-ley-de-little}
 
 A continuaci\'on calculamos las m\'etricas relevantes para el sistema
 M/M/k/k (Erlang B):
 
 \begin{itemize}
-\tightlist
-\item
-  Tasa efectiva de llegadas:
-  \(\lambda_{\mathrm{eff}} = \lambda\, (1 - P_k)\) --- tasa de
-  transacciones que efectivamente entran al sistema.
-\item
-  N\'umero medio de clientes en el sistema: \(L = \sum_{n=0}^k n\,P_n\).
-\item
-  Tiempo medio en el sistema: \(W = 1/\mu\) (ya que \(W_q=0\)).
+	\tightlist
+	\item
+	      Tasa efectiva de llegadas:
+	      \(\lambda_{\mathrm{eff}} = \lambda\, (1 - P_k)\) --- tasa de
+	      transacciones que efectivamente entran al sistema.
+	\item
+	      N\'umero medio de clientes en el sistema: \(L = \sum_{n=0}^k n\,P_n\).
+	\item
+	      Tiempo medio en el sistema: \(W = 1/\mu\) (ya que \(W_q=0\)).
 \end{itemize}
 
 Verificaremos num\'ericamente la Ley de Little:
 \(L = \lambda_{\mathrm{eff}}\cdot W\).
 
-    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
-\prompt{In}{incolor}{ }{\boxspacing}
-\begin{lstlisting}
+\subsection{Actividad 4 --- An\'alisis de sensibilidad y validaci\'on de resultados}\label{actividad-4-anuxe1lisis-de-sensibilidad-y-validaciuxf3n-de-resultados}
+
+Esta secci\'on corresponde expl\'icitamente a la Actividad 4 de la
+r\'ubrica. Se eval\'ua la sensibilidad del modelo M/M/k/k frente a
+variaciones del tr\'afico ofrecido \(A=\lambda/\mu\), comparando resultados
+de simulaci\'on (promedio y desviaci\'on est\'andar por r\'eplicas) contra la
+soluci\'on te\'orica de Erlang B para la probabilidad de bloqueo \(P_k\).
+
+Tambi\'en se contrasta el tiempo medio de espera te\'orico y simulado,
+esperando \(W_q\approx0\) por la naturaleza sin cola del sistema M/M/k/k.
+La concordancia entre ambas curvas confirma la consistencia
+matem\'atica y la validez de implementaci\'on del motor de simulaci\'on.
+
+\subsection{Actividad 5 --- Interpretaci\'on aplicada y decisiones de capacidad}\label{actividad-5-interpretaciuxf3n-aplicada-y-decisiones-de-capacidad}
+
+Esta secci\'on cubre de forma expl\'icita la Actividad 5 de la r\'ubrica.
+Con base en \(P_k\), \(\lambda_{\mathrm{eff}}\) y la Ley de Little, se
+interpreta el impacto operacional sobre una pasarela de pagos: cuando
+sube \(A\), aumenta el bloqueo y cae la tasa efectiva de transacciones
+aceptadas. Esto permite definir reglas de escalamiento para dimensionar
+\(k\) y mantener SLA de rechazo bajo umbrales de negocio.
+
+\begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+	\prompt{In}{incolor}{ }{\boxspacing}
+	\begin{lstlisting}
 \PY{c+c1}{\PYZsh{} C\'alculo num\'erico de m\'etricas para M/M/k/k}
 \PY{k+kn}{from}\PY{+w}{ }\PY{n+nn}{src}\PY{n+nn}{.}\PY{n+nn}{core}\PY{n+nn}{.}\PY{n+nn}{theory}\PY{+w}{ }\PY{k+kn}{import} \PY{n}{mmkk\PYZus{}stationary\PYZus{}probs}\PY{p}{,} \PY{n}{mmkk\PYZus{}mean\PYZus{}wait}
 
@@ -533,7 +555,7 @@ Verificaremos num\'ericamente la Ley de Little:
 \end{lstlisting}
 \end{tcolorbox}
 
-    \subsection{Conclusi\'on: Aplicaci\'on a Pasarelas de Pago}\label{conclusiuxf3n-aplicaciuxf3n-a-pasarelas-de-pago}
+\subsection{Conclusi\'on: Aplicaci\'on a Pasarelas de Pago}\label{conclusiuxf3n-aplicaciuxf3n-a-pasarelas-de-pago}
 
 En el contexto de una pasarela de pagos bancarios, cada ``cliente'' en
 el modelo representa una petici\'on de transacci\'on entrante, y cada uno de
@@ -555,8 +577,25 @@ alertas APM y reglas de escalado autom\'atico basadas en m\'etricas de
 bloqueo y tr\'afico.
 
 
-    % Add a bibliography block to the postdoc
-    
-    
-    
+\section{Referencias}
+
+\begin{enumerate}
+	\tightlist
+	\item
+	      Gross, D., Shortle, J. F., Thompson, J. M., \\& Harris, C. M. (2018).
+	      \textit{Fundamentals of Queueing Theory} (5th ed.). Wiley.
+	\item
+	      Cooper, R. B. (1981). \textit{Introduction to Queueing Theory} (2nd
+	      ed.). North Holland.
+	\item
+	      Kleinrock, L. (1975). \textit{Queueing Systems, Volume 1: Theory}.
+	      Wiley.
+	\item
+	      Ross, S. M. (2019). \textit{Introduction to Probability Models} (12th
+	      ed.). Academic Press.
+	\item
+	      ITU-T Recommendation E.600 (1993). \textit{Terms and definitions of
+		      traffic engineering}.
+\end{enumerate}
+
 \end{document}

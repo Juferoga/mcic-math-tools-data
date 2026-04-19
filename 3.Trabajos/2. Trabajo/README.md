@@ -31,5 +31,3 @@ Se creó la rama de trabajo y se commitearon `TAREA.md` y `README.md` junto con 
 3. Dividir en issues y asignar responsables.
 
 Si quieres, pega el enunciado aquí y yo actualizaré automáticamente `TAREA.md` y crearé issues y milestones.
-
-*README generado automáticamente por Sekmeth.*

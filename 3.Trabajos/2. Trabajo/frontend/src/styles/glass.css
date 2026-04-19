@@ -1,0 +1,138 @@
+/**
+ * Glassmorphism Design System v1.0.0
+ * Tokens and base utilities
+ */
+
+/* ========== CSS Custom Properties (Tokens) ========== */
+:root {
+  /* ──────────────────────────────────────────────────
+     Colors - Light Mode (default)
+     ────────────────────────────────────────────────── */
+  --color-bg-base: #F5F7FB;
+  --color-bg-elevated: rgba(255, 255, 255, 0.75);
+  --color-bg-overlay: rgba(0, 0, 0, 0.25);
+  
+  --color-text-primary: #0B1020;
+  --color-text-secondary: #2A3550;
+  --color-text-muted: #6B7A99;
+  
+  --color-border-subtle: rgba(0, 0, 0, 0.08);
+  --color-border-strong: rgba(0, 0, 0, 0.14);
+  
+  --color-accent: #3B82F6;
+  --color-accent-soft: rgba(59, 130, 246, 0.12);
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+  
+  /* ──────────────────────────────────────────────────
+     Glass Effects
+     ────────────────────────────────────────────────── */
+  --glass-blur-sm: 8px;
+  --glass-blur-md: 14px;
+  --glass-blur-lg: 24px;
+  
+  --glass-opacity-base: 0.75;
+  --glass-opacity-strong: 0.85;
+  
+  --glass-border-width: 1px;
+  --glass-border-color: rgba(255, 255, 255, 0.25);
+  
+  --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --glass-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.10);
+  
+  /* ──────────────────────────────────────────────────
+     Layout Tokens
+     ────────────────────────────────────────────────── */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  
+  --z-base: 0;
+  --z-elevated: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-toast: 50;
+  
+  /* ──────────────────────────────────────────────────
+     Typography
+     ────────────────────────────────────────────────── */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 32px;
+  
+  /* ──────────────────────────────────────────────────
+     Animation
+     ────────────────────────────────────────────────── */
+  --transition-fast: 160ms ease;
+  --transition-normal: 250ms ease;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  --color-bg-base: #0A0F1F;
+  --color-bg-elevated: rgba(20, 28, 46, 0.55);
+  --color-bg-overlay: rgba(0, 0, 0, 0.35);
+  
+  --color-text-primary: #E6ECFF;
+  --color-text-secondary: #B9C6F2;
+  --color-text-muted: #8B9AC7;
+  
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+  
+  --color-accent: #60A5FA;
+  --color-accent-soft: rgba(96, 165, 250, 0.12);
+  --color-success: #34D399;
+  --color-warning: #FBBF24;
+  --color-error: #F87171;
+  
+  --glass-opacity-base: 0.55;
+  --glass-opacity-strong: 0.70;
+  
+  --glass-border-color: rgba(255, 255, 255, 0.12);
+  --glass-shadow: 0 4px 28px rgba(0, 0, 0, 0.35);
+  --glass-shadow-hover: 0 8px 36px rgba(0, 0, 0, 0.45);
+}
+
+/* ========== Fallback for browsers without backdrop-filter ========== */
+@supports not (backdrop-filter: blur(1px)) {
+  .glass,
+  .glass-card,
+  .glass-btn,
+  .glass-input,
+  .glass-select,
+  .glass-sidebar,
+  .glass-loading-overlay,
+  .glass-metric,
+  .glass-chart {
+    background: var(--color-bg-base);
+  }
+}
+
+/* ========== Reduced motion support ========== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

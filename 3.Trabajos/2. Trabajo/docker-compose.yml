@@ -1,20 +1,18 @@
-version: '3.8'
-
 services:
   backend:
     build:
       context: .
       dockerfile: backend/Dockerfile
-    container_name: mm1k-backend
+    container_name: mmkk-backend
     ports:
       - '8000:8000'
     restart: unless-stopped
 
   frontend:
     build:
-      context: ./src/frontend
+      context: ./frontend
       dockerfile: Dockerfile
-    container_name: mm1k-frontend
+    container_name: mmkk-frontend
     ports:
       - '5173:80' # map 5173 locally to nginx:80 inside container
     restart: unless-stopped

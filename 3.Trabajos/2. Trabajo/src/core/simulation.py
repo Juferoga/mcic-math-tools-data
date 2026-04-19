@@ -12,9 +12,9 @@ Notes:
 - If an arrival finds all k servers busy it is blocked (counted as lost).
 - Waiting times in queue are always 0 for accepted customers (service starts immediately).
 
-Author: Sekmeth (refactor for Erlang B)
 Date: 2026-04-18
 """
+
 from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Optional
@@ -27,14 +27,18 @@ import numpy as np
 class SimulationResult:
     event_times: np.ndarray  # timestamps of events (arrival or departure)
     system_sizes: np.ndarray  # number of busy servers after each event
-    wait_times: np.ndarray  # waiting times in queue for each accepted customer (all zeros here)
+    wait_times: (
+        np.ndarray
+    )  # waiting times in queue for each accepted customer (all zeros here)
     blocked_count: int
     total_arrivals: int
     blocking_probability: float
     mean_wait: float
 
 
-def simulate_mmk_k(interarrival_times: np.ndarray, service_times: np.ndarray, k: int) -> SimulationResult:
+def simulate_mmk_k(
+    interarrival_times: np.ndarray, service_times: np.ndarray, k: int
+) -> SimulationResult:
     """
     Simulación por eventos discretos de una cola M/M/k/k (Erlang B).
 
@@ -84,7 +88,9 @@ def simulate_mmk_k(interarrival_times: np.ndarray, service_times: np.ndarray, k:
         if busy < k:
             # aceptar: servicio inicia inmediatamente
             if service_idx >= service.shape[0]:
-                raise ValueError("service_times debe contener al menos tantos valores como clientes aceptados")
+                raise ValueError(
+                    "service_times debe contener al menos tantos valores como clientes aceptados"
+                )
             s = float(service[service_idx])
             service_idx += 1
             dep_time = float(arrival_time + s)
@@ -111,7 +117,9 @@ def simulate_mmk_k(interarrival_times: np.ndarray, service_times: np.ndarray, k:
 
     wait_times = np.array(wait_times_list, dtype=float)
     mean_wait = float(np.mean(wait_times)) if wait_times.size > 0 else 0.0
-    blocking_probability = float(blocked) / float(total_arrivals) if total_arrivals > 0 else 0.0
+    blocking_probability = (
+        float(blocked) / float(total_arrivals) if total_arrivals > 0 else 0.0
+    )
 
     return SimulationResult(
         event_times=np.array(event_times, dtype=float),
@@ -124,11 +132,13 @@ def simulate_mmk_k(interarrival_times: np.ndarray, service_times: np.ndarray, k:
     )
 
 
-# backward-compatible alias (simulación anterior era simulate_mm1k but ahora corresponde a M/M/k/k)
-simulate_mm1k = simulate_mmk_k
+# alias explícito alineado al modelo M/M/k/k
+simulate_mmkk = simulate_mmk_k
 
 
-def simulate_from_rates(lam: float, mu: float, k: int, sample_size: int = 10000, seed: Optional[int] = None) -> SimulationResult:
+def simulate_from_rates(
+    lam: float, mu: float, k: int, sample_size: int = 10000, seed: Optional[int] = None
+) -> SimulationResult:
     """
     Genera muestras exponenciales a partir de las tasas y llama a simulate_mmk_k.
 
@@ -142,7 +152,11 @@ def simulate_from_rates(lam: float, mu: float, k: int, sample_size: int = 10000,
         raise ValueError("lam >= 0 y mu > 0")
 
     rng = np.random.default_rng(seed)
-    interarrival = rng.exponential(1.0 / lam, size=sample_size) if lam > 0 else np.full(sample_size, np.inf)
+    interarrival = (
+        rng.exponential(1.0 / lam, size=sample_size)
+        if lam > 0
+        else np.full(sample_size, np.inf)
+    )
     services = rng.exponential(1.0 / mu, size=sample_size)
 
     return simulate_mmk_k(interarrival, services, k)

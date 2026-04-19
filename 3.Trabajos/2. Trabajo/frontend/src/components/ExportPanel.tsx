@@ -1,17 +1,30 @@
 import React, { useState } from 'react'
 import * as htmlToImage from 'html-to-image'
 import jsPDF from 'jspdf'
+import { GlassButton } from './glass/GlassButton'
 
+/**
+ * GlassExportPanel - Export functionality with glass styling
+ */
 const ExportPanel: React.FC = () => {
   const [exporting, setExporting] = useState(false)
 
   async function handleExport() {
     const node = document.getElementById('export-area')
-    if (!node) return alert('No se encontró el área para exportar')
+    if (!node) {
+      alert('No se encontró el área para exportar')
+      return
+    }
+    
     setExporting(true)
     try {
-      // generar imagen a partir del nodo
-      const dataUrl = await (htmlToImage as any).toPng(node, { cacheBust: true, pixelRatio: 2 })
+      // Generate image from the node
+      const dataUrl = await (htmlToImage as any).toPng(node, { 
+        cacheBust: true, 
+        pixelRatio: 2,
+        backgroundColor: '#F5F7FB' // Use the base background color
+      })
+      
       const pdf = new jsPDF('p', 'mm', 'a4')
       const imgProps = pdf.getImageProperties(dataUrl)
       const pdfWidth = pdf.internal.pageSize.getWidth()
@@ -21,11 +34,11 @@ const ExportPanel: React.FC = () => {
       if (pdfHeight <= pageHeight) {
         pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pdfHeight)
       } else {
-        // escalar para ajustarse a la altura de la página
+        // Scale to fit page height
         pdf.addImage(dataUrl, 'PNG', 0, 0, pdfWidth, pageHeight)
       }
 
-      pdf.save('MM1K_Report.pdf')
+      pdf.save('MMkk_Report.pdf')
     } catch (e) {
       console.error(e)
       alert('Error al exportar a PDF: ' + String(e))
@@ -35,10 +48,15 @@ const ExportPanel: React.FC = () => {
   }
 
   return (
-    <div className="mt-4">
-      <button onClick={handleExport} disabled={exporting} className="px-3 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 disabled:opacity-60">
-        {exporting ? 'Exportando...' : 'Exportar APM + Gráficas a PDF'}
-      </button>
+    <div>
+      <GlassButton
+        variant="primary"
+        onClick={handleExport}
+        loading={exporting}
+        className="w-full"
+      >
+        {exporting ? 'Exportando...' : 'Exportar a PDF'}
+      </GlassButton>
     </div>
   )
 }

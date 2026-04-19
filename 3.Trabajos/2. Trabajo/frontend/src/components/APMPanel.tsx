@@ -1,4 +1,5 @@
 import React from 'react'
+import { GlassCard, GlassMetricCard, GlassMetricGrid } from './glass'
 
 type Props = {
   blocking?: number
@@ -6,29 +7,80 @@ type Props = {
   avg_concurrent?: number
 }
 
-const formatPct = (v?: number) => (v == null ? '-' : `${(v * 100).toFixed(2)}%`)
-const formatNum = (v?: number) => (v == null || !isFinite(v) ? '-' : v.toFixed(3))
+/**
+ * GlassAPMPanel - Metrics display for APM monitoring
+ * 
+ * Refactored with glass design system
+ */
+const formatPct = (v?: number) => (v == null ? '—' : `${(v * 100).toFixed(2)}%`)
+const formatNum = (v?: number) => (v == null || !isFinite(v) ? '—' : v.toFixed(3))
+const formatQueueWait = (v?: number) => {
+  if (v == null || !isFinite(v)) return '—'
+  return `${v.toFixed(3)} (Erlang-B sin cola)`
+}
 
-const APMPanel: React.FC<Props> = ({ blocking, mean_wait, avg_concurrent }) => {
+const GlassAPMPanel: React.FC<Props> = ({ blocking, mean_wait, avg_concurrent }) => {
+  // Determine variant based on value thresholds
+  const getBlockingVariant = (): 'default' | 'success' | 'warning' | 'error' => {
+    if (blocking == null) return 'default'
+    if (blocking < 0.01) return 'success'
+    if (blocking < 0.05) return 'warning'
+    return 'error'
+  }
+
+  const getWaitVariant = (): 'default' | 'success' | 'warning' | 'error' => {
+    if (mean_wait == null) return 'default'
+    if (mean_wait < 0.5) return 'success'
+    if (mean_wait < 2) return 'warning'
+    return 'error'
+  }
+
   return (
-    <div className="card mb-4">
-      <h3 className="font-semibold mb-2">Monitor — Caso: Pasarela de Pagos</h3>
-      <div className="grid grid-cols-3 gap-4">
-        <div className="p-3 bg-gray-50 rounded">
-          <div className="text-sm text-gray-500">Prob. Transacción Rechazada</div>
-          <div className="text-2xl font-bold">{formatPct(blocking)}</div>
-        </div>
-        <div className="p-3 bg-gray-50 rounded">
-          <div className="text-sm text-gray-500">Tiempo medio de encolamiento (s)</div>
-          <div className="text-2xl font-bold">{formatNum(mean_wait)}</div>
-        </div>
-        <div className="p-3 bg-gray-50 rounded">
-          <div className="text-sm text-gray-500">Tráfico concurrente (promedio)</div>
-          <div className="text-2xl font-bold">{formatNum(avg_concurrent)}</div>
-        </div>
+    <GlassCard className="mb-4">
+      <div className="flex items-center justify-between mb-4">
+        <h3 
+          className="text-lg font-semibold"
+          style={{ color: 'var(--color-text-primary)' }}
+        >
+          Monitor — Caso: Pasarela de Pagos
+        </h3>
+        
+        {/* Status indicator */}
+        {blocking !== undefined && (
+          <span 
+            className="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full"
+            style={{ 
+              background: `color-mix(in srgb, var(--color-${getBlockingVariant() === 'success' ? 'success' : getBlockingVariant() === 'warning' ? 'warning' : 'error'}) 15%, transparent)`,
+              color: `var(--color-${getBlockingVariant() === 'success' ? 'success' : getBlockingVariant() === 'warning' ? 'warning' : 'error'})`
+            }}
+          >
+            <span 
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ background: 'currentColor' }}
+            />
+            {getBlockingVariant() === 'success' ? 'Óptimo' : getBlockingVariant() === 'warning' ? 'Advertencia' : 'Crítico'}
+          </span>
+        )}
       </div>
-    </div>
+
+      <GlassMetricGrid>
+        <GlassMetricCard
+          label="Prob. Transacción Rechazada"
+          value={formatPct(blocking)}
+          variant={getBlockingVariant()}
+        />
+        <GlassMetricCard
+          label="Tiempo de espera en cola Wq (s)"
+          value={formatQueueWait(mean_wait)}
+          variant={getWaitVariant()}
+        />
+        <GlassMetricCard
+          label="Tráfico concurrente (promedio)"
+          value={formatNum(avg_concurrent)}
+        />
+      </GlassMetricGrid>
+    </GlassCard>
   )
 }
 
-export default APMPanel
+export default GlassAPMPanel
