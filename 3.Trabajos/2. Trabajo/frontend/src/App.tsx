@@ -140,8 +140,8 @@ const App: React.FC = () => {
                 </div>
               )}
 
-              {/* Stats Panel */}
-              <StatsPanel data={result?.wait_times} />
+              {/* Stats Panel - Validación estadística */}
+              <StatsPanel data={result?.times} states={result?.states} />
             </>
           </div>
 

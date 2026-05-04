@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     container_name: mmkk-backend
+    hostname: mmkk-backend
     ports:
       - '8000:8000'
     restart: unless-stopped
@@ -13,8 +14,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: mmkk-frontend
+    hostname: mmkk-frontend
     ports:
-      - '5173:80' # map 5173 locally to nginx:80 inside container
+      - '0.0.0.0:5173:80'
     restart: unless-stopped
     depends_on:
       - backend

@@ -16,8 +16,10 @@ export interface SimResponse {
   mean_wait: number
 }
 
+// En desarrollo (npm run dev), Vite proxyará /api -> http://127.0.0.1:8000
+// En producción (Docker), Nginx proxyará /api -> mmkk-backend:8000
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000',
+  baseURL: '/api',
   timeout: 120000,
 })
 

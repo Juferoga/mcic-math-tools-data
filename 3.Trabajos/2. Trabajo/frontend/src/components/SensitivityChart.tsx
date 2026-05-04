@@ -37,6 +37,14 @@ const SensitivityChart: React.FC<Props> = ({
     wait_th: wait_theory[i],
   }))
 
+  // Calcular dominio dinámico para los gráficos (con padding)
+  const maxBlocking = Math.max(...blocking_sim_mean, ...blocking_theory)
+  const blockingDomain = [0, Math.min(1, maxBlocking * 1.2)] // 20% padding above max
+  
+  // Para wait time, como E[Tw]=0 en M/M/k/k, mostrar un rango pequeño mínimo
+  const maxWait = Math.max(...wait_sim_mean, ...wait_theory)
+  const waitDomain = [0, Math.max(0.01, maxWait * 1.5)] // Mínimo 0.01 para ver变化
+
   // Custom tooltip for glass charts
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -85,15 +93,18 @@ const SensitivityChart: React.FC<Props> = ({
                 }}
               />
               <YAxis 
+                yAxisId="left"
                 tick={{ fill: 'var(--color-text-muted)', fontSize: 11 }}
-                domain={[0, 1]}
-                tickFormatter={(v) => v.toFixed(2)}
+                domain={blockingDomain}
+                tickFormatter={(v) => v.toFixed(3)}
+                width={45}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend 
                 wrapperStyle={{ fontSize: 11, paddingTop: 10 }}
               />
               <Line 
+                yAxisId="left"
                 type="monotone" 
                 dataKey="blocking_sim" 
                 stroke="var(--color-accent)" 
@@ -102,6 +113,7 @@ const SensitivityChart: React.FC<Props> = ({
                 strokeWidth={2}
               />
               <Line 
+                yAxisId="left"
                 type="monotone" 
                 dataKey="blocking_th" 
                 stroke="#dd6b20" 
@@ -138,14 +150,18 @@ const SensitivityChart: React.FC<Props> = ({
                 }}
               />
               <YAxis 
+                yAxisId="right"
                 tick={{ fill: 'var(--color-text-muted)', fontSize: 11 }}
-                tickFormatter={(v) => v.toFixed(2)}
+                domain={waitDomain}
+                tickFormatter={(v) => v.toFixed(4)}
+                width={50}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend 
                 wrapperStyle={{ fontSize: 11, paddingTop: 10 }}
               />
               <Line 
+                yAxisId="right"
                 type="monotone" 
                 dataKey="wait_sim" 
                 stroke="#22C55E" 
@@ -154,6 +170,7 @@ const SensitivityChart: React.FC<Props> = ({
                 strokeWidth={2}
               />
               <Line 
+                yAxisId="right"
                 type="monotone" 
                 dataKey="wait_th" 
                 stroke="#9f7aea" 
