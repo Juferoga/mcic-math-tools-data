@@ -9,3 +9,6 @@ venv/
 4.ProyectoFinal/trabajo 1/fase5/*.wav
 .alt
 .qwen
+__pycache__/
+node_modules/
+node_modules
