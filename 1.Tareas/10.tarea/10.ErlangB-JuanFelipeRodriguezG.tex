@@ -1,0 +1,182 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+% Configuración de teoremas y definiciones
+\theoremstyle{definition}
+\newtheorem{definicion}{Definición}[section]
+
+\title{\textbf{Modelo M/M/k/k (Erlang-B):}\\
+Desarrollo Matemático del Sistema de Pérdidas}
+\author{Juan Felipe Rodríguez Galindo (20261595004)  \\ Grupo: Erlang-B}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+El presente documento desarrolla el modelo matemático Erlang-B (también denotado como M/M/k/k), un sistema de colas sin capacidad de espera donde las solicitudes que encuentran todos los servidores ocupados son rechazadas. Se presenta el diagrama de transición de estados, las ecuaciones de equilibrio estacionario, y la derivación explícita de la distribución de probabilidad $P_n$ tanto en función de $P_0$ como de los parámetros fundamentales $\lambda$ y $\mu$.
+\end{abstract}
+
+\section{Planteamiento del Modelo}
+
+El sistema Erlang-B se caracteriza por los siguientes parámetros:
+\begin{itemize}
+    \item $\lambda$: Tasa de llegada de clientes (proceso de Poisson).
+    \item $\mu$: Tasa de servicio por servidor (distribución exponencial).
+    \item $k$: Número de servidores idénticos en paralelo.
+    \item Capacidad del sistema: $k$ (sin espacio de espera).
+\end{itemize}
+
+Definimos la \textit{intensidad de tráfico} o \textit{tráfico ofrecido}:
+\begin{equation}
+    \rho = \frac{\lambda}{\mu} \quad \text{(en erlangs)}
+\end{equation}
+
+Sea $N(t)$ el número de clientes en el sistema en el instante $t$. El proceso estocástico $\{N(t), t \geq 0\}$ es una cadena de Markov de nacimiento-muerte con espacio de estados $\mathcal{S} = \{0, 1, 2, \ldots, k\}$.
+
+\section{Diagrama de Transición de Estados}
+
+La Figura \ref{fig:diagrama} muestra el diagrama de transición de estados para el sistema M/M/k/k. Las tasas de transición dependen del estado actual $n$:
+
+\begin{itemize}
+    \item \textbf{Tasa de llegada (nacimiento):} Constante $\lambda$ para $n < k$, y $0$ para $n = k$ (sistema saturado).
+    \item \textbf{Tasa de salida (muerte):} Si hay $n$ clientes ocupando $n$ servidores, la tasa de servicio total es $n\mu$ (para $1 \leq n \leq k$).
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[
+        estado/.style={circle, draw, minimum size=1cm, inner sep=0pt},
+        flecha/.style={-{Stealth[length=3mm]}, thick},
+        auto
+    ]
+        % Estados
+        \node[estado] (E0) {$0$};
+        \node[estado, right=2.5cm of E0] (E1) {$1$};
+        \node[estado, right=2.5cm of E1] (E2) {$2$};
+        \node[right=1.5cm of E2] (E3) {$\cdots$};
+        \node[estado, right=1.5cm of E3] (Ek) {$k$};
+        
+        % Flechas de ida (llegadas)
+        \draw[flecha] (E0) -- node[above] {$\lambda$} (E1);
+        \draw[flecha] (E1) -- node[above] {$\lambda$} (E2);
+        \draw[flecha] (E2) -- node[above] {$\lambda$} (E3);
+        \draw[flecha] (E3) -- node[above] {$\lambda$} (Ek);
+        
+        % Flechas de vuelta (servicio)
+        \draw[flecha] (E1) -- node[below] {$\mu$} (E0);
+        \draw[flecha] (E2) -- node[below] {$2\mu$} (E1);
+        \draw[flecha] (E3) -- node[below] {$3\mu$} (E2);
+        \draw[flecha] (Ek) -- node[below] {$k\mu$} (E3);
+        
+    \end{tikzpicture}
+    \caption{Diagrama de transición de estados para el modelo M/M/k/k (Erlang-B).}
+    \label{fig:diagrama}
+\end{figure}
+
+\section{Ecuaciones de Estado Estacionario}
+
+Bajo la hipótesis de ergodicidad (la cadena es irreducible y finita, por tanto positivamente recurrente), existe una distribución estacionaria $\mathbf{P} = \{P_0, P_1, \ldots, P_k\}$ donde $P_n = \lim_{t \to \infty} P(N(t) = n)$.
+
+Aplicando el \textit{principio de balance detallado} (flujo entrante = flujo saliente) para cada estado $n$:
+
+\begin{align}
+    \text{Estado } 0: &\quad \mu P_1 = \lambda P_0 \label{eq:estado0}\\
+    \text{Estado } n \ (1 \leq n < k): &\quad \lambda P_{n-1} + (n+1)\mu P_{n+1} = (\lambda + n\mu)P_n \label{eq:estadon}\\
+    \text{Estado } k: &\quad \lambda P_{k-1} = k\mu P_k \label{eq:estadok}
+\end{align}
+
+Alternativamente, utilizando el \textit{balance entre estados adyacentes} (método más directo para cadenas de nacimiento-muerte):
+\begin{equation}
+    \lambda P_{n-1} = n\mu P_n \quad \text{para } n = 1, 2, \ldots, k
+    \label{eq:balance}
+\end{equation}
+
+La ecuación \eqref{eq:balance} establece que el flujo de probabilidad de $n-1$ a $n$ debe igualar el flujo de $n$ a $n-1$ en equilibrio.
+
+\section{Obtención de $P_n$ en función de $P_0$}
+
+A partir de la ecuación de balance \eqref{eq:balance}, despejamos recursivamente:
+
+\begin{equation}
+    P_n = \frac{\lambda}{n\mu} P_{n-1} = \frac{\rho}{n} P_{n-1} \quad \text{donde } \rho = \frac{\lambda}{\mu}
+\end{equation}
+
+Iterando sucesivamente:
+\begin{align}
+    P_1 &= \frac{\rho}{1} P_0 = \rho P_0 \\
+    P_2 &= \frac{\rho}{2} P_1 = \frac{\rho}{2} \cdot \rho P_0 = \frac{\rho^2}{2!} P_0 \\
+    P_3 &= \frac{\rho}{3} P_2 = \frac{\rho}{3} \cdot \frac{\rho^2}{2!} P_0 = \frac{\rho^3}{3!} P_0
+\end{align}
+
+Generalizando por inducción matemática, obtenemos la expresión general:
+\begin{equation}
+    \boxed{P_n = \frac{\rho^n}{n!} P_0 \quad \text{para } n = 0, 1, 2, \ldots, k}
+    \label{eq:pn_po}
+\end{equation}
+
+\section{Obtención de $P_n$ en función de $\lambda$ y $\mu$}
+
+Para determinar $P_0$, utilizamos la condición de normalización de la distribución de probabilidad:
+\begin{equation}
+    \sum_{n=0}^{k} P_n = 1
+\end{equation}
+
+Sustituyendo \eqref{eq:pn_po}:
+\begin{equation}
+    \sum_{n=0}^{k} \frac{\rho^n}{n!} P_0 = 1 \quad \Rightarrow \quad P_0 \sum_{n=0}^{k} \frac{\rho^n}{n!} = 1
+\end{equation}
+
+Despejando $P_0$ (notando que usamos el índice $i$ para no confundir con la constante de servidores $k$):
+\begin{equation}
+    \boxed{P_0 = \left( \sum_{i=0}^{k} \frac{\rho^i}{i!} \right)^{-1} = \left( \sum_{i=0}^{k} \frac{(\lambda/\mu)^i}{i!} \right)^{-1}}
+    \label{eq:p0}
+\end{equation}
+
+Finalmente, sustituyendo \eqref{eq:p0} en \eqref{eq:pn_po}, obtenemos la distribución estacionaria completa en términos de los parámetros originales:
+
+\begin{equation}
+    \boxed{P_n = \frac{(\lambda/\mu)^n / n!}{\sum_{i=0}^{k} (\lambda/\mu)^i / i!} = \frac{\rho^n}{n!} \cdot \frac{1}{\sum_{i=0}^{k} \frac{\rho^i}{i!}} \quad \text{para } n = 0, 1, \ldots, k}
+    \label{eq:pn_final}
+\end{equation}
+
+\subsection{Fórmula de Erlang-B}
+
+Un resultado particularmente importante es la probabilidad de bloqueo $P_k$, es decir, la probabilidad de que un cliente encuentre todos los servidores ocupados y sea rechazado (pérdida). Esta se conoce como la \textbf{fórmula de Erlang-B} o \textbf{fórmula de pérdida de Erlang}:
+
+\begin{equation}
+    \boxed{B(k, \rho) = P_k = \frac{\rho^k / k!}{\sum_{i=0}^{k} \rho^i / i!}}
+    \label{eq:erlangb}
+\end{equation}
+
+Esta fórmula es insensible a la distribución del tiempo de servicio (vale para M/G/k/k), aunque aquí la hemos derivado para el caso M/M/k/k.
+
+\section{Verificación de Resultados}
+
+Para verificar la consistencia, consideremos el caso límite cuando $k \to \infty$ (sistema M/M/$\infty$):
+\begin{equation}
+    \lim_{k \to \infty} P_n = \frac{\rho^n}{n!} e^{-\rho}
+\end{equation}
+que es precisamente la distribución de Poisson con parámetro $\rho$, resultado clásico para el sistema de servidores infinitos, confirmando la validez de nuestra derivación.
+
+\section{Conclusión}
+
+Se ha desarrollado rigurosamente el modelo Erlang-B (M/M/k/k), partiendo del diagrama de transición de estados, estableciendo las ecuaciones de balance, y resolviendo la distribución estacionaria $P_n$. La expresión final \eqref{eq:pn_final} proporciona la probabilidad de tener $n$ clientes en el sistema en función de los parámetros fundamentales $\lambda$ (tasa de llegada) y $\mu$ (tasa de servicio), siendo fundamental para el dimensionamiento de sistemas telefónicos y de comunicaciones donde las solicitudes excedentes se pierden.
+
+\begin{thebibliography}{9}
+    \bibitem{kleinrock} Kleinrock, L. (1975). \textit{Queueing Systems, Volume I: Theory}. Wiley-Interscience.
+    \bibitem{cooper} Cooper, R. B. (1981). \textit{Introduction to Queueing Theory} (2nd ed.). North-Holland.
+    \bibitem{ross} Ross, S. M. (2014). \textit{Introduction to Probability Models} (11th ed.). Academic Press.
+\end{thebibliography}
+
+\end{document}
