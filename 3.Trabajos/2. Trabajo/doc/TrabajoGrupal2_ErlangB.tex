@@ -66,6 +66,9 @@
     arrows.meta,
     calc,
     shapes.geometric,
+    shapes.misc,
+    shadows.blur,
+    backgrounds,
     decorations.pathreplacing
 }
 \usepackage{pgfplots}
@@ -425,53 +428,16 @@ El propósito de esta etapa es implementar un simulador de eventos discretos del
 M/M/k/k en MATLAB y contrastar sus resultados estadísticos con las predicciones analíticas
 de la sección anterior, verificando empíricamente la validez del modelo.
 La idea es hacerlo con juicio y con números sobre la mesa, como toca.
-Los scripts correspondientes forman parte del repositorio del proyecto en la carpeta
-\texttt{matlab/} y se detallan en el Anexo de Código al final del documento.
-
-\subsection{Supuestos de la simulación}
+Los algoritmos implementados se detallan en el Anexo de Código al final del documento.
 
 
 
-\section{Implementación en MATLAB}
-
-La función adopta el formato recomendado por el profesor: parámetro opcional
-\texttt{mostrar}, manejo con \texttt{switch nargin} y validación mínima de los
-argumentos.
-
-\begin{lstlisting}[style=matlab,caption={Función \texttt{xx12.m}}]
-function pk = xx12(A,k,mostrar)
-% xx12  Probabilidad de bloqueo p_k = P[N=k] del sistema M/M/k/k
-%       calculada por la recursion de Erlang B:
-%
-%           p_n = A*p_{n-1} / (n + A*p_{n-1}),    p_0 = 1.
-%
-%   Entradas:
-%     A       : real positivo, A = lambda/mu
-%     k       : entero positivo, numero de servidores
-%     mostrar : 1 -> imprime A, k y pk; por defecto 0.
-
-    switch nargin
-        case 2
-            mostrar = 0;
-    end
-
-    % Validacion minima
-    if A < 0 || k < 1 || k ~= floor(k)
-        error('A debe ser >=0 y k entero positivo.');
-    end
-
-    pk = 1;                         % p_0 = 1
-    for n = 1:k
-        pk = (A*pk)/(n + A*pk);     % recursion
-    end
-
-    if mostrar == 1
-        A
-        k
-        pk
-    end
-end
-\end{lstlisting}
+\begin{figure}[H]
+\centering
+\input{plots/diagrama_xx12}
+\caption{Diagrama de flujo de la función \texttt{xx12} para calcular Erlang B.}
+\label{fig:diagrama-xx12}
+\end{figure}
 
 \section{Verificación}
 
@@ -540,39 +506,6 @@ $20$ & $300$  & $1{,}372\times 10^{-233}$    & \texttt{Inf} \\
 \end{tabular}
 \end{center}
 
-\subsection{Script de verificación}
-
-\begin{lstlisting}[style=matlab,caption={Script \texttt{verificar.m}}]
-% (a) Tres regimenes para k = 5
-fprintf('--- Tres regimenes (k = 5) ---\n');
-fprintf('A=%2d  pk=%.6f\n',  2, xx12( 2,5));
-fprintf('A=%2d  pk=%.6f\n',  5, xx12( 5,5));
-fprintf('A=%2d  pk=%.6f\n', 10, xx12(10,5));
-
-% (b) Barrido en k con A = 5
-fprintf('\n--- Barrido en k (A = 5) ---\n');
-for k = 1:10
-    fprintf('k=%2d  pk=%.6f\n', k, xx12(5,k));
-end
-
-% (c) Validacion contra la formula directa para k pequeno
-A = 6; k = 8;
-directa   = (A^k/factorial(k)) / sum(A.^(0:k)./factorial(0:k));
-recursiva = xx12(A,k);
-fprintf('\n--- Directa vs recursiva con A=6, k=8 ---\n');
-fprintf('directa   = %.10f\n', directa);
-fprintf('recursiva = %.10f\n', recursiva);
-fprintf('|diff|    = %.2e\n', abs(directa-recursiva));
-
-% (d) Casos donde factorial(k) desborda en MATLAB y la directa falla.
-%     factorial(k) devuelve Inf para k>=171.
-fprintf('\n--- Recursion donde la directa falla ---\n');
-fprintf('A=10  k=180   pk = %.4e   factorial(180) = %g\n', xx12(10,180), factorial(180));
-fprintf('A=20  k=200   pk = %.4e   factorial(200) = %g\n', xx12(20,200), factorial(200));
-fprintf('A=20  k=300   pk = %.4e   factorial(300) = %g\n', xx12(20,300), factorial(300));
-\end{lstlisting}
-
-
 % ──────────────────────────────────────────────────────────────
 
 \subsection{Plan de experimentos}
@@ -601,13 +534,13 @@ Cada experimento se ejecuta con $T_{\text{total}} = 10^6 / \lambda$ unidades de 
 garantizar una muestra estadísticamente suficiente.
 
 % ============================================================
-\section{Actividad 3: Resultados de Simulación en MATLAB}
+\section{Actividad 3: Resultados de Simulación}
 % ============================================================
 
 \subsection{Validación del modelo analítico}
 
 La Tabla~\ref{tab:resultados_sim} compara la probabilidad de bloqueo analítica $B(k,a)$,
-calculada mediante la fórmula~\eqref{eq:erlangB} con la recursión de Jagerman~\eqref{eq:jagerman},
+calculada mediante la fórmula~\eqref{eq:erlangB} con la recursión de Jagerman~\eqref{eq:jagerman}~\cite{jagerman1974},
 con el valor estimado por simulación $\hat{B}$ en cada experimento.
 El intervalo de confianza del 95\,\% para $\hat{B}$ se obtiene tratando cada solicitud
 bloqueada como una variable de Bernoulli; el semiancho es
@@ -632,9 +565,9 @@ E4 & 20 & 10 & 0.0046 & 0.004 & $\pm 0.001$ \\
 
 \begin{remark}
 Los valores analíticos de la columna $B(k,a)$ fueron calculados con la recursión de
-Jagerman~\eqref{eq:jagerman}.
-Los valores simulados $\hat{B}$ y los intervalos de confianza se obtienen ejecutando
-\texttt{matlab/actividad3.m} del repositorio. En esta versión se incluyen valores
+Jagerman~\eqref{eq:jagerman}~\cite{jagerman1974}.
+Los valores simulados $\hat{B}$ y los intervalos de confianza se obtienen mediante la
+implementación detallada en los anexos. En esta versión se incluyen valores
 representativos para ilustrar la concordancia, como quien dice, a ojo rolo pero bien
 fundamentado.
 \end{remark}
@@ -642,7 +575,7 @@ fundamentado.
 \subsection{Comportamiento de $B(k,a)$ en función de $k$ y $a$}
 
 La Figura~\ref{fig:curvas_erlang} ilustra las curvas de Erlang~B para distintos valores de
-$k$, generada mediante \texttt{matlab/actividad1.m}.
+$k$.
 Se observan los comportamientos esperados, claritos:
 
 \begin{itemize}
@@ -705,11 +638,9 @@ de redes, ya que fueron los primeros en demostrar empíricamente que el tráfico
 área local presenta estadísticas autosimilares con dependencia de largo alcance (LRD),
 en contraste con el supuesto Poisson del modelo clásico.
 
-El repositorio del proyecto incluye los archivos \texttt{BCOct89Ext.TL},
-\texttt{BCpAug89.TL} y otros en la carpeta \texttt{data/}.
-Cada archivo registra tiempos de llegada de paquetes Ethernet, leídos por
-\texttt{matlab/actividad4.m} para construir las funciones empíricas de distribución
-\texttt{f1} a \texttt{f4}.
+Para el análisis se emplean los conjuntos de datos de referencia (como \texttt{BCOct89Ext.TL} 
+o \texttt{BCpAug89.TL}), los cuales registran tiempos de llegada de paquetes Ethernet.
+A partir de estos se construyen las funciones empíricas de distribución para la simulación.
 
 \subsection{Metodología de uso como entrada del simulador}
 
@@ -717,8 +648,8 @@ Para emplear las trazas Bellcore como proceso de llegadas del simulador M/M/k/k 
 procede en cuatro etapas, con juicio y sin afán:
 
 \begin{enumerate}
-    \item \textbf{Carga y preprocesamiento (actividad4.m):}
-          Se leen los archivos \texttt{.TL} y se extraen los tiempos entre llegadas
+    \item \textbf{Carga y preprocesamiento:}
+          Se leen los datos originales y se extraen los tiempos entre llegadas
           sucesivas $\{X_i = t_{i+1} - t_i\}$.
           Las unidades se convierten al sistema de referencia del simulador.
 
@@ -726,66 +657,79 @@ procede en cuatro etapas, con juicio y sin afán:
           Se calcula la tasa media $\hat{\lambda} = 1/\bar{X}$ y se ajusta la tasa de
           servicio $\mu$ para obtener la carga ofrecida deseada $a = \hat{\lambda}/\mu$.
 
-    \item \textbf{Alimentación del simulador (actividad5.m):}
+    \item \textbf{Alimentación del simulador:}
           En lugar de generar tiempos entre llegadas sintéticos, el simulador consume
           secuencialmente los valores del vector $\{X_i\}$ provenientes de la traza.
           Cuando se agota la traza, se reinicia de forma circular.
 
-    \item \textbf{Validación mediante QQ-plot:}
+    \item \textbf{Validación mediante análisis gráfico:}
           Se confrontan las distribuciones empíricas obtenidas con la distribución
-          exponencial teórica mediante gráficos cuantil-cuantil, confirmando o refutando
-          el supuesto de exponencialidad de los tiempos entre llegadas.
+          exponencial teórica mediante gráficos de distribución y cuantil-cuantil (QQ-plots),
+          evaluando la proximidad de los datos a un proceso de Poisson clásico.
 \end{enumerate}
 
+\subsection{Resultados del análisis de trazas}
+
+A continuación se presentan las evidencias gráficas obtenidas tras procesar las cuatro trazas Bellcore suministradas. Para cada traza se incluye la distribución de los tiempos entre llegadas y su correspondiente gráfico de cuantiles.
+
 \begin{figure}[H]
-\centering
-\begin{tikzpicture}
-\begin{groupplot}[
-    group style={group size=2 by 2, horizontal sep=1.2cm, vertical sep=1.1cm},
-    width=5.3cm,
-    height=4.4cm,
-    xlabel={Cuantil teórico (Exp)},
-    ylabel={Cuantil empírico},
-    grid=both,
-    tick label style={font=\footnotesize},
-    label style={font=\footnotesize}
-]
-\nextgroupplot[title={Traza f1}]
-\addplot+[only marks, mark size=1.2pt, blue] coordinates {
-    (0.1,0.08) (0.2,0.18) (0.3,0.29) (0.4,0.42) (0.5,0.55)
-    (0.6,0.7) (0.7,0.9) (0.8,1.2) (0.9,1.7) (1.0,2.5)
-};
-\addplot[red, thick] coordinates {(0,0) (1.1,1.1)};
-
-\nextgroupplot[title={Traza f2}]
-\addplot+[only marks, mark size=1.2pt, teal] coordinates {
-    (0.1,0.1) (0.2,0.23) (0.3,0.35) (0.4,0.48) (0.5,0.65)
-    (0.6,0.85) (0.7,1.1) (0.8,1.45) (0.9,1.95) (1.0,2.8)
-};
-\addplot[red, thick] coordinates {(0,0) (1.1,1.1)};
-
-\nextgroupplot[title={Traza f3}]
-\addplot+[only marks, mark size=1.2pt, purple] coordinates {
-    (0.1,0.12) (0.2,0.26) (0.3,0.4) (0.4,0.56) (0.5,0.75)
-    (0.6,1.0) (0.7,1.35) (0.8,1.8) (0.9,2.4) (1.0,3.4)
-};
-\addplot[red, thick] coordinates {(0,0) (1.1,1.1)};
-
-\nextgroupplot[title={Traza f4}]
-\addplot+[only marks, mark size=1.2pt, orange] coordinates {
-    (0.1,0.09) (0.2,0.21) (0.3,0.33) (0.4,0.47) (0.5,0.66)
-    (0.6,0.9) (0.7,1.22) (0.8,1.6) (0.9,2.2) (1.0,3.0)
-};
-\addplot[red, thick] coordinates {(0,0) (1.1,1.1)};
-\end{groupplot}
-\end{tikzpicture}
-\caption{%
-    QQ-plots de los tiempos entre llegadas de las trazas Bellcore
-    vs.\ distribución exponencial teórica. La separación en las colas se nota
-    de una, bien bogotana.
-}
-\label{fig:qqplot}
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/act_4/Distribución: BCpAug89.png}
+        \caption{Distribución: BCpAug89}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/act_4/QQ-Plot: BCpAug89.png}
+        \caption{QQ-Plot: BCpAug89}
+    \end{subfigure}
+    \vspace{1em}
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/act_4/Distribución: BCOct89Ext.png}
+        \caption{Distribución: BCOct89Ext}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/act_4/QQ-Plot: BCOct89Ext.png}
+        \caption{QQ-Plot: BCOct89Ext}
+    \end{subfigure}
+    \caption{Análisis de distribución y cuantiles para las trazas BCpAug89 y BCOct89Ext.}
+    \label{fig:trazas_part1}
 \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/act_4/Distribución: BCOct89Ext4.png}
+        \caption{Distribución: BCOct89Ext4}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/act_4/QQ-Plot: BCOct89Ext4.png}
+        \caption{QQ-Plot: BCOct89Ext4}
+    \end{subfigure}
+    \vspace{1em}
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/act_4/Distribución: BCpOct89.png}
+        \caption{Distribución: BCpOct89}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/act_4/QQ-Plot: BCpOct89.png}
+        \caption{QQ-Plot: BCpOct89}
+    \end{subfigure}
+    \caption{Análisis de distribución y cuantiles para las trazas BCOct89Ext4 y BCpOct89.}
+    \label{fig:trazas_part2}
+\end{figure}
+
 % ──────────────────────────────────────────────────────────────
 
 \subsection{Hipótesis de comparación}
@@ -998,29 +942,6 @@ Dado que la fórmula de Erlang~B es insensible a la distribución del tiempo de 
 (véase la Observación~3.2), el valor de $B(k,a)$ sigue siendo válido incluso si dicha
 distribución no es exponencial, lo que amplía significativamente la aplicabilidad del modelo.
 
-\subsection{Métricas de interés operacional}
-
-En el contexto del clúster de Kubernetes, las métricas derivadas del modelo tienen una
-interpretación operacional directa:
-
-\begin{itemize}
-    \item \textbf{Probabilidad de bloqueo $B(k,a)$}: fracción de peticiones HTTP que reciben
-          respuesta \texttt{503}.
-          Es el indicador más directo de la calidad de servicio percibida por el usuario final.
-          Un valor aceptable típico en producción es inferior al 1\,\%.
-
-    \item \textbf{Utilización $\rho$}: fracción promedio del tiempo en que cada Pod está
-          activo.
-          Un valor de $\rho$ cercano a $1$ indica alto aprovechamiento pero también alto
-          riesgo de bloqueo; un valor bajo indica capacidad ociosa.
-
-    \item \textbf{Tasa efectiva $\lambda_{\text{ef}}$}: número de peticiones HTTP atendidas
-          exitosamente por unidad de tiempo; es el \textit{throughput} real del clúster.
-
-    \item \textbf{Número medio de Pods ocupados $\bar{N}$}: permite estimar el consumo
-          promedio de recursos de cómputo (CPU, memoria) y planificar el escalado.
-\end{itemize}
-
 \subsection{Dimensionamiento del clúster mediante Erlang B}
 
 El problema de dimensionamiento consiste en determinar el número mínimo de Pods $k^*$ tal
@@ -1032,9 +953,8 @@ ofrecida $a$:
     \label{eq:dimensionamiento}
 \end{equation}
 
-Este problema se resuelve evaluando la recursión de Jagerman~\eqref{eq:jagerman} de
-forma incremental en $k$ hasta satisfacer la restricción, tal como implementa
-\texttt{matlab/actividad6.m}.
+Este problema se resuelve evaluando la recursión de Jagerman~\eqref{eq:jagerman}~\cite{jagerman1974} de
+forma incremental en $k$ hasta satisfacer la restricción.
 La Figura~\ref{fig:flujo_kubernetes} muestra el flujograma de este procedimiento.
 
 \begin{figure}[H]

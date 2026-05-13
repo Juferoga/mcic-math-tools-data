@@ -1,0 +1,174 @@
+%% ============================================================
+%%  diagrama_xx12.tex  —  Diagrama de flujo de xx12 (Erlang B)
+%%  Uso: \input{diagrama_xx12}
+%%
+%%  Requiere en el preámbulo:
+%%    \usepackage{tikz}
+%%    \usepackage{xcolor}
+%%    \usepackage{amsmath}
+%%    \usetikzlibrary{shapes.geometric, shapes.misc,
+%%      arrows.meta, shadows.blur, backgrounds,
+%%      positioning, calc}
+%% ============================================================
+
+%% ── Paleta ──────────────────────────────────────────────────
+\definecolor{fcbg}    {HTML}{F3F1EC}
+\definecolor{fcBlue}  {HTML}{1C4E80}
+\definecolor{fcTeal}  {HTML}{0A6B6B}
+\definecolor{fcGreen} {HTML}{1E5C3A}
+\definecolor{fcRed}   {HTML}{8B1A1A}
+\definecolor{fcViolet}{HTML}{4A2080}
+\definecolor{fcLine}  {HTML}{2C2C2C}
+
+\definecolor{fcFBlue}  {HTML}{D6E4F0}
+\definecolor{fcFTeal}  {HTML}{C8EAEA}
+\definecolor{fcFGreen} {HTML}{C8E6C9}
+\definecolor{fcFRed}   {HTML}{FADBD8}
+\definecolor{fcFViolet}{HTML}{E8D5F5}
+
+%% ── Estilos ─────────────────────────────────────────────────
+\tikzset{
+  fc base/.style={
+    draw, align=center, inner sep=8pt,
+    font=\small, line width=0.65pt,
+    blur shadow={shadow blur steps=6,
+                 shadow xshift=0.8pt, shadow yshift=-0.8pt,
+                 shadow opacity=12},
+  },
+  fc term/.style={
+    fc base, rounded rectangle,
+    rounded rectangle arc length=180,
+    minimum height=0.82cm, text width=3.8cm,
+    font=\small\bfseries,
+    draw=fcBlue, fill=fcFBlue, text=fcBlue,
+  },
+  fc proc/.style={
+    fc base, rounded corners=4pt,
+    minimum height=0.82cm, text width=5.2cm,
+    draw=fcBlue, fill=fcFBlue, text=fcBlue,
+  },
+  fc dec/.style={
+    fc base, diamond, aspect=2.8,
+    minimum height=0.82cm, text width=4.4cm,
+    inner sep=2pt, font=\small\bfseries,
+    draw=fcTeal, fill=fcFTeal, text=fcTeal,
+  },
+  fc loop/.style={
+    fc base, rounded corners=4pt,
+    minimum height=0.82cm, text width=5.2cm,
+    font=\small\bfseries,
+    draw=fcGreen, fill=fcFGreen, text=fcGreen,
+  },
+  fc recur/.style={
+    fc base, rounded corners=4pt,
+    minimum height=1.1cm, text width=5.2cm,
+    draw=fcViolet, fill=fcFViolet, text=fcViolet,
+  },
+  fc err/.style={
+    fc base, rounded corners=4pt,
+    minimum height=0.82cm, text width=4.0cm,
+    font=\small\bfseries,
+    draw=fcRed, fill=fcFRed, text=fcRed,
+  },
+  fc arr/.style={
+    ->, >=Stealth, line width=0.9pt, color=fcLine,
+    shorten >=2pt, shorten <=1pt,
+  },
+  fc back/.style={
+    ->, >=Stealth, line width=0.85pt,
+    color=fcGreen, dashed,
+    shorten >=2pt, shorten <=1pt,
+  },
+  fc lbl/.style={
+    font=\footnotesize\bfseries,
+    fill=fcbg, inner sep=1.5pt, rounded corners=1.5pt,
+  },
+}
+
+%% ── Figura ──────────────────────────────────────────────────
+\begin{tikzpicture}[node distance=0.65cm and 2.6cm]
+
+%% ── Columna central ─────────────────────────────────────────
+\node[fc term] (start)
+  {Inicio \;\texttt{xx12(A,\,k,\,mostrar)}};
+
+\node[fc dec, below=of start] (nargin)
+  {\texttt{nargin} $= 2$?};
+
+\node[fc proc, below=of nargin] (setmos)
+  {\texttt{mostrar} $\leftarrow 0$};
+
+\node[fc dec, below=0.8cm of setmos] (valid)
+  {Parámetros válidos?};
+
+\node[fc proc, below=0.8cm of valid] (init)
+  {$p_k \leftarrow 1$,\quad $n \leftarrow 1$};
+
+\node[fc loop, below=of init] (loopcond)
+  {$n \leq k$?};
+
+\node[fc recur, below=of loopcond] (recurse)
+  {$\displaystyle p_k \leftarrow
+    \frac{A\,p_k}{n + A\,p_k}$\quad
+   $n \leftarrow n+1$};
+
+\node[fc dec, below=1.1cm of recurse] (showdec)
+  {\texttt{mostrar} $= 1$?};
+
+\node[fc proc, below=of showdec] (print)
+  {Imprimir $A$,\; $k$,\; $p_k$};
+
+\node[fc term, below=of print] (stop)
+  {Retornar $p_k$\; — Fin};
+
+%% ── Laterales ───────────────────────────────────────────────
+\node[fc err, right=of valid, xshift=0.8cm] (err)
+  {\texttt{error(...)}\\Fin};
+
+%% ── Flechas centrales ───────────────────────────────────────
+\draw[fc arr] (start)    -- (nargin);
+\draw[fc arr] (nargin)   -- node[fc lbl,left]{Sí} (setmos);
+\draw[fc arr] (setmos)   -- (valid);
+\draw[fc arr] (valid)    -- node[fc lbl,left]{Sí} (init);
+\draw[fc arr] (init)     -- (loopcond);
+\draw[fc arr] (loopcond) -- node[fc lbl,left]{Sí} (recurse);
+\draw[fc arr] (showdec)  -- node[fc lbl,left]{Sí} (print);
+\draw[fc arr] (print)    -- (stop);
+
+%% nargin No → salta setmos, va directo a valid
+\draw[fc arr]
+  (nargin.east) -- ++(1.6,0)
+  |- node[fc lbl, pos=0.18]{No} (valid.east);
+
+%% valid No → error
+\draw[fc arr]
+  (valid.east) -- node[fc lbl,above]{} (err.west);
+
+%% loopcond No → showdec (derecha)
+\draw[fc arr]
+  (loopcond.east) -- ++(1.8,0)
+  |- node[fc lbl, pos=0.18]{No} (showdec.east);
+
+%% showdec No → stop (derecha)
+\draw[fc arr]
+  (showdec.west) -- ++(-1.8,0)
+  |- node[fc lbl, pos=0.18]{No} (stop.west);
+
+%% Retorno del bucle (izquierda)
+\draw[fc back]
+  (recurse.west) -- ++(-1.8,0)
+  |- (loopcond.west);
+
+%% ── Fondo ───────────────────────────────────────────────────
+
+
+\node[font=\tiny\bfseries, color=fcGreen, rotate=90, anchor=south]
+  at ($(init.north west)+(-1.65,-0.3)$)
+  {for $n=1\ldots k$};
+
+%% ── Título ──────────────────────────────────────────────────
+\node[font=\normalsize\bfseries, color=fcBlue, anchor=south]
+  at ($(start.north)+(0,0.52)$)
+  {Diagrama de flujo — \texttt{xx12} \;($M/M/k/k$, Erlang B)};
+
+\end{tikzpicture}
