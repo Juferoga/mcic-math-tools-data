@@ -28,6 +28,36 @@
 \usepackage{caption}
 \usepackage{subcaption}
 
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{parskip}
+
+% ── Listings (MATLAB) ───────────────────────────────────────
+\lstdefinestyle{matlab}{
+    language=Matlab,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black}\itshape,
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{black!30},
+    breaklines=true,
+    breakatwhitespace=false,
+    tabsize=4,
+    captionpos=b,
+    xleftmargin=1.5em,
+    framexleftmargin=1.2em,
+    showstringspaces=false
+}
+\lstset{style=matlab}
+
 % ── TikZ ─────────────────────────────────────────────────────
 \usepackage{tikz}
 \usetikzlibrary{
@@ -132,72 +162,13 @@
 \maketitle
 \thispagestyle{fancy}
 
-% ── Resumen ──────────────────────────────────────────────────
-\begin{abstract}
-\noindent
-El presente documento desarrolla el estudio completo del modelo de colas con pérdida
-denominado M/M/k/k, conocido en la literatura como el sistema de Erlang-B.
-A diferencia de los modelos con cola de espera, en este sistema las solicitudes que llegan
-cuando todos los servidores están ocupados son rechazadas de inmediato, sin que exista ningún
-mecanismo de almacenamiento temporal.
-Se expone el marco matemático basado en la cadena de Markov en tiempo continuo que describe
-el sistema; se deriva la probabilidad de bloqueo o rechazo, denominada fórmula de Erlang~B;
-y se caracteriza el tiempo de espera esperado, que por construcción es nulo.
-Posteriormente se describe la metodología de simulación en MATLAB para validar los resultados
-analíticos, incluyendo la generación de llegadas Poisson y tiempos de servicio exponenciales.
-Se plantea además el uso de trazas de tráfico reales de la colección Bellcore como entrada
-del simulador, lo que permite evaluar el comportamiento del sistema frente a tráfico
-autosimilar.
-Finalmente, se analiza un caso de uso concreto en infraestructura moderna: un clúster de
-Kubernetes en el que $k$ Pods activos atienden peticiones HTTP y, cuando todos están
-ocupados, el controlador devuelve de inmediato un código \texttt{503 Service Unavailable},
-comportamiento que reproduce con fidelidad el modelo M/M/k/k.
-\end{abstract}
-
 \clearpage
 \tableofcontents
 \clearpage
 
 % ============================================================
-\section{Introducción}
+\section{Actividad 1: Modelo Matemático y Derivaciones}
 % ============================================================
-
-La teoría de colas es una rama de la investigación de operaciones y de la matemática aplicada
-que estudia la formación y disolución de filas de espera cuando los recursos de servicio son
-limitados.
-Desde el primer momento se busca un hilo narrativo claro y sin carreta, bien bogotano, para
-que la lectura fluya.
-Desde sus fundamentos establecidos por A.\,K.\ Erlang a comienzos del siglo~XX para el
-dimensionamiento de centrales telefónicas~\cite{erlang1917}, los modelos de colas se han
-convertido en herramientas fundamentales para el diseño de sistemas de comunicaciones, centros
-de cómputo, servicios de salud y, en la actualidad, plataformas de software distribuido.
-
-Entre los modelos más relevantes se encuentra el sistema M/M/k/k, cuya notación indica:
-proceso de llegadas markoviano (Poisson), tiempos de servicio exponenciales, $k$ servidores
-en paralelo y capacidad total del sistema igual a $k$, es decir, sin ningún espacio de espera.
-Cuando los $k$ servidores están ocupados, cada nueva solicitud que llega es bloqueada y
-abandonada de forma inmediata.
-Este modelo es conocido en la ingeniería de telecomunicaciones como el sistema de Erlang~B
-o modelo de pérdida pura~\cite{kleinrock1975,kleinrock1976}.
-
-La importancia práctica del modelo M/M/k/k es amplia: en redes telefónicas clásicas modela
-el bloqueo de llamadas en un grupo de circuitos; en redes de datos modela el descarte de
-paquetes en recursos sin búfer; y en infraestructura de nube y microservicios modela el
-rechazo de peticiones HTTP cuando todos los contenedores de cómputo se encuentran
-saturados~\cite{greenberg2008}.
-
-El presente trabajo persigue los siguientes \textbf{objetivos}:
-\begin{enumerate}
-    \item Derivar formalmente las ecuaciones de balance del modelo M/M/k/k y obtener la
-          distribución estacionaria de probabilidades.
-    \item Deducir la fórmula de Erlang~B para la probabilidad de bloqueo y el tiempo de
-          espera esperado.
-    \item Implementar y validar mediante simulación en MATLAB el comportamiento estadístico
-          del sistema.
-    \item Analizar el modelo con tráfico real proveniente de las trazas Bellcore.
-    \item Comparar los resultados analíticos con los simulados.
-    \item Aplicar el modelo al caso real de un clúster de Kubernetes con rechazo de peticiones.
-\end{enumerate}
 
 \subsection*{Acceso rápido a la aplicación web interactiva}
 
@@ -207,48 +178,6 @@ plataforma interactiva. Escanealo y cacharreá un rato antes de meterte en toda 
 \begin{center}
 \fbox{\rule{0pt}{3cm}\hspace{3cm}}
 \end{center}
-
-% ============================================================
-\section{Marco Teórico: El Modelo de Colas M/M/k/k}
-% ============================================================
-
-\subsection{Notación de Kendall}
-
-La notación de Kendall~\cite{kendall1953} describe los modelos de colas mediante la cadena
-A/B/c/K/N/D, donde A es la distribución de tiempos entre llegadas, B es la distribución de
-tiempos de servicio, c es el número de servidores, K es la capacidad total del sistema
-(incluyendo los que están en servicio), N es el tamaño de la población de clientes y D es
-la disciplina de servicio.
-Para el modelo estudiado, la designación M/M/k/k significa:
-
-\begin{itemize}
-    \item \textbf{M} (Markoviano): llegadas Poisson con tasa $\lambda$
-          [solicitudes/unidad de tiempo].
-    \item \textbf{M} (Markoviano): tiempos de servicio exponenciales con tasa $\mu$
-          [servicios/unidad de tiempo por servidor].
-    \item \textbf{k} servidores en paralelo.
-    \item Capacidad \textbf{k}: no existe cola; si todos los servidores están ocupados, el
-          sistema está lleno y cualquier nueva llegada es rechazada.
-\end{itemize}
-
-\subsection{Supuestos del modelo}
-
-\begin{definition}[Proceso de Poisson]
-Un proceso de conteo $\{N(t),\, t \geq 0\}$ es de Poisson con tasa $\lambda > 0$ si:
-(i) tiene incrementos independientes y estacionarios; y
-(ii) la probabilidad de que ocurra exactamente un evento en el intervalo $(t,\, t+h)$ es
-$\lambda h + o(h)$, y la de dos o más eventos es $o(h)$.
-La distribución del número de llegadas en un intervalo de longitud $t$ es Poisson con
-media $\lambda t$.
-\end{definition}
-
-\begin{definition}[Distribución exponencial]
-Un tiempo de servicio $S$ tiene distribución exponencial con tasa $\mu > 0$ si
-$F_S(t) = 1 - e^{-\mu t}$, $t \geq 0$.
-La media del tiempo de servicio es $\mathbb{E}[S] = 1/\mu$ y la propiedad de carencia de
-memoria garantiza que el estado futuro del servidor no depende del tiempo ya transcurrido
-en servicio.
-\end{definition}
 
 \subsection{Parámetros y variables de estado}
 
@@ -275,107 +204,120 @@ La variable de estado $n$ representa el número de solicitudes presentes simult�
 el sistema. Dado que no existe cola, $n$ coincide con el número de servidores ocupados y
 toma valores en el conjunto discreto $\{0, 1, 2, \ldots, k\}$.
 
-% ============================================================
-\section{Actividad 1: Modelo Matemático y Derivaciones}
-% ============================================================
 
-\subsection{Cadena de Markov de tiempo continuo}
-\label{sec:cadena}
 
-La propiedad de carencia de memoria de las distribuciones exponencial y Poisson garantiza
-que el proceso estocástico $\{N(t),\, t \geq 0\}$, donde $N(t)$ es el número de solicitudes
-presentes en el instante $t$, sea una cadena de Markov en tiempo continuo (CTMC).
 
-\paragraph{Tasas de transición.}
-Cuando el sistema se encuentra en el estado $n$:
+% -------------------------------------------------------
+\subsection{Diagrama de Transici\'{o}n de Estados}
+% -------------------------------------------------------
+
+Los estados son $n \in \{0, 1, \ldots, K\}$, donde $n$ es el n\'{u}mero de clientes
+presentes (igual al n\'{u}mero de servidores activos). Las tasas de transici\'{o}n son:
+
 \begin{itemize}
-    \item \textbf{Llegadas}: el estado pasa de $n$ a $n+1$ con tasa $\lambda$, siempre que
-          $n < k$. Si $n = k$ la solicitud es bloqueada y no hay transición.
-    \item \textbf{Salidas}: hay $n$ servidores activos, cada uno con tasa $\mu$, de modo
-          que el sistema pasa de $n$ a $n-1$ con tasa total $n\mu$, para $n \geq 1$.
+    \item \textbf{De $n$ a $n+1$:} $\lambda$ \quad ($n < K$; si $n = K$ la llegada se pierde).
+    \item \textbf{De $n$ a $n-1$:} $n\mu$ \quad (hay $n$ servidores activos, cada uno con tasa $\mu$).
 \end{itemize}
 
-\subsection{Diagrama de transición de estados}
-
-\begin{figure}[H]
-\centering
+\begin{center}
 \begin{tikzpicture}[
-    node distance=2.4cm,
-    state/.style={
-        circle, draw=black, thick,
-        minimum size=1.1cm, font=\small\bfseries
-    },
-    arr/.style={-{Stealth[length=6pt]}, thick}
+    node distance = 2.2cm,
+    state/.style  = {circle, draw, minimum size=1.0cm, font=\small},
+    every edge/.style = {draw, -{Stealth[length=4pt]}}
 ]
-% ─── Nodos ────────────────────────────────────────────────────
-\node[state] (0) {$0$};
-\node[state, right of=0] (1) {$1$};
-\node[state, right of=1] (2) {$2$};
-\node[right of=2, node distance=2cm] (dots) {$\cdots$};
-\node[state, right of=dots, node distance=2cm] (k1) {$k{-}1$};
-\node[state, right of=k1] (k) {$k$};
+    \node[state] (0) {$0$};
+    \node[state] (1) [right of=0] {$1$};
+    \node[state] (2) [right of=1] {$2$};
+    \node        (d) [right of=2] {$\cdots$};
+    \node[state] (n) [right of=d] {$n{-}1$};
+    \node[state,double] (K) [right of=n] {$K$};
 
-% ─── Flechas hacia la derecha (llegadas, tasa λ) ──────────────
-\draw[arr, bend left=30]
-    (0) edge node[above] {$\lambda$} (1)
-    (1) edge node[above] {$\lambda$} (2)
-    (2) edge node[above] {$\lambda$} (dots)
-    (dots) edge node[above] {$\lambda$} (k1)
-    (k1) edge node[above] {$\lambda$} (k);
+    % Forward arrows
+    \draw[bend left=30] (0) to node[above]{\small $\lambda P_0$}   (1);
+    \draw[bend left=30] (1) to node[above]{\small $\lambda P_1$}   (2);
+    \draw[bend left=25] (2) to node[above]{\small $\lambda P_2$}   (d);
+    \draw[bend left=25] (d) to node[above]{\small $\lambda P_{n-2}$}   (n);
+    \draw[bend left=30] (n) to node[above]{\small $\lambda P_{n-1}$}   (K);
 
-% ─── Flechas hacia la izquierda (salidas, tasa nμ) ────────────
-\draw[arr, bend left=30]
-    (1) edge node[below] {$\mu$} (0)
-    (2) edge node[below] {$2\mu$} (1)
-    (dots) edge node[below] {$3\mu$} (2)
-    (k1) edge node[below] {$(k{-}1)\mu$} (dots)
-    (k)  edge node[below] {$k\mu$} (k1);
-
-% ─── Etiqueta de bloqueo ──────────────────────────────────────
-\node[
-    draw=red!70, dashed, rounded corners,
-    fill=red!5, inner sep=4pt,
-    above=0.6cm of k,
-    font=\footnotesize
-] (bloqueo) {\shortstack{Bloqueo: solicitudes\\rechazadas}};
-\draw[->, red!70, dashed] (bloqueo.south) -- (k.north);
+    % Backward arrows
+    \draw[bend left=30] (1) to node[below]{\small $\mu P_1$} (0);
+    \draw[bend left=30] (2) to node[below]{\small $2\mu P_2$} (1);
+    \draw[bend left=25] (d) to node[below]{\small $\cdots$}    (2);
+    \draw[bend left=25] (n) to node[below]{\small $(n{-}1)\mu P_{n-1}$}(d);
+    \draw[bend left=30] (K) to node[below]{\small $K\mu P_K$} (n);
 \end{tikzpicture}
-\caption{%
-    Cadena de Markov en tiempo continuo del sistema M/M/k/k.
-    Las flechas superiores indican llegadas (tasa $\lambda$) y las inferiores indican
-    salidas (tasa $n\mu$ en el estado $n$).
-    En el estado $k$ el sistema está lleno; toda llegada adicional es rechazada
-    y no produce transición de estado.
-}
-\label{fig:markov}
-\end{figure}
+\end{center}
 
-\subsection{Ecuaciones de balance global (Birth-Death)}
+El estado~$K$ tiene doble borde para indicar que es el estado m\'{a}ximo alcanzable;
+las llegadas que ocurren en ese estado se rechazan.
 
-Para una cadena de nacimiento y muerte en equilibrio estadístico, la condición de balance
-global entre estados adyacentes establece que el flujo de probabilidad de $n$ hacia $n+1$
-es igual al flujo de $n+1$ hacia $n$:
+% -------------------------------------------------------
+\subsection{Ecuaciones de Estado Estacionario}
+% -------------------------------------------------------
 
-\begin{equation}
-    \lambda \, P_n \;=\; (n+1)\,\mu \, P_{n+1},
-    \qquad n = 0, 1, \ldots, k-1.
-    \label{eq:balance}
-\end{equation}
+En r\'{e}gimen estacionario, para cada estado~$n$ se iguala el flujo de salida con el
+flujo de entrada (principio de balance detallado entre estados adyacentes):
 
-Despejando $P_{n+1}$ de la ecuación~\eqref{eq:balance}:
+\[
+\underbrace{\lambda\,P_{n-1}}_{\text{llegada al estado }n}
+\;=\;
+\underbrace{n\,\mu\,P_{n}}_{\text{salida del estado }n},
+\qquad n = 1, 2, \ldots, K.
+\]
 
-\begin{equation}
-    P_{n+1} \;=\; \frac{\lambda}{(n+1)\mu}\, P_n \;=\; \frac{a}{n+1}\, P_n,
-    \qquad a \coloneq \frac{\lambda}{\mu}.
-    \label{eq:recurrencia}
-\end{equation}
+Desarrollando para cada estado:
 
-Aplicando la recurrencia~\eqref{eq:recurrencia} de forma iterativa desde $P_0$:
+\begin{center}
+\renewcommand{\arraystretch}{1.7}
+\begin{tabular}{clcl}
+\toprule
+\textbf{Estado} & \textbf{Tasa de salida = Tasa de llegada} & & \textbf{Simplificaci\'{o}n} \\
+\midrule
+$n = 0$ & $\lambda\,P_0 = 1\cdot\mu\,P_1$
+        & $\Longrightarrow$ & $P_1 = \dfrac{\lambda}{\mu}\,P_0$ \\[8pt]
 
-\begin{equation}
-    P_n \;=\; \frac{a^n}{n!}\, P_0, \qquad n = 0, 1, \ldots, k.
-    \label{eq:Pn_parcial}
-\end{equation}
+$n = 1$ & $\lambda\,P_1 + 1\cdot\mu\,P_1 = \lambda\,P_0 + 2\cdot\mu\,P_2$
+        & $\Longrightarrow$ & $P_2 = \dfrac{1}{2!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!2}P_0$ \\[8pt]
+
+$n = 2$ & $\lambda\,P_2 + 2\cdot\mu\,P_2 = \lambda\,P_1 + 3\cdot\mu\,P_3$
+        & $\Longrightarrow$ & $P_3 = \dfrac{1}{3!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!3}P_0$ \\[8pt]
+
+$n = 3$ & $\lambda\,P_3 + 3\cdot\mu\,P_3 = \lambda\,P_2 + 4\cdot\mu\,P_4$
+        & $\Longrightarrow$ & $P_4 = \dfrac{1}{4!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!4}P_0$ \\[8pt]
+
+$\vdots$ & \multicolumn{1}{c}{$\vdots$} & & $\vdots$ \\[2pt]
+
+$n-2$ & $\lambda\,P_{n-2} + (n-2)\mu\,P_{n-2} = \lambda\,P_{n-3} + (n-1)\mu\,P_{n-1}$
+        & $\Longrightarrow$ & $P_{n-1} = \dfrac{1}{(n-1)!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!n-1}P_0$ \\[8pt]
+
+$n-1$ & $\lambda\,P_{n-1} + (n-1)\mu\,P_{n-1} = \lambda\,P_{n-2} + n\cdot\mu\,P_n$
+        & $\Longrightarrow$ & $P_n = \dfrac{1}{n!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!n}P_0$ \\[8pt]
+
+$K-1$ & $\lambda\,P_{K-1} + (K-1)\mu\,P_{K-1} = \lambda\,P_{K-2} + K\cdot\mu\,P_K$
+        & $\Longrightarrow$ & $P_K = \dfrac{1}{K!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!K}P_0$ \\
+
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Obs\'{e}rvese que en el estado $K$
+
+Aplicando recursivamente las ecuaciones de balance desde el estado~$0$
+hasta el estado~$n$:
+
+\[
+P_n
+= \frac{\lambda}{n\mu}\,P_{n-1}
+= \frac{\lambda^2}{n(n-1)\mu^2}\,P_{n-2}
+= \;\cdots\;
+= \frac{\lambda^n}{n!\;\mu^n}\,P_0.
+\]
+
+\[
+\boxed{P_n = \frac{1}{n!}\left(\frac{\lambda}{\mu}\right)^{\!n} P_0,
+\qquad n = 0, 1, 2, \ldots, K}
+\]
 
 \subsection{Derivación de la fórmula de Erlang B}
 \label{sec:erlangB}
@@ -432,39 +374,6 @@ distribución tenga media $1/\mu$, independientemente de su forma~\cite{bonald20
 Esto le otorga una robustez especial frente a la imprecisión de los supuestos de modelado.
 \end{remark}
 
-Para el cálculo numérico de~\eqref{eq:erlangB} con valores grandes de $k$ y $a$ se
-emplea la recursión de Jagerman~\cite{jagerman1974}, que evita desbordamientos al calcular
-el cociente de forma incremental:
-
-\begin{equation}
-    B(0, a) = 1, \qquad
-    B(n, a) = \frac{a \cdot B(n-1,\, a)}{n + a \cdot B(n-1,\, a)},
-    \quad n = 1, \ldots, k.
-    \label{eq:jagerman}
-\end{equation}
-
-Esta recursión produce exactamente el mismo resultado que~\eqref{eq:erlangB} y es el
-algoritmo utilizado en todos los scripts del proyecto.
-
-\subsection{Tiempo de espera esperado \texorpdfstring{$\mathbb{E}[T_w]$}{E[Tw]}}
-\label{sec:espera}
-
-En el modelo M/M/k/k \textbf{no existe cola de espera}: una solicitud que encuentra el
-sistema lleno es rechazada de inmediato y abandona el sistema sin recibir servicio.
-Por lo tanto, el tiempo de espera de una solicitud que efectivamente ingresa al sistema es
-exactamente cero, ya que inicia su atención de inmediato al encontrar un servidor libre:
-
-\begin{equation}
-    \mathbb{E}[T_w] \;=\; 0.
-    \label{eq:Tw}
-\end{equation}
-
-Esta propiedad distingue fundamentalmente el modelo M/M/k/k de los modelos con cola
-(M/M/k, M/M/1), donde las solicitudes pueden esperar un tiempo positivo antes de ser
-atendidas.
-La única ``espera'' relevante en el sistema M/M/k/k es el tiempo en servicio propiamente
-dicho, cuyo valor esperado es $\mathbb{E}[T_s] = 1/\mu$.
-
 \subsection{Otras métricas de desempeño}
 
 A partir de la distribución estacionaria~\eqref{eq:Pn_final} se derivan las siguientes
@@ -492,6 +401,20 @@ La ecuación~\eqref{eq:lambda_ef} indica que una fracción $B(k,a)$ de las solic
 llegan es rechazada, y solo la fracción complementaria $1 - B(k,a)$ ingresa efectivamente
 al sistema.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 % ============================================================
 \section{Actividad 2: Simulación en MATLAB --- Metodología y Supuestos}
 % ============================================================
@@ -507,76 +430,149 @@ Los scripts correspondientes forman parte del repositorio del proyecto en la car
 
 \subsection{Supuestos de la simulación}
 
-\begin{enumerate}
-    \item Los tiempos entre llegadas sucesivas son variables aleatorias independientes e
-          idénticamente distribuidas (i.i.d.) con distribución exponencial de parámetro
-          $\lambda$.
-    \item Los tiempos de servicio de cada servidor son i.i.d.\ con distribución exponencial
-          de parámetro $\mu$.
-    \item Cuando una solicitud llega y encuentra los $k$ servidores ocupados, se registra
-          como bloqueada y se descarta sin entrar al sistema.
-    \item El servidor que atiende cada solicitud se elige aleatoriamente entre los disponibles
-          (política \textit{first available}).
-    \item El sistema parte del estado vacío ($n = 0$ en $t = 0$).
-    \item Se descarta un período transitorio inicial de duración $T_{\text{warm}} = 10^4/\lambda$
-          para garantizar que las medidas se toman en régimen estacionario.
-\end{enumerate}
 
-\subsection{Generación de variables aleatorias}
 
-La generación de variables aleatorias exponenciales se realiza mediante la transformada
-inversa: si $U \sim \mathrm{Uniform}(0,1)$, entonces
-$X = -(1/\theta)\ln(U)$ sigue una distribución exponencial con tasa $\theta$.
-En MATLAB esto se implementa con la función \texttt{exprnd(1/theta)}.
+\section{Implementación en MATLAB}
 
-\subsection{Estructura del simulador de eventos discretos}
+La función adopta el formato recomendado por el profesor: parámetro opcional
+\texttt{mostrar}, manejo con \texttt{switch nargin} y validación mínima de los
+argumentos.
 
-El simulador mantiene una lista de eventos ordenada cronológicamente (cola de prioridad).
-Cada evento es una tupla $(\text{tipo}, \text{tiempo})$, donde el tipo puede ser
-\textbf{LLEGADA} o \textbf{SALIDA}(servidor $i$).
-La lógica central del algoritmo se muestra en el flujograma de la
-Figura~\ref{fig:flujo_simulador}.
+\begin{lstlisting}[style=matlab,caption={Función \texttt{xx12.m}}]
+function pk = xx12(A,k,mostrar)
+% xx12  Probabilidad de bloqueo p_k = P[N=k] del sistema M/M/k/k
+%       calculada por la recursion de Erlang B:
+%
+%           p_n = A*p_{n-1} / (n + A*p_{n-1}),    p_0 = 1.
+%
+%   Entradas:
+%     A       : real positivo, A = lambda/mu
+%     k       : entero positivo, numero de servidores
+%     mostrar : 1 -> imprime A, k y pk; por defecto 0.
 
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    node distance=1.4cm,
-    proc/.style={rectangle, draw, rounded corners, thick, align=center,
-        minimum width=3.5cm, minimum height=0.7cm, fill=blue!10, font=\tiny},
-    dec/.style={diamond, draw, aspect=2, thick, align=center,
-        minimum width=2.4cm, minimum height=0.75cm, fill=orange!10, font=\tiny},
-    arr/.style={-{Stealth[length=4pt]}, thick, line width=0.5pt}
-]
-    \node[proc] (ini) {Iniciar};
-    \node[dec, below=of ini] (tipo) {¿Llegada?};
-    
-    \node[dec, below=of tipo] (cap) {$n<k$?};
-    \node[proc, below=of cap] (aceptar) {Aceptar: $n \leftarrow n+1$};
-    \node[proc, below left=0.9cm and 2.3cm of cap] (rechazar) {Rechazar: $B \leftarrow B+1$};
-    \node[proc, below right=0.9cm and 2.3cm of cap] (salida) {Salida: $n \leftarrow n-1$};
-    
-    \node[proc, below=2.2cm of aceptar] (acum) {Acumular};
-    \node[dec, below=of acum] (parar) {¿Fin?};
-    \node[proc, below=of parar] (fin) {Fin};
+    switch nargin
+        case 2
+            mostrar = 0;
+    end
 
-    \draw[arr] (ini) -- (tipo);
-    \draw[arr] (tipo) -| ++(0.8,-0.5) -- (cap);
-    \draw[arr] (tipo) -| ++(-0.8,-0.5) -- (salida);
-    
-    \draw[arr] (cap) -- node[right, font=\tiny]{Sí} (aceptar);
-    \draw[arr] (cap) -- node[left, font=\tiny]{No} (rechazar);
-    
-    \draw[arr] (aceptar) -- (acum);
-    \draw[arr] (rechazar) -| (acum);
-    \draw[arr] (salida) -| (acum);
-    
-    \draw[arr] (acum) -- (parar);
-    \draw[arr] (parar) -- node[right, font=\tiny]{Sí} (fin);
-    \draw[arr] (parar.west) -- ++(-1.2,0) -- (ini.west) ++ (0,-0.3) node[left, font=\tiny]{No};
-\end{tikzpicture}
-\caption{Simulador M/M/k/k: flujo de eventos discretos sin superposiciones.}
-\label{fig:flujo_simulador}
-\end{figure}
+    % Validacion minima
+    if A < 0 || k < 1 || k ~= floor(k)
+        error('A debe ser >=0 y k entero positivo.');
+    end
+
+    pk = 1;                         % p_0 = 1
+    for n = 1:k
+        pk = (A*pk)/(n + A*pk);     % recursion
+    end
+
+    if mostrar == 1
+        A
+        k
+        pk
+    end
+end
+\end{lstlisting}
+
+\section{Verificación}
+
+\subsection{Tres regímenes: $A<k$, $A=k$, $A>k$ con $k=5$}
+
+\begin{center}
+\begin{tabular}{rrll}
+\toprule
+$A$ & $k$ & $p_k$ & Régimen \\
+\midrule
+$2$  & $5$ & $0{,}036\,697$ & $A<k$, carga ligera \\
+$5$  & $5$ & $0{,}284\,868$ & $A=k$, carga al límite \\
+$10$ & $5$ & $0{,}563\,952$ & $A>k$, sobrecarga \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Barrido en $k$ con $A=5$}
+
+Al aumentar $k$ con tráfico fijo, $p_k$ decrece monótonamente, como debe ser:
+
+\begin{center}
+\begin{tabular}{rl}
+\toprule
+$k$ & $p_k$ \\
+\midrule
+$1$  & $0{,}833\,333$ \\
+$2$  & $0{,}675\,676$ \\
+$3$  & $0{,}529\,661$ \\
+$4$  & $0{,}398\,343$ \\
+$5$  & $0{,}284\,868$ \\
+$6$  & $0{,}191\,847$ \\
+$7$  & $0{,}120\,519$ \\
+$8$  & $0{,}070\,048$ \\
+$9$  & $0{,}037\,458$ \\
+$10$ & $0{,}018\,385$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Coincidencia con la fórmula directa donde es aplicable}
+
+Para $k$ pequeño la fórmula directa \eqref{eq:erlangB} se puede calcular y la
+recursión la reproduce con precisión de máquina. Por ejemplo, para $A=6$,
+$k=8$:
+\[
+p_k^{\text{directa}}=p_k^{\text{recursiva}}=0{,}121\,875\,783\,7,
+\qquad |\Delta|=0.
+\]
+
+\subsection{Casos donde la fórmula directa falla y la recursión funciona}
+
+En MATLAB, \texttt{factorial(k)} desborda a \texttt{Inf} para $k\ge 171$, así
+que la fórmula directa \eqref{eq:erlangB} produce \texttt{NaN} aunque $A^k$
+todavía sea finito. La recursión, en cambio, devuelve valores correctos:
+
+\begin{center}
+\begin{tabular}{rrll}
+\toprule
+$A$  & $k$    & $p_k$ recursiva               & \texttt{factorial(k)} en MATLAB \\
+\midrule
+$10$ & $180$  & $2{,}260\times 10^{-154}$    & \texttt{Inf} \\
+$20$ & $200$  & $4{,}200\times 10^{-124}$    & \texttt{Inf} \\
+$20$ & $300$  & $1{,}372\times 10^{-233}$    & \texttt{Inf} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Script de verificación}
+
+\begin{lstlisting}[style=matlab,caption={Script \texttt{verificar.m}}]
+% (a) Tres regimenes para k = 5
+fprintf('--- Tres regimenes (k = 5) ---\n');
+fprintf('A=%2d  pk=%.6f\n',  2, xx12( 2,5));
+fprintf('A=%2d  pk=%.6f\n',  5, xx12( 5,5));
+fprintf('A=%2d  pk=%.6f\n', 10, xx12(10,5));
+
+% (b) Barrido en k con A = 5
+fprintf('\n--- Barrido en k (A = 5) ---\n');
+for k = 1:10
+    fprintf('k=%2d  pk=%.6f\n', k, xx12(5,k));
+end
+
+% (c) Validacion contra la formula directa para k pequeno
+A = 6; k = 8;
+directa   = (A^k/factorial(k)) / sum(A.^(0:k)./factorial(0:k));
+recursiva = xx12(A,k);
+fprintf('\n--- Directa vs recursiva con A=6, k=8 ---\n');
+fprintf('directa   = %.10f\n', directa);
+fprintf('recursiva = %.10f\n', recursiva);
+fprintf('|diff|    = %.2e\n', abs(directa-recursiva));
+
+% (d) Casos donde factorial(k) desborda en MATLAB y la directa falla.
+%     factorial(k) devuelve Inf para k>=171.
+fprintf('\n--- Recursion donde la directa falla ---\n');
+fprintf('A=10  k=180   pk = %.4e   factorial(180) = %g\n', xx12(10,180), factorial(180));
+fprintf('A=20  k=200   pk = %.4e   factorial(200) = %g\n', xx12(20,200), factorial(200));
+fprintf('A=20  k=300   pk = %.4e   factorial(300) = %g\n', xx12(20,300), factorial(300));
+\end{lstlisting}
+
+
 % ──────────────────────────────────────────────────────────────
 
 \subsection{Plan de experimentos}
