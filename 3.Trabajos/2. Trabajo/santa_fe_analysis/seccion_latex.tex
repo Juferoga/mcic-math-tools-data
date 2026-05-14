@@ -1,0 +1,190 @@
+% ============================================================
+%  SECCIÓN SANTA FE — Venta de boletería Independiente Santa Fe
+%  Generada automáticamente. Listo para pegar en el paper.
+% ============================================================
+
+\subsection{Descripción del escenario: Boletería Independiente Santa Fe}
+
+Consideremos el sistema de venta de boletas para los partidos del
+\textbf{Independiente Santa Fe} en el estadio Nemesio Camacho El Campín.
+En este contexto, cada taquilla física del estadio opera como un servidor
+que atiende a un hincha a la vez. El sistema no posee fila de espera:
+si un hincha llega y todas las taquillas están ocupadas, simplemente
+se da la vuelta y se va sin comprar boleto.
+
+La analogía formal con el modelo M/M/k/k se establece en la
+Tabla~\ref{tab:analogia_santafe}.
+
+\begin{table}[H]
+\centering
+\caption{Correspondencia entre boletería Santa Fe y el modelo M/M/k/k.}
+\label{tab:analogia_santafe}
+\begin{tabular}{ll}
+\toprule
+\textbf{Elemento del modelo M/M/k/k} & \textbf{Elemento en boletería Santa Fe} \\
+\midrule
+Tasa de llegadas $\lambda$ & Tasa de llegada de hinchas (fans/min) \\
+Tiempo de servicio $\sim \mathrm{Exp}(\mu)$ & Tiempo de venta por taquilla (ventas/min) \\
+$k$ servidores en paralelo & $k$ taquillas abiertas en el estadio \\
+Capacidad $=k$ (sin cola) & Sin fila de espera habilitada \\
+Estado $n$: ocupación del sistema & Número de taquillas atendiendo hinchas \\
+Bloqueo (prob.\ $B(k,a)$) & Proporción de hinchas que se van sin boleto \\
+Carga ofrecida $a=\lambda/\mu$ & Intensidad de tráfico en Erlangs \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Escenarios de partido}
+
+Se analizan cuatro escenarios representativos del calendario del club,
+ordenados por intensidad de demanda:
+
+\begin{enumerate}
+    \item \textbf{Partido de Liga regular:} partido contra rival de media tabla,
+          con afluencia moderada de público.
+    \item \textbf{Clásico vs Millonarios:} el partido más importante del año,
+          con demanda extremadamente alta.
+    \item \textbf{Final de Copa:} partido de eliminación directa, con afluencia
+          masiva de hinchas.
+    \item \textbf{Súper-clásico (Clausura):} definición del torneo contra el
+          máximo rival, con demanda histórica.
+\end{enumerate}
+
+\subsection{Resultados de simulación}
+
+La Tabla~\ref{tab:santa_fe_resultados} resume los parámetros de cada escenario
+y la probabilidad de bloqueo obtenida por simulación de eventos discretos,
+comparada con la predicción teórica de Erlang~B.
+
+\begin{table}[H]
+\centering
+\caption{Escenarios de boletería Santa Fe y resultados de simulación M/M/k/k.}
+\label{tab:santa_fe_resultados}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Escenario} & $k$ & $\lambda$ & $\mu$ & $a$ & $\hat{B}_{\mathrm{sim}}$ \\
+\midrule
+Partido de Liga regular & 5 & 20 & 4.0 & 5.00 & 0.2855 \\
+Clásico vs Millonarios & 10 & 60 & 3.0 & 20.00 & 0.5384 \\
+Final de Copa & 15 & 100 & 2.0 & 50.00 & 0.7059 \\
+Súper-clásico (Clausura) & 20 & 150 & 2.5 & 60.00 & 0.6748 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{remark}
+La concordancia entre el valor teórico $B(k,a)$ y la simulación $\hat{B}_{\mathrm{sim}}$
+es prácticamente exacta en todos los escenarios (diferencia menor al $0.01$),
+lo que valida tanto la implementación del simulador como la aplicabilidad del
+modelo M/M/k/k al caso de boletería.
+\end{remark}
+
+\subsection{Comparación gráfica: teoría vs simulación}
+
+La Figura~\ref{fig:santafe_comparacion} muestra la probabilidad de bloqueo
+para cada escenario, comparando la predicción de Erlang~B con el resultado
+empírico de la simulación. La coincidencia es prácticamente perfecta.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{plots/act_6_santafe/comparacion_bloqueo.png}
+\caption{Comparación entre Erlang B analítico y simulación por eventos discretos
+para los escenarios de boletería Santa Fe.}
+\label{fig:santafe_comparacion}
+\end{figure}
+
+\subsection{Curvas de sensibilidad $B(k,a)$ vs $\lambda$}
+
+La Figura~\ref{fig:santafe_curvas} ilustra cómo crece la probabilidad de
+bloqueo al aumentar la tasa de llegada $\lambda$, manteniendo fijos $k$ y $\mu$
+en cada escenario. Se destaca el punto de operación actual y la línea de
+referencia $B_{\max}=0.05$ (umbral estándar de calidad de servicio).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{plots/act_6_santafe/curvas_erlang_por_escenario.png}
+\caption{Curvas de Erlang B para cada escenario de boletería. El punto negro
+indica la operación actual; la línea punteada roja marca el umbral del $5\%$.}
+\label{fig:santafe_curvas}
+\end{figure}
+
+\subsection{Evolución temporal de la ocupación}
+
+La Figura~\ref{fig:santafe_ocupacion} muestra la evolución temporal del número
+de taquillas ocupadas en una ventana de 30 minutos, para cada escenario.
+Se observa claramente cómo en los escenarios de alta demanda (Final y
+Súper-clásico) las taquillas permanecen casi permanentemente saturadas.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{plots/act_6_santafe/ocupacion_temporal_todos.png}
+\caption{Evolución temporal de la ocupación de taquillas en los primeros 30 minutos
+de venta para cada escenario. La línea roja punteada indica la capacidad máxima $k$.}
+\label{fig:santafe_ocupacion}
+\end{figure}
+
+\subsection{Dimensionamiento óptimo de taquillas}
+
+La Tabla~\ref{tab:santa_fe_dimensionamiento} presenta el número mínimo de
+taquillas $k^*$ necesarias para cumplir distintos niveles de calidad de servicio,
+determinado mediante la recursión de Jagerman~(\ref{eq:jagerman}).
+
+\begin{table}[H]
+\centering
+\caption{Dimensionamiento óptimo de taquillas por nivel de servicio.}
+\label{tab:santa_fe_dimensionamiento}
+\begin{tabular}{l|cccc}
+\toprule
+& \multicolumn{4}{c}{\textbf{$k^*$ mínimo para umbral $B_{\max}$}} \\
+\textbf{Escenario} & $0.001$ & $0.01$ & $0.05$ & $0.10$ \\
+\midrule
+Partido de Liga regular & 14 & 11 & 9 & 8 \\
+Clásico vs Millonarios & 35 & 30 & 26 & 23 \\
+Final de Copa & 71 & 64 & 56 & 51 \\
+Súper-clásico (Clausura) & 83 & 75 & 66 & 60 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{plots/act_6_santafe/dimensionamiento_optimo.png}
+\caption{Dimensionamiento óptimo de taquillas por nivel de servicio.
+El rombo rojo indica la configuración actual de cada escenario.}
+\label{fig:santafe_dimensionamiento}
+\end{figure}
+
+\begin{remark}
+Los resultados revelan que la configuración actual de taquillas es
+\emph{insuficiente} para todos los escenarios analizados. Incluso para el
+umbral más relajado ($B_{\max}=0.10$), el Partido de Liga regular requiere
+$k^*=8$ taquillas (frente a las $k=5$ actuales), mientras que el Súper-clásico
+necesitaría $k^*=60$ (frente a las $k=20$ actuales). En otras palabras:
+\textbf{hay que ponerse las pilas con la logística}, hermano.
+\end{remark}
+
+\subsection{Distribución estacionaria $P_n$}
+
+La Figura~\ref{fig:santafe_distribucion} muestra la distribución estacionaria
+de probabilidades $P_n$ para cada escenario. La barra roja destaca $P_k$,
+la probabilidad de que todas las taquillas estén ocupadas (bloqueo).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{plots/act_6_santafe/distribucion_estacionaria.png}
+\caption{Distribución estacionaria $P_n$ para cada escenario de boletería.
+La barra roja indica $P_k$ (probabilidad de bloqueo).}
+\label{fig:santafe_distribucion}
+\end{figure}
+
+\subsection{Código MATLAB}
+
+La implementación completa de la simulación, incluyendo la generación de
+datos, la comparación teoría vs simulación, las curvas de sensibilidad y el
+dimensionamiento óptimo, se encuentra en el archivo
+\texttt{matlab/actividad6\_santafe.m}. El script sigue la misma metodología
+que las Actividades~3 y~6 del curso, adaptada al contexto de boletería.
+
+% ============================================================
+% FIN SECCIÓN SANTA FE
+% ============================================================

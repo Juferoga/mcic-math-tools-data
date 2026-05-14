@@ -1,0 +1,36 @@
+% ============================================================
+% TABLAS SANTA FE — Venta de boletería Independiente Santa Fe
+% ============================================================
+
+\begin{table}[H]
+\centering
+\caption{Escenarios de boletería Santa Fe y resultados de simulación M/M/k/k.}
+\label{tab:santa_fe_resultados}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Escenario} & $k$ & $\lambda$ & $\mu$ & $a$ & $\hat{B}_{sim}$ \\
+\midrule
+Partido de Liga regular & 5 & 20 & 4.0 & 5.00 & 0.2855 \\
+Clásico vs Millonarios & 10 & 60 & 3.0 & 20.00 & 0.5384 \\
+Final de Copa & 15 & 100 & 2.0 & 50.00 & 0.7059 \\
+Súper-clásico (Clausura) & 20 & 150 & 2.5 & 60.00 & 0.6748 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Dimensionamiento óptimo de taquillas por nivel de servicio.}
+\label{tab:santa_fe_dimensionamiento}
+\begin{tabular}{l|cccc}
+\toprule
+& \multicolumn{4}{c}{\textbf{$k^*$ mínimo para umbral $B_{max}$}} \\
+\textbf{Escenario} & $0.001$ & $0.01$ & $0.05$ & $0.10$ \\
+\midrule
+Partido de Liga regular & 14 & 11 & 9 & 8 \\
+Clásico vs Millonarios & 35 & 30 & 26 & 23 \\
+Final de Copa & 71 & 64 & 56 & 51 \\
+Súper-clásico (Clausura) & 83 & 75 & 66 & 60 \\
+\bottomrule
+\end{tabular}
+\end{table}

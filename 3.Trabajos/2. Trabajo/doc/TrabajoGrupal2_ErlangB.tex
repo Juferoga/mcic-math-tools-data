@@ -170,7 +170,7 @@
 \clearpage
 
 % ============================================================
-\section{Actividad 1: Modelo Matemático y Derivaciones}
+\section*{Actividad 1: Modelo Matemático y Derivaciones}
 % ============================================================
 
 \subsection*{Acceso rápido a la aplicación web interactiva}
@@ -182,7 +182,7 @@ plataforma interactiva. Escanealo y cacharreá un rato antes de meterte en toda 
 \fbox{\rule{0pt}{3cm}\hspace{3cm}}
 \end{center}
 
-\subsection{Parámetros y variables de estado}
+\subsection*{Parámetros y variables de estado}
 
 \begin{table}[H]
 \centering
@@ -211,7 +211,7 @@ toma valores en el conjunto discreto $\{0, 1, 2, \ldots, k\}$.
 
 
 % -------------------------------------------------------
-\subsection{Diagrama de Transici\'{o}n de Estados}
+\subsection*{Diagrama de Transici\'{o}n de Estados}
 % -------------------------------------------------------
 
 Los estados son $n \in \{0, 1, \ldots, K\}$, donde $n$ es el n\'{u}mero de clientes
@@ -255,7 +255,7 @@ El estado~$K$ tiene doble borde para indicar que es el estado m\'{a}ximo alcanza
 las llegadas que ocurren en ese estado se rechazan.
 
 % -------------------------------------------------------
-\subsection{Ecuaciones de Estado Estacionario}
+\subsection*{Ecuaciones de Estado Estacionario}
 % -------------------------------------------------------
 
 En r\'{e}gimen estacionario, para cada estado~$n$ se iguala el flujo de salida con el
@@ -317,12 +317,13 @@ P_n
 = \frac{\lambda^n}{n!\;\mu^n}\,P_0.
 \]
 
-\[
+\begin{equation}
 \boxed{P_n = \frac{1}{n!}\left(\frac{\lambda}{\mu}\right)^{\!n} P_0,
 \qquad n = 0, 1, 2, \ldots, K}
-\]
+\label{eq:Pn_parcial}
+\end{equation}
 
-\subsection{Derivación de la fórmula de Erlang B}
+\subsection*{Derivación de la fórmula de Erlang B}
 \label{sec:erlangB}
 
 La condición de normalización exige que las probabilidades de todos los estados sumen
@@ -377,52 +378,11 @@ distribución tenga media $1/\mu$, independientemente de su forma~\cite{bonald20
 Esto le otorga una robustez especial frente a la imprecisión de los supuestos de modelado.
 \end{remark}
 
-\subsection{Otras métricas de desempeño}
-
-A partir de la distribución estacionaria~\eqref{eq:Pn_final} se derivan las siguientes
-métricas adicionales:
-
-\paragraph{Número medio de servidores ocupados:}
-\begin{equation}
-    \bar{N} \;=\; \sum_{n=0}^{k} n\,P_n \;=\; a\,(1 - B(k,a)).
-    \label{eq:N_medio}
-\end{equation}
-
-\paragraph{Utilización por servidor:}
-\begin{equation}
-    \rho \;=\; \frac{\bar{N}}{k} \;=\; \frac{a\,(1-B(k,a))}{k}.
-    \label{eq:rho}
-\end{equation}
-
-\paragraph{Tasa efectiva de solicitudes atendidas:}
-\begin{equation}
-    \lambda_{\text{ef}} \;=\; \lambda\,(1 - B(k,a)).
-    \label{eq:lambda_ef}
-\end{equation}
-
-La ecuación~\eqref{eq:lambda_ef} indica que una fracción $B(k,a)$ de las solicitudes que
-llegan es rechazada, y solo la fracción complementaria $1 - B(k,a)$ ingresa efectivamente
-al sistema.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 % ============================================================
-\section{Actividad 2: Simulación en MATLAB --- Metodología y Supuestos}
+\section*{Actividad 2: Simulación en MATLAB --- Metodología y Supuestos}
 % ============================================================
 
-\subsection{Objetivo de la simulación}
+\subsection*{Objetivo de la simulación}
 
 El propósito de esta etapa es implementar un simulador de eventos discretos del sistema
 M/M/k/k en MATLAB y contrastar sus resultados estadísticos con las predicciones analíticas
@@ -439,9 +399,9 @@ Los algoritmos implementados se detallan en el Anexo de Código al final del doc
 \label{fig:diagrama-xx12}
 \end{figure}
 
-\section{Verificación}
+\section*{Verificación}
 
-\subsection{Tres regímenes: $A<k$, $A=k$, $A>k$ con $k=5$}
+\subsection*{\texorpdfstring{Tres regímenes: $A<k$, $A=k$, $A>k$ con $k=5$}{Tres regímenes: A<k, A=k, A>k con k=5}}
 
 \begin{center}
 \begin{tabular}{rrll}
@@ -455,7 +415,7 @@ $10$ & $5$ & $0{,}563\,952$ & $A>k$, sobrecarga \\
 \end{tabular}
 \end{center}
 
-\subsection{Barrido en $k$ con $A=5$}
+\subsection*{\texorpdfstring{Barrido en $k$ con $A=5$}{Barrido en k con A=5}}
 
 Al aumentar $k$ con tráfico fijo, $p_k$ decrece monótonamente, como debe ser:
 
@@ -478,7 +438,7 @@ $10$ & $0{,}018\,385$ \\
 \end{tabular}
 \end{center}
 
-\subsection{Coincidencia con la fórmula directa donde es aplicable}
+\subsection*{Coincidencia con la fórmula directa donde es aplicable}
 
 Para $k$ pequeño la fórmula directa \eqref{eq:erlangB} se puede calcular y la
 recursión la reproduce con precisión de máquina. Por ejemplo, para $A=6$,
@@ -488,27 +448,7 @@ p_k^{\text{directa}}=p_k^{\text{recursiva}}=0{,}121\,875\,783\,7,
 \qquad |\Delta|=0.
 \]
 
-\subsection{Casos donde la fórmula directa falla y la recursión funciona}
-
-En MATLAB, \texttt{factorial(k)} desborda a \texttt{Inf} para $k\ge 171$, así
-que la fórmula directa \eqref{eq:erlangB} produce \texttt{NaN} aunque $A^k$
-todavía sea finito. La recursión, en cambio, devuelve valores correctos:
-
-\begin{center}
-\begin{tabular}{rrll}
-\toprule
-$A$  & $k$    & $p_k$ recursiva               & \texttt{factorial(k)} en MATLAB \\
-\midrule
-$10$ & $180$  & $2{,}260\times 10^{-154}$    & \texttt{Inf} \\
-$20$ & $200$  & $4{,}200\times 10^{-124}$    & \texttt{Inf} \\
-$20$ & $300$  & $1{,}372\times 10^{-233}$    & \texttt{Inf} \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-% ──────────────────────────────────────────────────────────────
-
-\subsection{Plan de experimentos}
+\subsection*{Plan de experimentos}
 
 Para evaluar el comportamiento del sistema se propone la batería de experimentos de la
 Tabla~\ref{tab:experimentos}.
@@ -534,13 +474,13 @@ Cada experimento se ejecuta con $T_{\text{total}} = 10^6 / \lambda$ unidades de 
 garantizar una muestra estadísticamente suficiente.
 
 % ============================================================
-\section{Actividad 3: Resultados de Simulación}
+\section*{Actividad 3: Resultados de Simulación}
 % ============================================================
 
-\subsection{Validación del modelo analítico}
+\subsection*{Validación del modelo analítico}
 
-La Tabla~\ref{tab:resultados_sim} compara la probabilidad de bloqueo analítica $B(k,a)$,
-calculada mediante la fórmula~\eqref{eq:erlangB} con la recursión de Jagerman~\eqref{eq:jagerman}~\cite{jagerman1974},
+La Tabla~\ref{tab:resultados_sim} compara la probabilidad de bloqueo teorico $B(k,a)$,
+calculada mediante la fórmula~\eqref{eq:erlangB} con la recursión de Jagerman~\cite{jagerman1974},
 con el valor estimado por simulación $\hat{B}$ en cada experimento.
 El intervalo de confianza del 95\,\% para $\hat{B}$ se obtiene tratando cada solicitud
 bloqueada como una variable de Bernoulli; el semiancho es
@@ -565,14 +505,14 @@ E4 & 20 & 10 & 0.0046 & 0.004 & $\pm 0.001$ \\
 
 \begin{remark}
 Los valores analíticos de la columna $B(k,a)$ fueron calculados con la recursión de
-Jagerman~\eqref{eq:jagerman}~\cite{jagerman1974}.
+Jagerman~\cite{jagerman1974}.
 Los valores simulados $\hat{B}$ y los intervalos de confianza se obtienen mediante la
 implementación detallada en los anexos. En esta versión se incluyen valores
 representativos para ilustrar la concordancia, como quien dice, a ojo rolo pero bien
 fundamentado.
 \end{remark}
 
-\subsection{Comportamiento de $B(k,a)$ en función de $k$ y $a$}
+\subsection*{\texorpdfstring{Comportamiento de $B(k,a)$ en función de $k$ y $a$}{Comportamiento de B(k,a) en funcion de k y a}}
 
 La Figura~\ref{fig:curvas_erlang} ilustra las curvas de Erlang~B para distintos valores de
 $k$.
@@ -626,10 +566,10 @@ Se observan los comportamientos esperados, claritos:
 % ──────────────────────────────────────────────────────────────
 
 % ============================================================
-\section{Actividad 4: Uso de Trazas Bellcore}
+\section*{Actividad 4: Uso de Trazas Bellcore}
 % ============================================================
 
-\subsection{Descripción del conjunto de datos Bellcore}
+\subsection*{Descripción del conjunto de datos Bellcore}
 
 Las trazas Bellcore son registros de tráfico de red capturados en los laboratorios Bell
 Communications Research a comienzos de la década de 1990~\cite{leland1994}.
@@ -642,7 +582,7 @@ Para el análisis se emplean los conjuntos de datos de referencia (como \texttt{
 o \texttt{BCpAug89.TL}), los cuales registran tiempos de llegada de paquetes Ethernet.
 A partir de estos se construyen las funciones empíricas de distribución para la simulación.
 
-\subsection{Metodología de uso como entrada del simulador}
+\subsection*{Metodología de uso como entrada del simulador}
 
 Para emplear las trazas Bellcore como proceso de llegadas del simulador M/M/k/k se
 procede en cuatro etapas, con juicio y sin afán:
@@ -668,7 +608,7 @@ procede en cuatro etapas, con juicio y sin afán:
           evaluando la proximidad de los datos a un proceso de Poisson clásico.
 \end{enumerate}
 
-\subsection{Resultados del análisis de trazas}
+\subsection*{Resultados del análisis de trazas}
 
 A continuación se presentan las evidencias gráficas obtenidas tras procesar las cuatro trazas Bellcore suministradas. Para cada traza se incluye la distribución de los tiempos entre llegadas y su correspondiente gráfico de cuantiles.
 
@@ -732,7 +672,7 @@ A continuación se presentan las evidencias gráficas obtenidas tras procesar la
 
 % ──────────────────────────────────────────────────────────────
 
-\subsection{Hipótesis de comparación}
+\subsection*{Hipótesis de comparación}
 
 Se espera que la probabilidad de bloqueo observada con las trazas Bellcore sea
 \textbf{mayor} que la predicha por la fórmula de Erlang~B para la misma carga media $a$.
@@ -741,10 +681,79 @@ de llegadas más intensas y prolongadas que las que predice el modelo Poisson, s
 el sistema con mayor frecuencia~\cite{leland1994}.
 
 % ============================================================
-\section{Actividad 5: Comparación y Discusión de Resultados}
+\section*{Actividad 5: Simulación y Comparación con Tráfico Real}
 % ============================================================
 
-\subsection{Tráfico Poisson vs.\ tráfico autosimilar}
+\subsection*{Metodología de la Simulación M/M/k/k con Trazas}
+
+En esta actividad se lleva al límite el modelo teórico de Erlang~B. La pregunta central es: ¿qué pasa si el tráfico no es perfectamente Poisson (desmemoriado), sino que viene de ráfagas reales capturadas de internet? 
+
+Para esto, realizamos la simulación del sistema M/M/k/k variando la carga ofrecida $A = \lambda/\mu$ en un rango amplio de $0.1$ a $90$ Erlangs. El procedimiento seguido fue:
+
+\begin{enumerate}
+    \item \textbf{Estimación de parámetros:} Por cada una de las cuatro distribuciones de la actividad anterior (\texttt{agostornd}, \texttt{octubrernd}, \texttt{oct89extrnd} y \texttt{oct89ext4rnd}), se estimó la tasa de llegada $\lambda$ como el inverso de la media aritmética del vector de tiempos entre arribos: $\lambda \approx 1/\overline{T_{\text{arriba}}}$.
+    \item \textbf{Generación de servicio:} Los tiempos de servicio se generaron siguiendo una distribución exponencial con parámetro $\mu$, ajustado dinámicamente para cada punto de simulación según la carga deseada $A$.
+    \item \textbf{Escenarios de capacidad:} Se evaluó el desempeño del sistema para cinco capacidades distintas: $k \in \{5, 20, 40, 60, 100\}$ servidores.
+    \item \textbf{Contraste Teórico:} En cada gráfica se superpone la curva de Erlang~B clásica para comparar qué tan bien (o mal) predice la teoría el comportamiento de estas trazas reales.
+\end{enumerate}
+
+A continuación, se presentan los resultados organizados por cada conjunto de datos. En cada bloque se puede observar el comportamiento para las 5 capacidades evaluadas.
+
+% --- PLANTILLA PARA EL BLOQUE DE 5 IMÁGENES ---
+% Reutilizamos el comando \bloqueTrazas pero con el layout específico solicitado:
+% 5   100 (Grandes arriba)
+% 20 40 60 (Pequeñas abajo)
+
+\newcommand{\bloqueTrazas}[2]{% #1: nombre de la traza (agostornd, etc), #2: Título descriptivo
+    \begin{figure}[H]
+        \centering
+        \textbf{#2}\\[0.5em]
+        \begin{minipage}{0.95\textwidth}
+            % Fila superior: k=5 y k=100 (Grandes)
+            \begin{subfigure}{0.48\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{plots/act_5/#1/resultado_k5.png}
+                \caption{$k=5$}
+            \end{subfigure}
+            \hfill
+            \begin{subfigure}{0.48\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{plots/act_5/#1/resultado_k100.png}
+                \caption{$k=100$}
+            \end{subfigure}
+            
+            \vspace{0.5em}
+            
+            % Fila inferior: k=20, k=40, k=60 (Pequeñas)
+            \begin{subfigure}{0.31\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{plots/act_5/#1/resultado_k20.png}
+                \caption{$k=20$}
+            \end{subfigure}
+            \hfill
+            \begin{subfigure}{0.31\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{plots/act_5/#1/resultado_k40.png}
+                \caption{$k=40$}
+            \end{subfigure}
+            \hfill
+            \begin{subfigure}{0.31\textwidth}
+                \centering
+                \includegraphics[width=\textwidth]{plots/act_5/#1/resultado_k60.png}
+                \caption{$k=60$}
+            \end{subfigure}
+        \end{minipage}
+        \caption{Probabilidad de bloqueo vs. Carga $A$ para la traza \texttt{#1}. Contraste entre el valor teórico y la simulación para $k \in \{5, 20, 40, 60, 100\}$.}
+        \label{fig:resultados_#1}
+    \end{figure}
+}
+
+\bloqueTrazas{agostornd}{Traza Bellcore Agosto (BCpAug89.TL)}
+\bloqueTrazas{octubrernd}{Traza Bellcore Octubre (BCpOct89.TL)}
+\bloqueTrazas{oct89extrnd}{Traza Bellcore Octubre 89 Ext. (BCOct89Ext.TL)}
+\bloqueTrazas{oct89ext4rnd}{Traza Bellcore Octubre 89 Ext. 4 (BCOct89Ext4.TL)}
+
+\subsection*{Discusión y Comparación}
 
 La Tabla~\ref{tab:comparacion} resume las métricas esperadas bajo los dos tipos de tráfico
 para un mismo escenario $(k, a)$.
@@ -802,7 +811,7 @@ Ráfagas & Cortas & Cortas & Largas \\
 \end{figure}
 % ──────────────────────────────────────────────────────────────
 
-\subsection{Discusión}
+\subsection*{Discusión}
 
 \paragraph{Concordancia con el modelo analítico.}
 Bajo tráfico Poisson sintético, los valores de $\hat{B}$ obtenidos por simulación deben
@@ -828,189 +837,11 @@ autosimilar (como el modelo de Pareto compuesto o los procesos brownianos fracci
 para obtener estimaciones de bloqueo más conservadoras y realistas.
 
 % ============================================================
-\section{Actividad 6: Caso Real --- Kubernetes y Rechazos HTTP 503}
+\input{actividad6_santafe}
 % ============================================================
 
-\subsection{Descripción del escenario}
-
-Kubernetes es una plataforma de orquestación de contenedores ampliamente utilizada en la
-industria para desplegar y gestionar aplicaciones en la nube~\cite{burns2016}.
-En este contexto, los contenedores de aplicación se denominan \textbf{Pods}.
-Cada Pod ejecuta una instancia del servicio y puede atender un número fijo de peticiones
-HTTP de forma concurrente (capacidad de concurrencia unitaria, por simplicidad).
-
-Considérese el siguiente escenario concreto:
-
-\begin{itemize}
-    \item Un \texttt{Deployment} de Kubernetes con $k$ réplicas (Pods) de un servicio web.
-    \item El servicio no tiene cola de espera interna habilitada; cada Pod acepta exactamente
-          una petición a la vez.
-    \item Las peticiones HTTP llegan desde una puerta de enlace (\textit{Ingress Controller})
-          que distribuye el tráfico entre los Pods disponibles.
-    \item Si todos los $k$ Pods están ocupados, el Ingress Controller responde de inmediato
-          con el código de estado HTTP \texttt{503 Service Unavailable}.
-\end{itemize}
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    node distance=1.6cm,
-    box/.style={
-        rectangle, draw, rounded corners, thick,
-        minimum width=2.8cm, minimum height=0.85cm,
-        fill=blue!8, font=\small, align=center
-    },
-    pod/.style={
-        rectangle, draw, thick, rounded corners,
-        minimum width=2.4cm, minimum height=0.7cm,
-        fill=green!12, font=\small
-    },
-    blocked/.style={
-        rectangle, draw, dashed, thick, rounded corners,
-        minimum width=2.4cm, minimum height=0.7cm,
-        fill=red!10, font=\small
-    },
-    arr/.style={-{Stealth}, thick}
-]
-    \node[box] (client) {Clientes\\(Peticiones HTTP)};
-    \node[box, right=2cm of client] (ingress) {Ingress\\Controller};
-    \node[pod, above right=0.4cm and 2.2cm of ingress] (p1) {Pod 1 (ocupado)};
-    \node[pod, right=2.2cm of ingress] (p2) {Pod 2 (ocupado)};
-    \node[pod, below right=0.4cm and 2.2cm of ingress] (p3) {\(\vdots\) Pod k (ocupado)};
-    \node[blocked, below=1.6cm of ingress] (blk) {\shortstack{503: Petición\\rechazada}};
-
-    \draw[arr] (client) -- (ingress) node[midway, above] {$\lambda$};
-    \draw[arr] (ingress) -- (p1);
-    \draw[arr] (ingress) -- (p2);
-    \draw[arr] (ingress) -- (p3);
-    \draw[arr, red!70, dashed] (ingress) -- (blk)
-        node[midway, right] {\footnotesize sistema lleno};
-    \node[above=0.1cm of p1, font=\footnotesize, text=gray] {$\mu$ (exp.)};
-\end{tikzpicture}
-\caption{%
-    Arquitectura del clúster de Kubernetes modelada como sistema M/M/k/k.
-    El Ingress Controller actúa como punto de llegada; los Pods son los $k$ servidores.
-    Cuando todos los Pods están ocupados, la respuesta inmediata es \texttt{503}.
-}
-\label{fig:kubernetes}
-\end{figure}
-
-\subsection{Correspondencia con el modelo M/M/k/k}
-
-La analogía entre el clúster de Kubernetes y el modelo M/M/k/k se establece formalmente
-en la Tabla~\ref{tab:analogia}.
-
-\begin{table}[H]
-\centering
-\caption{Correspondencia entre el clúster de Kubernetes y el modelo M/M/k/k.}
-\label{tab:analogia}
-\begin{tabular}{ll}
-\toprule
-\textbf{Elemento del modelo M/M/k/k}          & \textbf{Elemento en Kubernetes} \\
-\midrule
-Tasa de llegadas $\lambda$                    & Tasa de peticiones HTTP entrantes \\
-Tiempo de servicio $\sim \mathrm{Exp}(\mu)$   & Tiempo de procesamiento de cada petición \\
-$k$ servidores en paralelo                    & $k$ réplicas (Pods) en el Deployment \\
-Capacidad $= k$ (sin cola)                    & Sin cola interna habilitada \\
-Estado $n$: ocupación del sistema             & Número de Pods atendiendo peticiones \\
-Bloqueo (prob.\ $B(k,a)$)                     & Tasa de respuestas \texttt{503} \\
-Carga ofrecida $a = \lambda/\mu$              & Intensidad de tráfico en Erlangs \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\subsection{Validación del supuesto Poisson}
-
-El supuesto de llegadas Poisson es razonablemente válido para peticiones HTTP en
-aplicaciones con una base de usuarios grande e independiente, donde ningún usuario
-individual domina el tráfico global.
-En otras palabras, es una aproximación bacana y defendible.
-El teorema de superposición de Poisson garantiza que la suma de muchos procesos de llegadas
-independientes y de baja intensidad converge a un proceso Poisson~\cite{kleinrock1975}.
-
-Sin embargo, en escenarios con tráfico de microservicios (comunicación servicio-a-servicio),
-los patrones de llegada pueden presentar correlaciones y ráfagas que se desvían del modelo
-Poisson, de modo análogo a lo discutido con las trazas Bellcore en la Actividad~5.
-
-\subsection{Supuesto de exponencialidad de los tiempos de servicio}
-
-El supuesto de tiempos de servicio exponenciales es una aproximación razonable cuando el
-tiempo de procesamiento de cada petición HTTP depende de un conjunto heterogéneo de
-factores (consultas a base de datos, llamadas a APIs externas, procesamiento variable).
-Si uno lo mira con calma, encaja bien con el comportamiento real del clúster.
-Dado que la fórmula de Erlang~B es insensible a la distribución del tiempo de servicio
-(véase la Observación~3.2), el valor de $B(k,a)$ sigue siendo válido incluso si dicha
-distribución no es exponencial, lo que amplía significativamente la aplicabilidad del modelo.
-
-\subsection{Dimensionamiento del clúster mediante Erlang B}
-
-El problema de dimensionamiento consiste en determinar el número mínimo de Pods $k^*$ tal
-que la probabilidad de bloqueo sea inferior a un umbral $B_{\max}$, dada la carga
-ofrecida $a$:
-
-\begin{equation}
-    k^* = \min\bigl\{ k \in \mathbb{Z}^+ : B(k,\, a) \leq B_{\max} \bigr\}.
-    \label{eq:dimensionamiento}
-\end{equation}
-
-Este problema se resuelve evaluando la recursión de Jagerman~\eqref{eq:jagerman}~\cite{jagerman1974} de
-forma incremental en $k$ hasta satisfacer la restricción.
-La Figura~\ref{fig:flujo_kubernetes} muestra el flujograma de este procedimiento.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[
-    node distance=1.6cm,
-    proc/.style={rectangle, draw, rounded corners, thick, align=center,
-        minimum width=4.6cm, minimum height=0.9cm, fill=blue!6, font=\small},
-    dec/.style={diamond, draw, aspect=2.4, thick, align=center,
-        minimum width=3.5cm, minimum height=1cm, fill=orange!10, font=\small},
-    arr/.style={-{Stealth[length=6pt]}, thick}
-]
-    \node[proc] (entrada) {Entrada: $a=\lambda/\mu$, $B_{\max}$};
-    \node[proc, below=of entrada] (init) {Inicializar $k=1$};
-    \node[proc, below=of init] (calc) {Calcular $B(k,a)$\ (recursión de Jagerman)};
-    \node[dec, below=of calc] (decide) {$B(k,a) \leq B_{\max}$};
-    \node[proc, below left=1.4cm and 2cm of decide] (incr) {Incrementar $k$};
-    \node[proc, below right=1.4cm and 2cm of decide] (salida) {Salida: $k^*$ mínimo,\ $\rho$, $\bar{N}$};
-
-    \draw[arr] (entrada) -- (init);
-    \draw[arr] (init) -- (calc);
-    \draw[arr] (calc) -- (decide);
-    \draw[arr] (decide) -- node[left, font=\footnotesize]{No} (incr);
-    \draw[arr] (incr) |- (calc);
-    \draw[arr] (decide) -- node[right, font=\footnotesize]{Sí} (salida);
-\end{tikzpicture}
-\caption{%
-    Flujograma del procedimiento de dimensionamiento óptimo del clúster
-    mediante la fórmula de Erlang~B. El ciclo de incremento sigue hasta cumplir
-    el umbral, sin afán pero sin pausa, bien juicioso.
-}
-\label{fig:flujo_kubernetes}
-\end{figure}
-% ──────────────────────────────────────────────────────────────
-
-\subsection{Estrategias de mitigación del bloqueo}
-
-Cuando el análisis mediante Erlang~B revela una probabilidad de bloqueo inaceptable, las
-estrategias más comunes en un entorno Kubernetes son:
-
-\begin{enumerate}
-    \item \textbf{Escalado horizontal (\textit{HorizontalPodAutoscaler}):} aumentar $k$
-          dinámicamente en respuesta a la carga observada.
-    \item \textbf{Habilitación de una cola limitada:} configurar el servidor web (por
-          ejemplo, NGINX o Envoy) para encolar un número acotado de peticiones,
-          transformando el modelo de M/M/k/k a M/M/k/K con $K > k$.
-          Este cambio reduce el bloqueo a costa de introducir latencia.
-    \item \textbf{Limitación de tasa (\textit{rate limiting}):} controlar $\lambda$
-          mediante colas de prioridad o token buckets, reduciendo la carga ofrecida $a$.
-    \item \textbf{Optimización del tiempo de servicio:} reducir $1/\mu$ mediante caché,
-          consultas asíncronas o mejoras algorítmicas, disminuyendo $a$ para una misma
-          $\lambda$.
-\end{enumerate}
-
 % ============================================================
-\section{Plataforma Interactiva de Simulación (Frontend y Backend)}
+\section*{Plataforma Interactiva de Simulación (Frontend y Backend)}
 % ============================================================
 
 Con el fin de complementar el análisis teórico y la simulación en MATLAB, se construyó una
@@ -1036,7 +867,7 @@ bogotano y sin carreta.
 \end{figure}
 
 % ============================================================
-\section{Conclusiones}
+\section*{Conclusiones}
 % ============================================================
 
 El presente trabajo ha desarrollado de manera integral el modelo de colas con pérdida

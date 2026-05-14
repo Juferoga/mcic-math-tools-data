@@ -40,7 +40,6 @@ pnpm-debug.log*
 *.log
 *.lot
 *.out
-*.pdf
 *.bak*
 *.run.xml
 *.synctex.gz
@@ -54,5 +53,4 @@ doc/informe_matematico.pdf
 
 # Generated analysis outputs
 data/sensitivity_results_*.json
-doc/*.pdf
 doc/*.html

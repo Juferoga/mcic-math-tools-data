@@ -1,0 +1,63 @@
+{
+  "actividad": "Venta de boletería Independiente Santa Fe — M/M/k/k",
+  "plots_generados": [
+    "comparacion_bloqueo.png",
+    "curvas_erlang_por_escenario.png",
+    "dimensionamiento_optimo.png",
+    "distribucion_estacionaria.png",
+    "ocupacion_temporal_todos.png",
+    "validacion_clasico_millonarios.png",
+    "validacion_final_copa.png",
+    "validacion_liga_regular.png",
+    "validacion_superclasico.png"
+  ],
+  "tablas_generadas": [
+    "tablas_latex.tex"
+  ],
+  "escenarios": [
+    {
+      "key": "liga_regular",
+      "nombre": "Partido de Liga regular",
+      "k": 5,
+      "lambda": 20.0,
+      "mu": 4.0,
+      "a_erlangs": 5.0,
+      "B_k_a": 0.284868,
+      "N_prom": 3.58,
+      "rho": 0.7151
+    },
+    {
+      "key": "clasico_millonarios",
+      "nombre": "Clásico vs Millonarios",
+      "k": 10,
+      "lambda": 60.0,
+      "mu": 3.0,
+      "a_erlangs": 20.0,
+      "B_k_a": 0.537963,
+      "N_prom": 9.24,
+      "rho": 0.9241
+    },
+    {
+      "key": "final_copa",
+      "nombre": "Final de Copa",
+      "k": 15,
+      "lambda": 100.0,
+      "mu": 2.0,
+      "a_erlangs": 50.0,
+      "B_k_a": 0.707957,
+      "N_prom": 14.6,
+      "rho": 0.9735
+    },
+    {
+      "key": "superclasico",
+      "nombre": "Súper-clásico (Clausura)",
+      "k": 20,
+      "lambda": 150.0,
+      "mu": 2.5,
+      "a_erlangs": 60.0,
+      "B_k_a": 0.674447,
+      "N_prom": 19.53,
+      "rho": 0.9767
+    }
+  ]
+}
