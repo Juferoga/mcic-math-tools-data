@@ -6,7 +6,7 @@
 
 \section{Actividad 6: Caso Real --- Plataforma \emph{Tu Boleta} y Rechazos de Compra}
 
-\subsection{Descripción del escenario}
+\subsection*{Descripción del escenario}
 
 Consideremos la plataforma web colombiana \textbf{Tu Boleta}, un servicio de venta de
 entradas para conciertos, cine, teatro y eventos deportivos ---incluyendo partidos de
@@ -14,7 +14,7 @@ fútbol de equipos como el \textbf{Independiente Santa Fe}.
 
 Cuando un hincha quiere comprar una entrada para un partido, su petición HTTP llega a un
 balanceador de carga (\textit{Load Balancer}) que la distribuye entre varias instancias
-del servicio (\textit{back-end}) encargadas de procesar la compra.
+del servicio (\textit{back-end}) encargadas de procesar la compra. Este modelo de arquitectura es estándar en clústeres de centros de datos y sistemas de orquestación modernos~\cite{greenberg2008, burns2016}.
 
 En este sistema, cada instancia (servidor) puede atender \textbf{exactamente una} petición
 de compra a la vez. Si un hincha llega mientras todas las instancias están ocupadas
@@ -67,7 +67,7 @@ M/M/k/k.
 \label{fig:tu_boleta}
 \end{figure}
 
-\subsection{Correspondencia con el modelo M/M/k/k}
+\subsection*{Correspondencia con el modelo M/M/k/k}
 
 La analogía entre la plataforma \emph{Tu Boleta} (vendiendo entradas para Santa Fe) y
 el modelo M/M/k/k se establece formalmente en la Tabla~\ref{tab:analogia_tuboleta}.
@@ -91,7 +91,7 @@ Carga ofrecida $a=\lambda/\mu$ & Intensidad de tráfico en Erlangs \\
 \end{tabular}
 \end{table}
 
-\subsection{Escenarios de partido}
+\subsection*{Escenarios de partido}
 
 Se analizan cuatro escenarios representativos del calendario del
 \textbf{Independiente Santa Fe}, ordenados por intensidad de demanda:
@@ -125,7 +125,7 @@ Súper-clásico (Clausura) & 20 & 150 & 2.5 & 60.00 & 0.6744 \\
 \end{tabular}
 \end{table}
 
-\subsection{Validación de los supuestos del modelo}
+\subsection*{Validación de los supuestos del modelo}
 
 \paragraph{Supuesto de llegadas Poisson.}
 En una plataforma web como \emph{Tu Boleta} con miles de hinchas independientes intentando
@@ -137,10 +137,10 @@ ningún hincha individual domine el tráfico, el supuesto es razonable y defendi
 El tiempo de procesamiento de una compra depende de factores heterogéneos (verificación de
 pago, consulta a inventario de sillas, envío de correo de confirmación, generación de QR),
 lo que justifica la aproximación exponencial. Además, la fórmula de Erlang~B es
-\emph{insensible} a la distribución del tiempo de servicio: solo necesita que la media
+\emph{insensible} a la distribución del tiempo de servicio~\cite{bonald2003}: solo necesita que la media
 sea $1/\mu$.
 
-\subsection{Análisis de las trazas simuladas}
+\subsection*{Análisis de las trazas simuladas}
 
 Para validar empíricamente el modelo se generaron datos sintéticos siguiendo la misma
 metodología de las Actividades~4 y~5 del curso: generar interarribos y tiempos de servicio
@@ -177,9 +177,9 @@ distribución exponencial teórica, siguiendo la metodología de las Actividades
 \label{fig:validacion_tuboleta}
 \end{figure}
 
-\subsection{Simulación y comparación con la teoría}
+\subsection*{Simulación y comparación con la teoría}
 
-Se ejecutó un simulador de eventos discretos (función \texttt{mmkk.m} del curso)
+Se ejecutó un simulador de eventos discretos (SED)~\cite{law2015} (función \texttt{mmkk.m} del curso)
 para cada escenario, comparando la probabilidad de bloqueo simulada $\hat{B}$
 con el valor teórico $B(k,a)$ de Erlang~B.
 
@@ -213,7 +213,7 @@ para los escenarios de venta de entradas Santa Fe en \emph{Tu Boleta}.}
 \label{fig:comparacion_tuboleta}
 \end{figure}
 
-\subsection{Curvas de sensibilidad y punto de operación}
+\subsection*{Curvas de sensibilidad y punto de operación}
 
 La Figura~\ref{fig:curvas_tuboleta} muestra cómo crece la probabilidad de bloqueo
 al aumentar la tasa de llegadas $\lambda$, manteniendo fijos $k$ y $\mu$ en cada
@@ -228,7 +228,7 @@ El punto negro indica la operación actual; la línea punteada roja marca el umb
 \label{fig:curvas_tuboleta}
 \end{figure}
 
-\subsection{Evolución temporal de la ocupación}
+\subsection*{Evolución temporal de la ocupación}
 
 La Figura~\ref{fig:ocupacion_tuboleta} muestra la evolución temporal del número de
 instancias ocupadas en una ventana de 30 minutos. En los escenarios de alta demanda
@@ -242,7 +242,7 @@ de venta para cada escenario. La línea roja punteada indica la capacidad máxim
 \label{fig:ocupacion_tuboleta}
 \end{figure}
 
-\subsection{Dimensionamiento óptimo del servidor}
+\subsection*{Dimensionamiento óptimo del servidor}
 
 La Tabla~\ref{tab:dimensionamiento_tuboleta} presenta el número mínimo de instancias
 $k^*$ necesarias para cumplir distintos niveles de calidad de servicio, calculado
@@ -283,7 +283,7 @@ En el Súper-clásico, la situación es aún más crítica: se requieren $k^*=60
 para el umbral del $10\%$, frente a las $k=20$ actuales.
 \end{remark}
 
-\subsection{Distribución estacionaria}
+\subsection*{Distribución estacionaria}
 
 La Figura~\ref{fig:distribucion_tuboleta} muestra la distribución estacionaria $P_n$
 de probabilidades para cada escenario. La barra roja destaca $P_k$, la probabilidad de
@@ -297,7 +297,7 @@ La barra roja indica $P_k$ (probabilidad de bloqueo).}
 \label{fig:distribucion_tuboleta}
 \end{figure}
 
-\subsection{Implementación}
+\subsection*{Implementación}
 
 La simulación de eventos discretos, incluyendo la generación de datos sintéticos,
 la comparación entre teoría y simulación, las curvas de sensibilidad y el

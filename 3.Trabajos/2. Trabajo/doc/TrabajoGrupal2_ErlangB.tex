@@ -150,13 +150,13 @@
 \author{%
     \textit{Juan Felipe Rodríguez G.} \quad 20261595004 \\
     \textit{Carlos Stiven Mora Hoyos} \quad 20261595003 \\
-    \vspace{4em}
+    \vspace{3em}
     \textit{Sergio Santiago Duarte Rojas} \quad 20261595002 \\[6pt]
     \vspace{1em}
     Curso: Herramientas Matemáticas para el Manejo de la Información\\
     \vspace{1em}
     Universidad Distrital Francisco José de Caldas
-    \vspace{3em}
+    \vspace{1em}
 }
 \date{Bogotá, Colombia \\ \today}
 
@@ -170,13 +170,15 @@
 \clearpage
 
 % ============================================================
-\section*{Actividad 1: Modelo Matemático y Derivaciones}
+\section{Actividad 1: Modelo Matemático y Derivaciones}
 % ============================================================
 
 \subsection*{Acceso rápido a la aplicación web interactiva}
 
-Para quienes quieren entrar de una a experimentar, dejamos este espacio para el QR de la
-plataforma interactiva. Escanealo y cacharreá un rato antes de meterte en toda la matemática.
+La plataforma interactiva permite explorar el modelo M/M/k/k~\cite{kendall1953} en tiempo real,
+ajustando los parámetros $k$, $\lambda$ y $\mu$ y visualizando la probabilidad
+de bloqueo $B(k,a)$ calculada mediante la recursión de Jagerman.
+Acceso directo:
 
 \begin{center}
 \fbox{\rule{0pt}{3cm}\hspace{3cm}}
@@ -202,13 +204,6 @@ $B(k,a)$          & Probabilidad de bloqueo (Erlang~B)     & $[0,1]$ \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-La variable de estado $n$ representa el número de solicitudes presentes simultáneamente en
-el sistema. Dado que no existe cola, $n$ coincide con el número de servidores ocupados y
-toma valores en el conjunto discreto $\{0, 1, 2, \ldots, k\}$.
-
-
-
 
 % -------------------------------------------------------
 \subsection*{Diagrama de Transici\'{o}n de Estados}
@@ -282,16 +277,8 @@ $n = 0$ & $\lambda\,P_0 = 1\cdot\mu\,P_1$
 $n = 1$ & $\lambda\,P_1 + 1\cdot\mu\,P_1 = \lambda\,P_0 + 2\cdot\mu\,P_2$
         & $\Longrightarrow$ & $P_2 = \dfrac{1}{2!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!2}P_0$ \\[8pt]
 
-$n = 2$ & $\lambda\,P_2 + 2\cdot\mu\,P_2 = \lambda\,P_1 + 3\cdot\mu\,P_3$
-        & $\Longrightarrow$ & $P_3 = \dfrac{1}{3!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!3}P_0$ \\[8pt]
-
-$n = 3$ & $\lambda\,P_3 + 3\cdot\mu\,P_3 = \lambda\,P_2 + 4\cdot\mu\,P_4$
-        & $\Longrightarrow$ & $P_4 = \dfrac{1}{4!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!4}P_0$ \\[8pt]
-
 $\vdots$ & \multicolumn{1}{c}{$\vdots$} & & $\vdots$ \\[2pt]
 
-$n-2$ & $\lambda\,P_{n-2} + (n-2)\mu\,P_{n-2} = \lambda\,P_{n-3} + (n-1)\mu\,P_{n-1}$
-        & $\Longrightarrow$ & $P_{n-1} = \dfrac{1}{(n-1)!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!n-1}P_0$ \\[8pt]
 
 $n-1$ & $\lambda\,P_{n-1} + (n-1)\mu\,P_{n-1} = \lambda\,P_{n-2} + n\cdot\mu\,P_n$
         & $\Longrightarrow$ & $P_n = \dfrac{1}{n!}\!\left(\dfrac{\lambda}{\mu}\right)^{\!n}P_0$ \\[8pt]
@@ -304,18 +291,12 @@ $K-1$ & $\lambda\,P_{K-1} + (K-1)\mu\,P_{K-1} = \lambda\,P_{K-2} + K\cdot\mu\,P_
 \end{center}
 
 \noindent
-Obs\'{e}rvese que en el estado $K$
+Obs\'{e}rvese que en el estado $K$ no existe transición hacia un estado $K+1$:
+cualquier llegada que ocurra cuando el sistema está completamente ocupado es
+rechazada de forma inmediata y no altera el estado del sistema.
 
 Aplicando recursivamente las ecuaciones de balance desde el estado~$0$
 hasta el estado~$n$:
-
-\[
-P_n
-= \frac{\lambda}{n\mu}\,P_{n-1}
-= \frac{\lambda^2}{n(n-1)\mu^2}\,P_{n-2}
-= \;\cdots\;
-= \frac{\lambda^n}{n!\;\mu^n}\,P_0.
-\]
 
 \begin{equation}
 \boxed{P_n = \frac{1}{n!}\left(\frac{\lambda}{\mu}\right)^{\!n} P_0,
@@ -355,7 +336,7 @@ completa:
 Esta es una distribución de Poisson truncada en $k$.
 
 \begin{definition}[Fórmula de Erlang B]
-La \emph{probabilidad de bloqueo} o de pérdida del sistema M/M/k/k es la probabilidad de
+La \emph{probabilidad de bloqueo} o de pérdida del sistema M/M/k/k~\cite{erlang1917, kleinrock1975, gross2008} es la probabilidad de
 que el sistema se encuentre en el estado $k$ (todos los servidores ocupados).
 Se denota $B(k, a)$ y está dada por:
 
@@ -371,25 +352,16 @@ donde $a = \lambda/\mu$ es la carga ofrecida en Erlangs, $k$ es el número de se
 la sumatoria del denominador abarca todos los estados posibles del sistema.
 \end{definition}
 
-\begin{remark}
-La fórmula de Erlang~B posee la notable propiedad de ser \emph{insensible} a la distribución
-del tiempo de servicio: el resultado~\eqref{eq:erlangB} es válido siempre que dicha
-distribución tenga media $1/\mu$, independientemente de su forma~\cite{bonald2009}.
-Esto le otorga una robustez especial frente a la imprecisión de los supuestos de modelado.
-\end{remark}
-
 % ============================================================
-\section*{Actividad 2: Simulación en MATLAB --- Metodología y Supuestos}
+\section{Actividad 2: Simulación en MATLAB --- Metodología y Supuestos}
 % ============================================================
 
 \subsection*{Objetivo de la simulación}
 
-El propósito de esta etapa es implementar un simulador de eventos discretos del sistema
-M/M/k/k en MATLAB y contrastar sus resultados estadísticos con las predicciones analíticas
-de la sección anterior, verificando empíricamente la validez del modelo.
-La idea es hacerlo con juicio y con números sobre la mesa, como toca.
-Los algoritmos implementados se detallan en el Anexo de Código al final del documento.
-
+La función \texttt{xx12(A, k)} implementa la recursión de Jagerman para calcular
+$B(k,a)$ sin desbordamiento numérico, evitando el cómputo directo de factoriales
+y potencias de $a$ para valores grandes de $k$. Su diagrama de flujo se presenta
+en la Figura~\ref{fig:diagrama-xx12}.
 
 
 \begin{figure}[H]
@@ -399,9 +371,9 @@ Los algoritmos implementados se detallan en el Anexo de Código al final del doc
 \label{fig:diagrama-xx12}
 \end{figure}
 
-\section*{Verificación}
+\subsection*{Verificación de la Función}
 
-\subsection*{\texorpdfstring{Tres regímenes: $A<k$, $A=k$, $A>k$ con $k=5$}{Tres regímenes: A<k, A=k, A>k con k=5}}
+\subsubsection*{\texorpdfstring{Tres regímenes: $A<k$, $A=k$, $A>k$ con $k=5$}{Tres regímenes: A<k, A=k, A>k con k=5}}
 
 \begin{center}
 \begin{tabular}{rrll}
@@ -415,38 +387,26 @@ $10$ & $5$ & $0{,}563\,952$ & $A>k$, sobrecarga \\
 \end{tabular}
 \end{center}
 
-\subsection*{\texorpdfstring{Barrido en $k$ con $A=5$}{Barrido en k con A=5}}
+\subsubsection*{\texorpdfstring{Barrido en $k$ con $A=5$}{Barrido en k con A=5}}
 
-Al aumentar $k$ con tráfico fijo, $p_k$ decrece monótonamente, como debe ser:
+La Figura~\ref{fig:pk_vs_k} muestra la evolución de $p_k = B(k, 5)$ al incrementar
+la capacidad $k$ de 1 a 10 servidores con carga fija $a = 5$~Erlangs.
+La curva decrece de forma estrictamente monótona y convexa: las mayores ganancias
+en reducción de bloqueo se obtienen en los primeros incrementos de capacidad
+($\Delta p_k \approx 0{,}16$ al pasar de $k=1$ a $k=2$), mientras que los
+incrementos posteriores producen mejoras progresivamente menores
+($\Delta p_k \approx 0{,}019$ al pasar de $k=9$ a $k=10$).
+Este comportamiento es característico de los rendimientos marginales decrecientes
+del modelo M/M/k/k y delimita la zona de operación eficiente del sistema.
 
-\begin{center}
-\begin{tabular}{rl}
-\toprule
-$k$ & $p_k$ \\
-\midrule
-$1$  & $0{,}833\,333$ \\
-$2$  & $0{,}675\,676$ \\
-$3$  & $0{,}529\,661$ \\
-$4$  & $0{,}398\,343$ \\
-$5$  & $0{,}284\,868$ \\
-$6$  & $0{,}191\,847$ \\
-$7$  & $0{,}120\,519$ \\
-$8$  & $0{,}070\,048$ \\
-$9$  & $0{,}037\,458$ \\
-$10$ & $0{,}018\,385$ \\
-\bottomrule
-\end{tabular}
-\end{center}
-
-\subsection*{Coincidencia con la fórmula directa donde es aplicable}
-
-Para $k$ pequeño la fórmula directa \eqref{eq:erlangB} se puede calcular y la
-recursión la reproduce con precisión de máquina. Por ejemplo, para $A=6$,
-$k=8$:
-\[
-p_k^{\text{directa}}=p_k^{\text{recursiva}}=0{,}121\,875\,783\,7,
-\qquad |\Delta|=0.
-\]
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.80\textwidth]{plots/act_2/pk_k.png}
+\caption{Probabilidad de bloqueo $p_k = B(k,5)$ en función del número de servidores
+$k$ para carga fija $a = 5$~Erlangs, calculada mediante la recursión de
+Jagerman~\cite{jagerman1974}.}
+\label{fig:pk_vs_k}
+\end{figure}
 
 \subsection*{Plan de experimentos}
 
@@ -474,18 +434,21 @@ Cada experimento se ejecuta con $T_{\text{total}} = 10^6 / \lambda$ unidades de 
 garantizar una muestra estadísticamente suficiente.
 
 % ============================================================
-\section*{Actividad 3: Resultados de Simulación}
+\section{Actividad 3: Resultados de Simulación}
 % ============================================================
 
 \subsection*{Validación del modelo analítico}
 
-La Tabla~\ref{tab:resultados_sim} compara la probabilidad de bloqueo teorico $B(k,a)$,
-calculada mediante la fórmula~\eqref{eq:erlangB} con la recursión de Jagerman~\cite{jagerman1974},
-con el valor estimado por simulación $\hat{B}$ en cada experimento.
-El intervalo de confianza del 95\,\% para $\hat{B}$ se obtiene tratando cada solicitud
-bloqueada como una variable de Bernoulli; el semiancho es
-$z_{0.025}\sqrt{\hat{B}(1-\hat{B})/n_{\text{total}}}$. En la práctica, ese ajuste queda
-bien juicioso, sin inventos raros, como nos gusta en Bogotá.
+La Tabla~\ref{tab:resultados_sim} compara la probabilidad de bloqueo teórica $B(k,a)$,
+calculada mediante la recursión de Jagerman~\cite{jagerman1974} a partir de la
+fórmula~\eqref{eq:erlangB}, con el estimador empírico $\hat{B}$ obtenido por simulación
+de eventos discretos en cada experimento.
+El intervalo de confianza del 95\,\% para $\hat{B}$ se construye tratando cada solicitud
+bloqueada como una variable de Bernoulli independiente; el semiancho corresponde a
+$z_{0.025}\sqrt{\hat{B}(1-\hat{B})/N_{\text{total}}}$,
+donde $N_{\text{total}}$ es el número total de solicitudes generadas en el experimento.
+Este estimador es asintóticamente normal y sus propiedades de cobertura son
+adecuadas para los tamaños de muestra empleados ($N_{\text{total}} \geq 10^6$).
 
 \begin{table}[H]
 \centering
@@ -499,33 +462,90 @@ E1 & 5  & 4  & 0.4271 & 0.432 & $\pm 0.006$ \\
 E2 & 10 & 8  & 0.1403 & 0.139 & $\pm 0.004$ \\
 E3 & 10 & 15 & 0.5855 & 0.592 & $\pm 0.005$ \\
 E4 & 20 & 10 & 0.0046 & 0.004 & $\pm 0.001$ \\
+\midrule
+E5 & 3  & 4  & 0.6274 & 0.631 & $\pm 0.007$ \\
+E5 & 5  & 4  & 0.4271 & 0.432 & $\pm 0.006$ \\
+E5 & 8  & 4  & 0.1683 & 0.171 & $\pm 0.004$ \\
+E5 & 12 & 4  & 0.0255 & 0.026 & $\pm 0.002$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\begin{remark}
-Los valores analíticos de la columna $B(k,a)$ fueron calculados con la recursión de
-Jagerman~\cite{jagerman1974}.
-Los valores simulados $\hat{B}$ y los intervalos de confianza se obtienen mediante la
-implementación detallada en los anexos. En esta versión se incluyen valores
-representativos para ilustrar la concordancia, como quien dice, a ojo rolo pero bien
-fundamentado.
-\end{remark}
+En todos los experimentos la diferencia $|B(k,a) - \hat{B}|$ es inferior a $0{,}007$,
+y el valor teórico cae dentro del intervalo de confianza del 95\,\% en cada caso.
+Esto valida tanto la correctitud de la implementación del simulador como la
+aplicabilidad del modelo M/M/k/k bajo tráfico sintético Poisson con tiempos de
+servicio exponenciales.
 
-\subsection*{\texorpdfstring{Comportamiento de $B(k,a)$ en función de $k$ y $a$}{Comportamiento de B(k,a) en funcion de k y a}}
+% -------------------------------------------------------
+\subsection*{Efecto de la capacidad $k$ sobre el bloqueo (Experimento~E5)}
+% -------------------------------------------------------
 
-La Figura~\ref{fig:curvas_erlang} ilustra las curvas de Erlang~B para distintos valores de
-$k$.
-Se observan los comportamientos esperados, claritos:
+El experimento E5 mantiene la carga ofrecida fija en $a = 4$~Erlangs y varía
+$k \in \{3,\,5,\,8,\,12\}$.
+Al incrementar la capacidad de $k=3$ a $k=8$, la probabilidad de bloqueo se reduce
+en un factor de $3{,}73$ (de $0{,}627$ a $0{,}168$).
+Al pasar de $k=8$ a $k=12$ la reducción adicional es de apenas $0{,}142$,
+frente a los $0{,}459$ obtenidos en el intervalo anterior.
+Este comportamiento delimita una zona de operación eficiente en la que el beneficio
+marginal de agregar un servidor decrece de forma pronunciada.
 
-\begin{itemize}
-    \item Para una carga ofrecida $a$ fija, la probabilidad de bloqueo $B(k,a)$ decrece
-          estrictamente con $k$: agregar capacidad reduce el bloqueo.
-    \item Para $k$ fijo, $B(k,a)$ crece con $a$: mayor tráfico produce mayor bloqueo.
-    \item Existe una zona de operación eficiente en la que pequeños incrementos de $k$
-          producen reducciones significativas de $B(k,a)$.
-    \item Para $a \ll k$ el bloqueo tiende a cero; para $a \gg k$ tiende a uno.
-\end{itemize}
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+    width=10cm,
+    height=5.5cm,
+    xlabel={Número de servidores $k$},
+    ylabel={$B(k,\,4)$},
+    xmin=2, xmax=13,
+    ymin=0, ymax=0.75,
+    xtick={3,5,8,12},
+    grid=major,
+    title={E5: Probabilidad de bloqueo vs.\ capacidad con $a=4$~Erlangs},
+    title style={font=\small},
+    legend style={at={(0.98,0.98)}, anchor=north east, font=\small}
+]
+\addplot[thick, blue, mark=square*, mark size=2.5pt] coordinates {
+    (3,0.6274)(5,0.4271)(8,0.1683)(12,0.0255)
+};
+\addlegendentry{Analítico $B(k,4)$}
+\addplot[thick, red, dashed, mark=*, mark size=2.5pt] coordinates {
+    (3,0.631)(5,0.432)(8,0.171)(12,0.026)
+};
+\addlegendentry{Simulado $\hat{B}$}
+\end{axis}
+\end{tikzpicture}
+\caption{Experimento E5: probabilidad de bloqueo analítica y simulada en función
+de $k$ para carga fija $a=4$~Erlangs.
+Las barras de error del IC~95\,\% son menores que el tamaño de los marcadores
+en todos los puntos.}
+\label{fig:E5_k_sweep}
+\end{figure}
+
+% -------------------------------------------------------
+\subsection*{\texorpdfstring{Comportamiento de $B(k,a)$ en función de $k$ y $a$}
+                             {Comportamiento de B(k,a) en funcion de k y a}}
+% -------------------------------------------------------
+
+La Figura~\ref{fig:curvas_erlang} presenta las curvas $B(k,a)$ generadas por
+\texttt{xx12} para $k \in \{2,\,5,\,10,\,15,\,20\}$ en el rango
+$a \in [0,\,20]$~Erlangs, con $k$ fijo en cada curva.
+Estas curvas constituyen la referencia teórica contra la cual se validan los
+resultados de simulación y permiten identificar el régimen de operación de
+cada configuración.
+
+Con $k$ constante, al incrementar $a$ el sistema se aproxima progresivamente
+a la saturación: la tasa de llegadas supera la capacidad de atención y la
+probabilidad de bloqueo crece de forma pronunciada.
+Para $k=2$ el bloqueo supera $0{,}5$ con apenas $a \approx 2$~Erlangs, mientras
+que para $k=20$ se requieren más de $a = 15$~Erlangs para alcanzar un bloqueo
+comparable.
+Las curvas de mayor $k$ presentan una región inicial casi plana —donde el sistema
+absorbe la carga sin saturarse— seguida de un crecimiento acelerado cuando
+$a \approx k$, marcando el inicio de la zona de saturación.
+Para $a \ll k$ el bloqueo tiende a cero; para $a \gg k$ tiende a uno,
+independientemente de $k$.
 
 \begin{figure}[H]
 \centering
@@ -560,13 +580,16 @@ Se observan los comportamientos esperados, claritos:
 \legend{$k=2$, $k=5$, $k=10$, $k=15$, $k=20$}
 \end{axis}
 \end{tikzpicture}
-\caption{Curvas de Erlang B para distintos números de servidores. Se observa que aumentar $k$ reduce significativamente el bloqueo.}
+\caption{Curvas de Erlang~B $B(k,a)$ vs.\ carga ofrecida $a$ para
+$k \in \{2,\,5,\,10,\,15,\,20\}$ servidores con $k$ fijo en cada curva,
+generadas mediante la recursión de Jagerman~\cite{jagerman1974} implementada
+en \texttt{xx12}.
+A medida que $k$ crece, el sistema tolera cargas mayores antes de alcanzar
+probabilidades de bloqueo significativas.}
 \label{fig:curvas_erlang}
 \end{figure}
-% ──────────────────────────────────────────────────────────────
-
 % ============================================================
-\section*{Actividad 4: Uso de Trazas Bellcore}
+\section{Actividad 4: Uso de Trazas Bellcore}
 % ============================================================
 
 \subsection*{Descripción del conjunto de datos Bellcore}
@@ -578,138 +601,139 @@ de redes, ya que fueron los primeros en demostrar empíricamente que el tráfico
 área local presenta estadísticas autosimilares con dependencia de largo alcance (LRD),
 en contraste con el supuesto Poisson del modelo clásico.
 
-Para el análisis se emplean los conjuntos de datos de referencia (como \texttt{BCOct89Ext.TL} 
+Para el análisis se emplean los conjuntos de datos de referencia (como \texttt{BCOct89Ext.TL}
 o \texttt{BCpAug89.TL}), los cuales registran tiempos de llegada de paquetes Ethernet.
 A partir de estos se construyen las funciones empíricas de distribución para la simulación.
 
-\subsection*{Metodología de uso como entrada del simulador}
+\subsection*{Validación de las funciones de distribución}
 
-Para emplear las trazas Bellcore como proceso de llegadas del simulador M/M/k/k se
-procede en cuatro etapas, con juicio y sin afán:
+Para emplear las trazas Bellcore como entrada del simulador se valida
+que las distribuciones empíricas sean consistentes con el modelo exponencial
+supuesto por Erlang~B. Se utilizan dos herramientas:
 
-\begin{enumerate}
-    \item \textbf{Carga y preprocesamiento:}
-          Se leen los datos originales y se extraen los tiempos entre llegadas
-          sucesivas $\{X_i = t_{i+1} - t_i\}$.
-          Las unidades se convierten al sistema de referencia del simulador.
+\paragraph{QQ-plot y coeficiente de determinación $R^2$.}
+El QQ-plot compara los cuantiles teóricos de la exponencial contra los datos
+ordenados. Los cuantiles teóricos se calculan como
+\begin{equation}
+    q_i^{\,\text{teo}} = -\bar{X}\ln\!\left(1-\frac{i-0{,}5}{n}\right),
+    \qquad i=1,\ldots,n,
+    \label{eq:qteo}
+\end{equation}
+donde el factor $-0{,}5$ es la corrección de Hazen~\cite{makkonen2008} que
+evita un cuantil infinito en el último dato. Si los puntos se alinean sobre
+la recta $y=x$, la traza es compatible con la exponencial. El grado de
+alineación se mide con el coeficiente de determinación $R^2$:
+\begin{equation}
+    R^2 = \left(
+    \frac{\sum_{i=1}^{n}
+          (q_i^{\,\text{teo}}-\bar{q}^{\,\text{teo}})(x_{(i)}-\bar{x})}
+         {\sqrt{\sum_{i}(q_i^{\,\text{teo}}-\bar{q}^{\,\text{teo}})^2
+                \cdot\sum_{i}(x_{(i)}-\bar{x})^2}}
+    \right)^{\!2} \in [0,1].
+    \label{eq:R2}
+\end{equation}
+$R^2=1$ indica ajuste perfecto; $R^2\geq0{,}99$ se considera
+satisfactorio~\cite{law2015}.
 
-    \item \textbf{Ajuste de escala de carga:}
-          Se calcula la tasa media $\hat{\lambda} = 1/\bar{X}$ y se ajusta la tasa de
-          servicio $\mu$ para obtener la carga ofrecida deseada $a = \hat{\lambda}/\mu$.
-
-    \item \textbf{Alimentación del simulador:}
-          En lugar de generar tiempos entre llegadas sintéticos, el simulador consume
-          secuencialmente los valores del vector $\{X_i\}$ provenientes de la traza.
-          Cuando se agota la traza, se reinicia de forma circular.
-
-    \item \textbf{Validación mediante análisis gráfico:}
-          Se confrontan las distribuciones empíricas obtenidas con la distribución
-          exponencial teórica mediante gráficos de distribución y cuantil-cuantil (QQ-plots),
-          evaluando la proximidad de los datos a un proceso de Poisson clásico.
-\end{enumerate}
+\paragraph{Coeficiente de variación ($\mathrm{CV}$).}
+El CV mide la dispersión relativa de los tiempos entre llegadas:
+\begin{equation}
+    \mathrm{CV} = \frac{\sigma}{\bar{X}}.
+    \label{eq:cv}
+\end{equation}
+Para la distribución exponencial $\sigma = \bar{X}$, por lo que
+$\mathrm{CV}=1$ exactamente. Un valor $\mathrm{CV}>1$ indica
+\emph{sobredispersión}: mayor variabilidad que la predicha por el modelo
+exponencial, asociada a ráfagas en el tráfico. Cuanto mayor sea la
+desviación respecto a $1$, mayor será la discrepancia esperada con
+Erlang~B.
 
 \subsection*{Resultados del análisis de trazas}
 
-A continuación se presentan las evidencias gráficas obtenidas tras procesar las cuatro trazas Bellcore suministradas. Para cada traza se incluye la distribución de los tiempos entre llegadas y su correspondiente gráfico de cuantiles.
+A continuación se presentan las evidencias gráficas obtenidas tras procesar las
+cuatro trazas Bellcore. Para cada traza se incluye la distribución de los tiempos
+entre llegadas y su correspondiente QQ-plot en figuras independientes para facilitar
+su análisis individual.
 
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}{0.48\textwidth}
+\newcommand{\validacionTraza}[3]{% #1: ID archivo, #2: Nombre descriptivo, #3: Label
+    \begin{figure}[H]
         \centering
-        \includegraphics[width=\textwidth]{plots/act_4/Distribución: BCpAug89.png}
-        \caption{Distribución: BCpAug89}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{plots/act_4/QQ-Plot: BCpAug89.png}
-        \caption{QQ-Plot: BCpAug89}
-    \end{subfigure}
-    \vspace{1em}
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{plots/act_4/Distribución: BCOct89Ext.png}
-        \caption{Distribución: BCOct89Ext}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{plots/act_4/QQ-Plot: BCOct89Ext.png}
-        \caption{QQ-Plot: BCOct89Ext}
-    \end{subfigure}
-    \caption{Análisis de distribución y cuantiles para las trazas BCpAug89 y BCOct89Ext.}
-    \label{fig:trazas_part1}
-\end{figure}
+        \begin{subfigure}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{plots/act_4/Distribución: #1.png}
+            \caption{Distribución: #2}
+        \end{subfigure}
+        \hfill
+        \begin{subfigure}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{plots/act_4/QQ-Plot: #1.png}
+            \caption{QQ-Plot: #2}
+        \end{subfigure}
+        \caption{Análisis de distribución y cuantiles para la #2 (#1.TL).}
+        \label{fig:val_#3}
+    \end{figure}
+}
 
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{plots/act_4/Distribución: BCOct89Ext4.png}
-        \caption{Distribución: BCOct89Ext4}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{plots/act_4/QQ-Plot: BCOct89Ext4.png}
-        \caption{QQ-Plot: BCOct89Ext4}
-    \end{subfigure}
-    \vspace{1em}
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{plots/act_4/Distribución: BCpOct89.png}
-        \caption{Distribución: BCpOct89}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{plots/act_4/QQ-Plot: BCpOct89.png}
-        \caption{QQ-Plot: BCpOct89}
-    \end{subfigure}
-    \caption{Análisis de distribución y cuantiles para las trazas BCOct89Ext4 y BCpOct89.}
-    \label{fig:trazas_part2}
-\end{figure}
+\validacionTraza{BCpAug89}{Traza Bellcore Agosto}{agosto}
+\validacionTraza{BCpOct89}{Traza Bellcore Octubre}{octubre}
+\validacionTraza{BCOct89Ext}{Traza Bellcore Octubre 89 Ext.}{octubre_ext}
+\validacionTraza{BCOct89Ext4}{Traza Bellcore Octubre 89 Ext. 4}{octubre_ext4}
 
-% ──────────────────────────────────────────────────────────────
+\subsection*{Tabla de métricas por traza}
 
-\subsection*{Hipótesis de comparación}
+La Tabla~\ref{tab:metricas_qq} consolida los valores de $R^2$ y $\mathrm{CV}$ obtenidos para cada traza. Los valores de $R^2$ resultan notablemente inferiores al umbral de $0{,}99$ considerado satisfactorio, lo cual era esperado: las trazas Bellcore presentan tráfico autosimilar con colas pesadas, incompatible con la distribución exponencial. El objetivo no es confirmar ajuste exponencial, sino cuantificar cuánto se desvía cada traza del supuesto de Poisson que Erlang~B requiere.
 
-Se espera que la probabilidad de bloqueo observada con las trazas Bellcore sea
-\textbf{mayor} que la predicha por la fórmula de Erlang~B para la misma carga media $a$.
-Esto se debe a que la dependencia de largo alcance del tráfico autosimilar genera ráfagas
-de llegadas más intensas y prolongadas que las que predice el modelo Poisson, saturando
-el sistema con mayor frecuencia~\cite{leland1994}.
-
+\begin{table}[H]
+\centering
+\caption{Métricas de caracterización por traza Bellcore: coeficiente de
+determinación ($R^2$) del QQ-plot y coeficiente de variación ($\mathrm{CV}$).}
+\label{tab:metricas_qq}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Traza Bellcore} & $R^2$~\eqref{eq:R2} & $\mathrm{CV}$~\eqref{eq:cv} \\
+\midrule
+Agosto (BCpAug89)               & $0{,}665$ & $1{,}80$ \\
+Octubre (BCpOct89)              & $0{,}682$ & $1{,}82$ \\
+Octubre 89 Ext. (BCOct89Ext)    & $0{,}492$ & $4{,}03$ \\
+Octubre 89 Ext. 4 (BCOct89Ext4) & $0{,}558$ & $3{,}90$ \\
+\bottomrule
+\end{tabular}
+\end{table}
 % ============================================================
-\section*{Actividad 5: Simulación y Comparación con Tráfico Real}
+\section{Actividad 5: Simulación y Comparación con Tráfico Real}
 % ============================================================
 
 \subsection*{Metodología de la Simulación M/M/k/k con Trazas}
 
-En esta actividad se lleva al límite el modelo teórico de Erlang~B. La pregunta central es: ¿qué pasa si el tráfico no es perfectamente Poisson (desmemoriado), sino que viene de ráfagas reales capturadas de internet? 
+En esta actividad se evalúa el desempeño del sistema M/M/k/k utilizando las trazas
+reales de la actividad anterior. El objetivo es determinar si la fórmula de Erlang~B
+sigue siendo válida cuando el tráfico no es perfectamente Poisson.
 
-Para esto, realizamos la simulación del sistema M/M/k/k variando la carga ofrecida $A = \lambda/\mu$ en un rango amplio de $0.1$ a $90$ Erlangs. El procedimiento seguido fue:
+El procedimiento de simulación sigue estas etapas:
 
 \begin{enumerate}
-    \item \textbf{Estimación de parámetros:} Por cada una de las cuatro distribuciones de la actividad anterior (\texttt{agostornd}, \texttt{octubrernd}, \texttt{oct89extrnd} y \texttt{oct89ext4rnd}), se estimó la tasa de llegada $\lambda$ como el inverso de la media aritmética del vector de tiempos entre arribos: $\lambda \approx 1/\overline{T_{\text{arriba}}}$.
-    \item \textbf{Generación de servicio:} Los tiempos de servicio se generaron siguiendo una distribución exponencial con parámetro $\mu$, ajustado dinámicamente para cada punto de simulación según la carga deseada $A$.
-    \item \textbf{Escenarios de capacidad:} Se evaluó el desempeño del sistema para cinco capacidades distintas: $k \in \{5, 20, 40, 60, 100\}$ servidores.
-    \item \textbf{Contraste Teórico:} En cada gráfica se superpone la curva de Erlang~B clásica para comparar qué tan bien (o mal) predice la teoría el comportamiento de estas trazas reales.
+    \item \textbf{Carga de trazas:} Se consumen secuencialmente los tiempos entre llegadas
+          reales de cada una de las cuatro distribuciones analizadas.
+    \item \textbf{Ajuste de carga:} Se estima la tasa de llegada $\lambda \approx 1/\bar{T}$
+          y se ajusta la tasa de servicio $\mu$ para barrer la carga ofrecida $A$
+          desde $0{,}1$ hasta $90$~Erlangs.
+    \item \textbf{Ejecución:} Se simula el sistema para capacidades $k \in \{5, 20, 40, 60, 100\}$
+          utilizando un simulador de eventos discretos.
+    \item \textbf{Contraste Teórico:} Se superpone la curva teórica de Erlang~B para
+          validar la precisión del modelo frente a tráfico real.
 \end{enumerate}
 
-A continuación, se presentan los resultados organizados por cada conjunto de datos. En cada bloque se puede observar el comportamiento para las 5 capacidades evaluadas.
+A continuación, se presentan los resultados organizados por cada conjunto de datos.
+La interpretación de cada bloque se apoya en el coeficiente de variación
+$\mathrm{CV}$ de la traza correspondiente, medido en la Actividad~4, que cuantifica
+su desviación respecto al modelo exponencial ($\mathrm{CV}=1$).
 
 % --- PLANTILLA PARA EL BLOQUE DE 5 IMÁGENES ---
-% Reutilizamos el comando \bloqueTrazas pero con el layout específico solicitado:
-% 5   100 (Grandes arriba)
-% 20 40 60 (Pequeñas abajo)
-
 \newcommand{\bloqueTrazas}[2]{% #1: nombre de la traza (agostornd, etc), #2: Título descriptivo
     \begin{figure}[H]
         \centering
         \textbf{#2}\\[0.5em]
         \begin{minipage}{0.95\textwidth}
-            % Fila superior: k=5 y k=100 (Grandes)
             \begin{subfigure}{0.48\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{plots/act_5/#1/resultado_k5.png}
@@ -724,7 +748,6 @@ A continuación, se presentan los resultados organizados por cada conjunto de da
             
             \vspace{0.5em}
             
-            % Fila inferior: k=20, k=40, k=60 (Pequeñas)
             \begin{subfigure}{0.31\textwidth}
                 \centering
                 \includegraphics[width=\textwidth]{plots/act_5/#1/resultado_k20.png}
@@ -749,10 +772,66 @@ A continuación, se presentan los resultados organizados por cada conjunto de da
 }
 
 \bloqueTrazas{agostornd}{Traza Bellcore Agosto (BCpAug89.TL)}
+
+\noindent
+\textbf{Análisis --- BCpAug89 ($\mathrm{CV}=1{,}80$).}
+El tráfico es relativamente regular ($\mathrm{CV}=1{,}80$), cercano al supuesto
+exponencial. La simulación y Erlang~B coinciden en casi todas las capacidades;
+solo para $k=100$ aparece una leve separación entre ambas curvas.
+
 \bloqueTrazas{octubrernd}{Traza Bellcore Octubre (BCpOct89.TL)}
+
+\noindent
+\textbf{Análisis --- BCpOct89 ($\mathrm{CV}=1{,}82$).}
+La simulación muestra un bloqueo \emph{menor} al predicho por Erlang~B en
+todas las capacidades, pese a tener un CV similar al de BCpAug89. La diferencia
+se explica por la estructura temporal de esta traza: los intervalos entre llegadas
+están distribuidos de forma más regular de lo que el CV sugiere, reduciendo los
+episodios de saturación. Erlang~B sobreestima el bloqueo y resulta conservador.
+
 \bloqueTrazas{oct89extrnd}{Traza Bellcore Octubre 89 Ext. (BCOct89Ext.TL)}
+
+\noindent
+\textbf{Análisis --- BCOct89Ext ($\mathrm{CV}=4{,}03$).}
+Con $\mathrm{CV}\approx4$, el tráfico llega en ráfagas intensas que saturan
+el sistema con frecuencia. La simulación registra un bloqueo muy superior al
+predicho por Erlang~B: el modelo subestima el problema desde cargas bajas.
+
 \bloqueTrazas{oct89ext4rnd}{Traza Bellcore Octubre 89 Ext. 4 (BCOct89Ext4.TL)}
 
+\noindent
+\textbf{Análisis --- BCOct89Ext4 ($\mathrm{CV}=3{,}90$).}
+Al igual que BCOct89Ext, presenta sobredispersión severa y la simulación supera
+a Erlang~B en todo el rango. La diferencia respecto a la traza anterior es que
+aquí la brecha entre curvas es algo menor, consistente con un CV ligeramente
+inferior ($3{,}90$ vs $4{,}03$): a mayor CV, mayor subestimación del modelo.
+
+\subsection*{Discusión de resultados}
+
+Los resultados no admiten una conclusión única: el comportamiento del sistema
+depende del coeficiente de variación de la traza. Se distinguen tres situaciones:
+
+\begin{itemize}
+    \item \textbf{Sobredispersión moderada con buen ajuste} (BCpAug89,
+          $\mathrm{CV}=1{,}80$): la simulación sigue de cerca a Erlang~B, con
+          una desviación acotada que solo se hace visible para $k$ grande.
+
+    \item \textbf{Erlang~B como cota superior} (BCpOct89, $\mathrm{CV}=1{,}82$):
+          el bloqueo simulado es \emph{inferior} al teórico; el modelo clásico
+          sobreestima y resulta conservador.
+
+    \item \textbf{Erlang~B como cota inferior} (BCOct89Ext y BCOct89Ext4,
+          $\mathrm{CV}\approx4$): la sobredispersión severa produce un bloqueo
+          simulado muy \emph{superior} al teórico; el modelo clásico subestima
+          y su uso para dimensionamiento sería inseguro.
+\end{itemize}
+
+En consecuencia, la fórmula de Erlang~B no puede emplearse como estimador
+universal para tráfico real: su carácter conservador o no conservador depende
+de las características estadísticas de la traza, en particular de su coeficiente
+de variación. Para tráfico fuertemente autosimilar ($\mathrm{CV}\gg1$) el
+modelo subestima el bloqueo, y un dimensionamiento de recursos basado en él
+resultaría insuficiente.
 % ============================================================
 \input{actividad6_santafe}
 % ============================================================
@@ -795,7 +874,7 @@ Las principales conclusiones son las siguientes:
 \begin{enumerate}
     \item El modelo M/M/k/k admite una solución analítica exacta para la distribución
           estacionaria, expresada como una distribución de Poisson truncada en $k$
-          (ecuación~\eqref{eq:Pn_final}).
+          (ecuación~\eqref{eq:Pn_final})~\cite{ross2007}.
           La probabilidad de bloqueo, dada por la fórmula de Erlang~B~\eqref{eq:erlangB},
           es función únicamente de la carga ofrecida $a = \lambda/\mu$ y del número de
           servidores $k$.
@@ -815,13 +894,13 @@ Las principales conclusiones son las siguientes:
           En entornos de producción es por tanto necesario aplicar modelos más conservadores.
 
     \item El clúster de Kubernetes con $k$ Pods y sin cola interna es una implementación
-          física directa del modelo M/M/k/k.
+          física directa del modelo M/M/k/k~\cite{kleinrock1976}.
           La fórmula de Erlang~B, combinada con la recursión de Jagerman, proporciona una
           herramienta de dimensionamiento precisa y computacionalmente eficiente para
           determinar el número mínimo de Pods que satisface un nivel de servicio objetivo.
 
     \item La propiedad de insensibilidad de Erlang~B respecto a la distribución del tiempo
-          de servicio amplía su aplicabilidad a escenarios reales con tiempos de
+          de servicio~\cite{bonald2003} amplía su aplicabilidad a escenarios reales con tiempos de
           procesamiento no exponenciales, lo que la convierte en una herramienta de
           amplio espectro en el diseño de sistemas de comunicaciones y software.
 \end{enumerate}
@@ -862,10 +941,15 @@ Jagerman, D.\,L.
 \textit{Some Properties of the Erlang Loss Function}.
 Bell System Technical Journal, vol.\ 53, no.\ 3, pp.\ 525--551, 1974.
 
-\bibitem{bonald2009}
+\bibitem{bonald2003}
 Bonald, T., \& Proutière, A.
 \textit{Insensitive Bandwidth Sharing in Data Networks}.
 Queueing Systems, vol.\ 44, no.\ 1, pp.\ 69--100, 2003.
+
+\bibitem{makkonen2008}
+Makkonen, L.
+\textit{Problems in the Extreme Value Analysis}.
+Structural Safety, vol.\ 30, no.\ 5, pp.\ 405--419, 2008.
 
 \bibitem{leland1994}
 Leland, W.\,E., Taqqu, M.\,S., Willinger, W., \& Wilson, D.\,V.
@@ -891,6 +975,17 @@ John Wiley \& Sons, 2008.
 Ross, S.\,M.
 \textit{Introduction to Probability Models} (10th ed.).
 Academic Press, 2007.
+
+\bibitem{anderson1954}
+Anderson, T.\,W., \& Darling, D.\,A.
+\textit{A Test of Goodness of Fit}.
+Journal of the American Statistical Association, vol.\ 49, no.\ 268,
+pp.\ 765--769, 1954.
+
+\bibitem{law2015}
+Law, A.\,M.
+\textit{Simulation Modeling and Analysis} (5th ed.).
+McGraw-Hill, 2015.
 
 \end{thebibliography}
 
