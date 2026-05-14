@@ -674,7 +674,7 @@ su análisis individual.
 
 \subsection*{Tabla de métricas por traza}
 
-La Tabla~\ref{tab:metricas_qq} consolida los valores de $R^2$ y $\mathrm{CV}$ obtenidos para cada traza. Los valores de $R^2$ resultan notablemente inferiores al umbral de $0{,}99$ considerado satisfactorio, lo cual era esperado: las trazas Bellcore presentan tráfico autosimilar con colas pesadas, incompatible con la distribución exponencial. El objetivo no es confirmar ajuste exponencial, sino cuantificar cuánto se desvía cada traza del supuesto de Poisson que Erlang~B requiere.
+La Tabla~\ref{tab:metricas_qq} resume el $R^2$ y $\mathrm{CV}$ de las trazas. Los valores de $R^2$ son bajos, lo cual es lógico: el tráfico Bellcore es autosimilar y de cola pesada, incompatible con la exponencial. No buscamos validar el ajuste, sino medir qué tan lejos están estas trazas del supuesto de Poisson que pide Erlang~B.
 
 \begin{table}[H]
 \centering
