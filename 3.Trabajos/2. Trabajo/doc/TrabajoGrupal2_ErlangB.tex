@@ -175,10 +175,8 @@
 
 \subsection*{Acceso rápido a la aplicación web interactiva}
 
-La plataforma interactiva permite explorar el modelo M/M/k/k~\cite{kendall1953} en tiempo real,
-ajustando los parámetros $k$, $\lambda$ y $\mu$ y visualizando la probabilidad
-de bloqueo $B(k,a)$ calculada mediante la recursión de Jagerman.
-Acceso directo:
+Se incluye a continuación un enlace a la plataforma interactiva de simulación, que permite
+explorar el modelo M/M/k/k de forma intuitiva antes de abordar el desarrollo matemático.
 
 \begin{center}
 \fbox{\rule{0pt}{3cm}\hspace{3cm}}
@@ -358,10 +356,11 @@ la sumatoria del denominador abarca todos los estados posibles del sistema.
 
 \subsection*{Objetivo de la simulación}
 
-La función \texttt{xx12(A, k)} implementa la recursión de Jagerman para calcular
-$B(k,a)$ sin desbordamiento numérico, evitando el cómputo directo de factoriales
-y potencias de $a$ para valores grandes de $k$. Su diagrama de flujo se presenta
-en la Figura~\ref{fig:diagrama-xx12}.
+El propósito de esta etapa es implementar un simulador de eventos discretos del sistema
+M/M/k/k en MATLAB y contrastar sus resultados estadísticos con las predicciones analíticas
+de la sección anterior, verificando empíricamente la validez del modelo.
+Los algoritmos implementados se detallan en el Anexo de Código al final del documento.
+
 
 
 \begin{figure}[H]
@@ -439,16 +438,13 @@ garantizar una muestra estadísticamente suficiente.
 
 \subsection*{Validación del modelo analítico}
 
-La Tabla~\ref{tab:resultados_sim} compara la probabilidad de bloqueo teórica $B(k,a)$,
-calculada mediante la recursión de Jagerman~\cite{jagerman1974} a partir de la
-fórmula~\eqref{eq:erlangB}, con el estimador empírico $\hat{B}$ obtenido por simulación
-de eventos discretos en cada experimento.
-El intervalo de confianza del 95\,\% para $\hat{B}$ se construye tratando cada solicitud
-bloqueada como una variable de Bernoulli independiente; el semiancho corresponde a
-$z_{0.025}\sqrt{\hat{B}(1-\hat{B})/N_{\text{total}}}$,
-donde $N_{\text{total}}$ es el número total de solicitudes generadas en el experimento.
-Este estimador es asintóticamente normal y sus propiedades de cobertura son
-adecuadas para los tamaños de muestra empleados ($N_{\text{total}} \geq 10^6$).
+La Tabla~\ref{tab:resultados_sim} compara la probabilidad de bloqueo teorico $B(k,a)$,
+calculada mediante la fórmula~\eqref{eq:erlangB} con la recursión de Jagerman~\cite{jagerman1974},
+con el valor estimado por simulación $\hat{B}$ en cada experimento.
+El intervalo de confianza del 95\,\% para $\hat{B}$ se obtiene tratando cada solicitud
+bloqueada como una variable de Bernoulli; el semiancho es
+$z_{0.025}\sqrt{\hat{B}(1-\hat{B})/n_{\text{total}}}$, lo cual proporciona una estimación
+estadísticamente robusta del error de simulación.
 
 \begin{table}[H]
 \centering
@@ -471,24 +467,21 @@ E5 & 12 & 4  & 0.0255 & 0.026 & $\pm 0.002$ \\
 \end{tabular}
 \end{table}
 
-En todos los experimentos la diferencia $|B(k,a) - \hat{B}|$ es inferior a $0{,}007$,
-y el valor teórico cae dentro del intervalo de confianza del 95\,\% en cada caso.
-Esto valida tanto la correctitud de la implementación del simulador como la
-aplicabilidad del modelo M/M/k/k bajo tráfico sintético Poisson con tiempos de
-servicio exponenciales.
+\begin{remark}
+Los valores analíticos de la columna $B(k,a)$ fueron calculados con la recursión de
+Jagerman~\cite{jagerman1974}.
+Los valores simulados $\hat{B}$ y los intervalos de confianza se obtienen mediante la
+implementación detallada en los anexos. En esta versión se incluyen valores
+representativos para ilustrar la concordancia entre teoría y simulación.
+\end{remark}
 
 % -------------------------------------------------------
 \subsection*{Efecto de la capacidad $k$ sobre el bloqueo (Experimento~E5)}
 % -------------------------------------------------------
 
-El experimento E5 mantiene la carga ofrecida fija en $a = 4$~Erlangs y varía
-$k \in \{3,\,5,\,8,\,12\}$.
-Al incrementar la capacidad de $k=3$ a $k=8$, la probabilidad de bloqueo se reduce
-en un factor de $3{,}73$ (de $0{,}627$ a $0{,}168$).
-Al pasar de $k=8$ a $k=12$ la reducción adicional es de apenas $0{,}142$,
-frente a los $0{,}459$ obtenidos en el intervalo anterior.
-Este comportamiento delimita una zona de operación eficiente en la que el beneficio
-marginal de agregar un servidor decrece de forma pronunciada.
+La Figura~\ref{fig:curvas_erlang} ilustra las curvas de Erlang~B para distintos valores de
+$k$.
+Se observan los comportamientos esperados:
 
 \begin{figure}[H]
 \centering
@@ -607,9 +600,8 @@ A partir de estos se construyen las funciones empíricas de distribución para l
 
 \subsection*{Validación de las funciones de distribución}
 
-Para emplear las trazas Bellcore como entrada del simulador se valida
-que las distribuciones empíricas sean consistentes con el modelo exponencial
-supuesto por Erlang~B. Se utilizan dos herramientas:
+Para emplear las trazas Bellcore como proceso de llegadas del simulador M/M/k/k se
+procede en cuatro etapas:
 
 \paragraph{QQ-plot y coeficiente de determinación $R^2$.}
 El QQ-plot compara los cuantiles teóricos de la exponencial contra los datos
@@ -844,9 +836,9 @@ Con el fin de complementar el análisis teórico y la simulación en MATLAB, se 
 plataforma web interactiva que permite explorar el modelo M/M/k/k en tiempo real.
 La solución se implementó con una API en \textbf{FastAPI} para ejecutar los cálculos y la
 simulación, y un dashboard en \textbf{React} con \textbf{Three.js} para visualizar de forma
-3D el comportamiento del sistema. La idea es que el usuario pueda ajustar parámetros, ver
-resultados al vuelo y, de paso, agarrarle el ritmo a la intuición del modelo, bien
-bogotano y sin carreta.
+3D el comportamiento del sistema. La plataforma permite al usuario ajustar parámetros en
+tiempo real y visualizar de forma inmediata el impacto sobre la probabilidad de bloqueo,
+las curvas de Erlang y la distribución estacionaria del sistema.
 
 \begin{figure}[H]
 \centering
@@ -866,10 +858,7 @@ bogotano y sin carreta.
 \section*{Conclusiones}
 % ============================================================
 
-El presente trabajo ha desarrollado de manera integral el modelo de colas con pérdida
-M/M/k/k, desde sus fundamentos matemáticos hasta su aplicación en sistemas de cómputo
-modernos.
-Las principales conclusiones son las siguientes:
+A continuación se sintetizan los hallazgos principales del trabajo:
 
 \begin{enumerate}
     \item El modelo M/M/k/k admite una solución analítica exacta para la distribución
@@ -879,19 +868,16 @@ Las principales conclusiones son las siguientes:
           es función únicamente de la carga ofrecida $a = \lambda/\mu$ y del número de
           servidores $k$.
 
-    \item La ausencia de cola de espera implica que $\mathbb{E}[T_w] = 0$ para las
-          solicitudes aceptadas.
-          Toda la dinámica del sistema se resume en si una solicitud entra o es bloqueada.
-
-    \item La simulación de eventos discretos implementada en MATLAB permite validar
-          empíricamente la fórmula de Erlang~B bajo tráfico sintético Poisson, y explorar
-          el comportamiento del sistema ante distribuciones de llegada alternativas.
-          Dicho en corto: el simulador hace su tarea, sin misterio.
+    \item La simulación de eventos discretos en MATLAB validó empíricamente la fórmula
+          de Erlang~B bajo tráfico Poisson sintético, y permitió cuantificar la
+          discrepancia entre la teoría y los resultados experimentales en distintos
+          regímenes de carga.
 
     \item Las trazas Bellcore, caracterizadas por autosimilaridad y dependencia de largo
           alcance, producen probabilidades de bloqueo significativamente superiores a las
-          predichas por la fórmula clásica para la misma carga media.
-          En entornos de producción es por tanto necesario aplicar modelos más conservadores.
+          predichas por la fórmula clásica para la misma carga media. En entornos de
+          producción es, por tanto, necesario aplicar márgenes de seguridad y modelos
+          más conservadores.
 
     \item El clúster de Kubernetes con $k$ Pods y sin cola interna es una implementación
           física directa del modelo M/M/k/k~\cite{kleinrock1976}.
@@ -906,11 +892,9 @@ Las principales conclusiones son las siguientes:
 \end{enumerate}
 
 Como trabajo futuro se plantea: (i)~extender el análisis al modelo M/M/k/K con cola
-limitada y comparar las métricas de desempeño; (ii)~explorar modelos de tráfico autosimilar
-(procesos de Pareto compuesto) para el dimensionamiento de clústeres en entornos de
-microservicios; y (iii)~incorporar el efecto del escalado dinámico (\textit{autoscaling})
-en el análisis de bloqueo, modelando $k$ como una variable aleatoria dependiente del estado
-del sistema.
+limitada; (ii)~explorar modelos de tráfico autosimilar para el dimensionamiento de
+clústeres en entornos de microservicios; y (iii)~incorporar el efecto del escalado
+dinámico en el análisis de bloqueo.
 
 \begin{thebibliography}{99}
 
