@@ -1,0 +1,202 @@
+% ============================================================
+%  Trabajo Grupal 3 — LRD y Multifractales
+%  Herramientas Matemáticas para el Manejo de la Información
+%  Universidad Distrital Francisco José de Caldas — 2026-1
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+
+% ── Codificación y lenguaje ──────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,shorthands=off]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+% ── Matemáticas ──────────────────────────────────────────────
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+
+% ── Geometría y tipografía ───────────────────────────────────
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm, headheight=14pt}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{setspace}
+\onehalfspacing
+
+% ── Gráficos y flotantes ─────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{parskip}
+
+% ── Listings (MATLAB) ───────────────────────────────────────
+\lstdefinestyle{matlab}{
+    language=Matlab,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!60!black}\itshape,
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    stepnumber=1,
+    numbersep=8pt,
+    backgroundcolor=\color{gray!5},
+    frame=single,
+    rulecolor=\color{black!30},
+    breaklines=true,
+    breakatwhitespace=false,
+    tabsize=4,
+    captionpos=b,
+    xleftmargin=1.5em,
+    framexleftmargin=1.2em,
+    showstringspaces=false
+}
+\lstset{style=matlab}
+
+% ── TikZ ─────────────────────────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{
+    automata,
+    positioning,
+    arrows.meta,
+    calc,
+    shapes.geometric,
+    shapes.misc,
+    shadows.blur,
+    backgrounds,
+    decorations.pathreplacing
+}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots,statistics}
+\pgfplotsset{compat=1.18}
+
+% ── Tablas ───────────────────────────────────────────────────
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+
+% ── Hipervínculos ────────────────────────────────────────────
+\usepackage[hidelinks]{hyperref}
+
+% ── Entornos teóricos ────────────────────────────────────────
+\theoremstyle{definition}
+\newtheorem{definition}{Definición}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{proposition}{Proposición}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Observación}[section]
+
+% ── Cabecera y pie ───────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small Trabajo Grupal 3}
+\lhead{\small HMMI 2026-1}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Portada ──────────────────────────────────────────────────
+\usepackage{titling}
+\pretitle{%
+    \begin{center}
+    \includegraphics[width=0.40\textwidth]{assets/logo_circular_negro.pdf}\par\vspace{1em}
+    \LARGE\bfseries
+}
+\posttitle{\par\end{center}\vspace{0.8em}}
+
+% ============================================================
+%  METADATOS
+% ============================================================
+\title{%
+    \textbf{Trabajo Grupal 3}\\[4pt]
+    \large LRD y Multifractales
+    \vspace{2em}
+}
+\author{%
+    \textit{Juan Felipe Rodríguez G.} \quad 20261595004 \\
+    \textit{Carlos Stiven Mora Hoyos} \quad 20261595003 \\
+    \vspace{3em}
+    \textit{Sergio Santiago Duarte Rojas} \quad 20261595002 \\[6pt]
+    \vspace{1em}
+    Curso: Herramientas Matemáticas para el Manejo de la Información\\
+    \vspace{1em}
+    Universidad Distrital Francisco José de Caldas
+    \vspace{1em}
+}
+\date{Bogotá, Colombia \\ \today}
+
+% ============================================================
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\clearpage
+\tableofcontents
+\clearpage
+
+% ============================================================
+\section{Actividad 1: Evaluación de estimadores con secuencias independientes}
+% ============================================================
+
+% Evaluar sesgo, consistencia, robustez y eficiencia del diagrama
+% varianza-tiempo y del diagrama log-escala usando secuencias
+% discretas independientes.
+
+% ============================================================
+\section{Actividad 2: Evaluación de estimadores con secuencias LRD}
+% ============================================================
+
+% Evaluar sesgo, consistencia y eficiencia del diagrama varianza-tiempo
+% y del diagrama log-escala usando secuencias sintéticas con LRD
+% generadas con wfbm y betamwm para varios valores de H (0.5 < H < 1).
+
+% ============================================================
+\section{Actividad 3: Estimación de H en la European ST-T Database}
+% ============================================================
+
+% Estimar el parámetro de Hurst del tiempo entre picos R de los 90
+% registros. Graficar H vs. n con intervalos de confianza.
+% Diagrama de caja y bigotes con boxplot.
+
+% ============================================================
+\section{Actividad 4: Herramienta de clasificación mono/multifractal}
+% ============================================================
+
+% Elaborar herramienta para estimar monofractalidad o multifractalidad
+% de una secuencia con LRD. Validar con wfbm y betamwm.
+
+% ============================================================
+\section{Actividad 5: Clasificación fractal de la European ST-T Database}
+% ============================================================
+
+% Aplicar la herramienta de la Actividad 4 al tiempo entre picos R
+% de los 90 registros. Analizar relación con las anotaciones de
+% los especialistas.
+
+% ============================================================
+\section{Actividad 6: Escenario real con LRD}
+% ============================================================
+
+% Identificar un escenario real de la disciplina/profesión donde
+% se presente LRD. Realizar análisis de fractalidad y concluir.
+
+% ============================================================
+\section*{Conclusiones}
+% ============================================================
+
+% TODO: Completar conclusiones.
+
+% ============================================================
+\begin{thebibliography}{99}
+
+% TODO: Agregar referencias.
+
+\end{thebibliography}
+
+\end{document}
