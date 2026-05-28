@@ -34,12 +34,10 @@
 \contentsline {paragraph}{Enfermedad coronaria.}{27}{section*.35}%
 \contentsline {paragraph}{Infarto de miocardio.}{28}{section*.36}%
 \contentsline {paragraph}{Edad.}{28}{section*.37}%
-\contentsline {section}{\numberline {6}Actividad 6: Fractalidad en tr\'{a}fico transaccional Cloud, mercados de capitales, deuda soberana y activos digitales}{29}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Contexto: un arco transversal}{29}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Dataset I: tr\'{a}fico NASA HTTP}{29}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Dataset II: mercado de capitales (S\&P~500)}{31}{subsection.6.3}%
-\contentsline {subsection}{\numberline {6.4}Dataset III: deuda soberana (FRED DGS10)}{32}{subsection.6.4}%
-\contentsline {subsection}{\numberline {6.5}Dataset IV: activos digitales (BTC/USDT)}{33}{subsection.6.5}%
-\contentsline {subsection}{\numberline {6.6}Una taxonom\'{i}a de dominios fractales}{34}{subsection.6.6}%
-\contentsline {subsection}{\numberline {6.7}An\'{a}lisis de la Actividad 6}{36}{subsection.6.7}%
-\contentsline {section}{\numberline {7}Conclusiones}{37}{section.7}%
+\contentsline {section}{\numberline {6}Actividad 6: Fractalidad en la volatilidad del S\&P~500}{29}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Escenario y dataset}{29}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Estimación del parámetro de Hurst}{29}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Clasificación mono/multifractal}{30}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Análisis de la Actividad 6}{30}{subsection.6.4}%
+\contentsline {section}{\numberline {7}Conclusiones}{31}{section.7}%
+\contentsline {section}{Anexos}{32}{section*.41}%

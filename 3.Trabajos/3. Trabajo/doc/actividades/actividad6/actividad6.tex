@@ -1,416 +1,101 @@
 \newpage
 % ============================================================
-\section{Actividad 6: Fractalidad en tr\'{a}fico transaccional Cloud, mercados de capitales, deuda soberana y activos digitales}
+\section{Actividad 6: Fractalidad en la volatilidad del S\&P~500}
 % ============================================================
 
 % ------------------------------------------------------------
-\subsection{Contexto: un arco transversal}
+\subsection{Escenario y dataset}
 % ------------------------------------------------------------
 
-El arco anal\'{i}tico desarrollado en las actividades previas sigue una progresi\'{o}n
-metodol\'{o}gica deliberada. Las Actividades~1 y~2 validaron las propiedades
-estad\'{i}sticas de los estimadores Varianza--Tiempo y Log--Escala sobre secuencias
-sint\'{e}ticas de referencia: secuencias i.i.d.\ con $H=0{,}5$ como l\'{i}mite de
-independencia, y procesos LRD monofractales (\texttt{wfbm}) y multifractales
-(\texttt{betamwm}) como banco de prueba controlado. Las Actividades~3,~4 y~5
-trasladaron estas herramientas al dominio fisiol\'{o}gico, caracterizando la
-estructura fractal de la variabilidad card\'{i}aca y construyendo un clasificador
-mono/multifractal con asociaciones cl\'{i}nicas significativas.
+Se analiza la volatilidad del índice S\&P~500 (2000--2024, $6\,289$ días
+de operación). La serie objeto de estudio es el valor absoluto de los
+log-retornos diarios $|r_t| = |\ln(P_t / P_{t-1})|$, proxy estándar de
+la volatilidad instantánea. Esta elección se fundamenta en un resultado
+consolidado: los retornos diarios son aproximadamente incorrelacionados
+($H \approx 0{,}5$), pero su magnitud exhibe memoria persistente con $H$
+entre $0{,}7$ y $0{,}9$~\cite{ding1993, mandelbrot1997}, fenómeno
+conocido como \textit{volatility clustering}.
 
-La pregunta que orienta esta actividad es de naturaleza transversal: \textquestiondown la
-fractalidad es un fen\'{o}meno exclusivo de sistemas biol\'{o}gicos, o emerge tambi\'{e}n en
-infraestructuras tecnol\'{o}gicas, sistemas econ\'{o}micos y mercados financieros? A diferencia de la fisiolog\'{i}a card\'{i}aca, donde la
-regulaci\'{o}n aut\'{o}noma produce memoria persistente con $H\approx0{,}96$ y
-heterogeneidad multiescala, el tr\'{a}fico transaccional Cloud opera bajo din\'{a}micas
-de usuarios concurrentes, cach\'{e}s en cascada y r\'{a}fagas de solicitudes
-correlacionadas. Los mercados de capitales agregan millones de decisiones
-econ\'{o}micas aut\'{o}nomas. Las tasas soberanas incorporan memoria institucional
-de pol\'{i}tica monetaria. Los criptoactivos operan como sistemas autoorganizados
-puros, 24 horas al d\'{i}a, sin autoridad central.
-
-Si la fractalidad aparece en todos estos dominios ---desde un servidor web
-hasta un mercado global de criptomonedas--- debe existir un conjunto de
-propiedades estructurales comunes que la generen.
-
-% ------------------------------------------------------------
-\subsection{Dataset I: tr\'{a}fico NASA HTTP}
-% ------------------------------------------------------------
-
-Se analiza el dataset NASA HTTP, un registro de solicitudes HTTP al servidor web
-de la NASA durante los meses de julio y agosto de 1995. La serie objeto de
-estudio son los tiempos entre llegadas consecutivas (\textit{inter-arrival
-times}), que capturan la din\'{a}mica de acceso de miles de usuarios concurrentes.
-
-La serie contiene $975\,721$ muestras con media $\mu = 2{,}7450\,\text{s}$,
-mediana $1{,}0000\,\text{s}$ y desviaci\'{o}n est\'{a}ndar
-$\sigma = 137{,}6685\,\text{s}$. La enorme dispersi\'{o}n (coeficiente de
-variaci\'{o}n $>50$) es indicio de heterogeneidad estructural: la mayor\'{i}a de los
-intervalos son breves, pero episodios de congesti\'{o}n producen colas de espera de
-varios minutos.
+La Figura~\ref{fig:a6-contraste} ilustra esta asimetría.
 
 \begin{figure}[H]
     \centering
-    \begin{minipage}[t]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{actividades/actividad6/imgs/serie_tiempo.png}
-        \caption{Serie de tiempos entre llegadas del dataset NASA HTTP.
-                 Se observan r\'{a}fagas intensas seguidas de periodos de
-                 actividad reducida.}
-        \label{fig:a6-serie}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{actividades/actividad6/imgs/histograma.png}
-        \caption{Histograma de los inter-arrival times. La cola pesada
-                 refleja la presencia de eventos de larga duraci\'{o}n.}
-        \label{fig:a6-hist}
-    \end{minipage}
+    \includegraphics[width=0.88\textwidth]{actividades/actividad6/imgs/contraste_ret_vol.png}
+    \caption{Retornos $r_t$ (izquierda) vs.\ volatilidad $|r_t|$
+             (derecha). Los retornos oscilan sin patrón visible; la
+             volatilidad muestra clusters persistentes en 2008 y 2020.}
+    \label{fig:a6-contraste}
 \end{figure}
 
-El m\'{e}todo Varianza--Tiempo arroja $\hat{H}_{\text{VT}} = 0{,}5435$ con
-$R^2_{\text{VT}} = 0{,}9911$ e intervalo de confianza del $95\%$
-$[0{,}5408;\,0{,}5462]$. El m\'{e}todo Log--Escala obtiene
-$\hat{H}_{\text{LD}} = 0{,}5064$ con par\'{a}metro de escala $\alpha = 0{,}0127$.
-El clasificador de la Actividad~4 (umbrales por defecto) arroja
-$R^2_{\tau} = 0{,}4808$, confirmando naturaleza \textbf{multifractal}.
+% ------------------------------------------------------------
+\subsection{Estimación del parámetro de Hurst}
+% ------------------------------------------------------------
+
+Los retornos $r_t$ arrojan $\hat{H}_{\text{VT}} = 0{,}4571$
+$[0{,}4409;\; 0{,}4732]$: sin memoria, consistente con la hipótesis de
+eficiencia de mercado. La volatilidad $|r_t|$, en cambio, presenta LRD
+fuerte:
 
 \begin{figure}[H]
     \centering
     \begin{minipage}[t]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{actividades/actividad6/imgs/diagrama_vt.png}
-        \caption{Diagrama Varianza--Tiempo (NASA). $\hat{H} = 0{,}5435$.}
+        \caption{Diagrama VT de $|r_t|$: $\hat{H} = 0{,}8731$
+                 $[0{,}8666;\; 0{,}8796]$.}
         \label{fig:a6-vt}
     \end{minipage}
     \hfill
     \begin{minipage}[t]{0.48\textwidth}
         \centering
         \includegraphics[width=\textwidth]{actividades/actividad6/imgs/diagrama_ld.png}
-        \caption{Diagrama Log--Escala (NASA). $\hat{H} = 0{,}5064$.}
+        \caption{Diagrama LD de $|r_t|$: $\hat{H} = 0{,}7845$.}
         \label{fig:a6-ld}
     \end{minipage}
 \end{figure}
 
+Ambos estimadores confirman LRD fuerte. La diferencia VT ($0{,}87$)
+vs.\ LD ($0{,}78$) reproduce el patrón observado en actividades
+anteriores: VT estima más alto y LD ofrece una cota conservadora.
+
+% ------------------------------------------------------------
+\subsection{Clasificación mono/multifractal}
+% ------------------------------------------------------------
+
+Se aplicó el clasificador de la Actividad~4 con umbrales
+$R^2_{\text{VT}} \geq 0{,}85$ y $R^2_{\tau} \geq 0{,}95$.
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.88\textwidth]{actividades/actividad6/imgs/clasificacion_fractal.png}
-    \caption{Clasificaci\'{o}n fractal del tr\'{a}fico NASA. Panel completo:
-             diagrama VT ($\hat{H} = 0{,}5435$), diagrama LD ($\hat{H} = 0{,}5064$),
-             exponentes de escala $\tau(q)$ ($R^2_{\tau} = 0{,}4808$) y espectro
-             multifractal $D(h)$.}
-    \label{fig:a6-nasa-clasif}
+    \caption{Clasificación: $\tau(q)$ lineal ($R^2_{\tau} = 0{,}9921$) y
+             $D(h)$ concentrado. Resultado: \textbf{monofractal}.}
+    \label{fig:a6-clasif}
 \end{figure}
 
-% ------------------------------------------------------------
-\subsection{Dataset II: mercado de capitales (S\&P~500)}
-% ------------------------------------------------------------
-
-Con el fin de someter a prueba la hip\'{o}tesis de universalidad de la fractalidad,
-se incorpora un segundo dominio emp\'{i}rico radicalmente distinto: el mercado de
-capitales estadounidense, representado por el \'{i}ndice S\&P~500.
-
-Se utilizan los retornos logar\'{i}tmicos diarios del \'{i}ndice S\&P~500 en el per\'{i}odo
-comprendido entre el 31 de mayo de 2016 y el 27 de mayo de 2026,
-obtenidos mediante la API de Yahoo Finance. La serie contiene $n = 2\,511$
-observaciones con las siguientes estad\'{i}sticas descriptivas: media
-$\mu = 0{,}000509$, desviaci\'{o}n est\'{a}ndar $\sigma = 0{,}011413$,
-asimetr\'{i}a $\gamma_1 = -0{,}6904$ y curtosis
-$\gamma_2 = 16{,}8395$.
-
-Los retornos logar\'{i}tmicos diarios exhiben $H \approx 0{,}5$, consistente con
-la hip\'{o}tesis de mercado eficiente en forma d\'{e}bil. Sin embargo, la literatura
-emp\'{i}rica establece que la LRD en mercados financieros reside en la
-volatilidad, no en los retornos. Por ello, el an\'{a}lisis fractal se aplica a la
-serie de volatilidad realizada $|r_t|$, que captura la persistencia de la
-magnitud de las fluctuaciones.
-
-El m\'{e}todo Varianza--Tiempo arroja $\hat{H}_{\text{VT}} = 0{,}8431$ con
-$R^2_{\text{VT}} = 0{,}9175$ e intervalo de confianza del $95\%$
-$[0{,}8296;\,0{,}8565]$. El m\'{e}todo Log--Escala obtiene
-$\hat{H}_{\text{LD}} = 0{,}8989$ con par\'{a}metro de escala $\alpha = 0{,}7979$.
-El clasificador de la Actividad~4 (umbrales por defecto: $R^2_{\text{VT}} \geq 0{,}85$,
-$R^2_{\tau} \geq 0{,}95$) arroja $R^2_{\tau} = 0{,}9232$, clasificando
-la serie como \textbf{multifractal}.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{actividades/actividad6/imgs/snp500_clasificacion_fractal.png}
-    \caption{Clasificaci\'{o}n fractal del S\&P~500 (volatilidad). Panel completo:
-             diagrama VT ($\hat{H} = 0{,}8431$), diagrama LD ($\hat{H} = 0{,}8989$),
-             exponentes de escala $\tau(q)$ ($R^2_{\tau} = 0{,}9232$) y espectro
-             multifractal $D(h)$. La curvatura de $\tau(q)$ confirma naturaleza
-             multifractal.}
-    \label{fig:a6-snp-clasif}
-\end{figure}
+La volatilidad se clasifica como \textbf{monofractal}: un único
+exponente $H = 0{,}8731$ gobierna el escalamiento en todas las escalas
+temporales.
 
 % ------------------------------------------------------------
-\subsection{Dataset III: deuda soberana (FRED DGS10)}
+\subsection{Análisis de la Actividad 6}
 % ------------------------------------------------------------
 
-Como complemento al benchmark tecnol\'{o}gico y financiero, se incorpora la serie
-\textbf{DGS10} del repositorio FRED (Federal Reserve Economic Data): el
-rendimiento diario de los bonos del Tesoro de Estados Unidos a 10 a\~{n}os de
-madurez constante.
+La memoria del mercado no reside en la dirección de los precios sino en
+la magnitud de sus fluctuaciones. Los retornos con $H = 0{,}46$ son
+compatibles con un proceso sin memoria; la volatilidad con $H = 0{,}87$
+demuestra que los periodos de turbulencia se auto-refuerzan. Un día de
+alta volatilidad incrementa la probabilidad de que los días siguientes
+también lo sean, y este efecto decae como ley de potencias, no
+exponencialmente. Los modelos de riesgo que asumen volatilidad constante
+o de corta memoria ---como el VaR gaussiano--- subestiman
+sistemáticamente la duración de las crisis: la LRD implica que la
+exposición a pérdidas extremas persiste más de lo que predicen.
 
-La serie en niveles abarca $n = 16\,801$ observaciones diarias desde el
-2 de enero de 1962 hasta el 26 de mayo de 2026, con media
-$\mu = 5{,}8139\,\%$, mediana 5{,}4300\,\% y desviaci\'{o}n est\'{a}ndar
-$\sigma = 2{,}9353\,\%$. La autocorrelaci\'{o}n de primer orden en niveles es
-$\text{ACF}(1)=0{,}9998$, indicador de ra\'{i}z unitaria y memoria persistente.
-
-Dado que los niveles de tasas soberanas son no estacionarios (proceso
-integrado), el an\'{a}lisis fractal se aplica a las diferencias diarias
-$\Delta \text{DGS10}_t = \text{DGS10}_t - \text{DGS10}_{t-1}$, que constituyen
-una serie estacionaria de cambios de tasas.
-
-El m\'{e}todo Varianza--Tiempo arroja $\hat{H}_{\text{VT}} = 0{,}5185$ con
-$R^2_{\text{VT}} = 0{,}9858$ e intervalo de confianza del $95\%$
-$[0{,}5084;\,0{,}5286]$. El m\'{e}todo Log--Escala obtiene
-$\hat{H}_{\text{LD}} = 0{,}5826$ con par\'{a}metro de escala $\alpha = 0{,}1652$.
-El clasificador de la Actividad~4 (umbrales por defecto) arroja
-$R^2_{\tau} = 0{,}8925$, clasificando la serie como \textbf{multifractal}.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{actividades/actividad6/imgs/dgs10_clasificacion_fractal.png}
-    \caption{Clasificaci\'{o}n fractal del DGS10 (diferencias). Panel completo:
-             diagrama VT ($\hat{H} = 0{,}5185$), diagrama LD ($\hat{H} = 0{,}5826$),
-             exponentes de escala $\tau(q)$ ($R^2_{\tau} = 0{,}8925$) y espectro
-             multifractal $D(h)$.}
-    \label{fig:a6-dgs10-clasif}
-\end{figure}
-
-% ------------------------------------------------------------
-\subsection{Dataset IV: activos digitales (BTC/USDT)}
-% ------------------------------------------------------------
-
-Para explorar la continuidad del espectro fractal entre sistemas tecnol\'{o}gicos
-de baja memoria y sistemas biol\'{o}gicos de alta memoria, se incorpora una serie
-de alta frecuencia del mercado de criptoactivos: los retornos logar\'{i}tmicos de
-Bitcoin (BTC/USDT) en temporalidad de 1 minuto, descargados desde la API
-p\'{u}blica de Binance.
-
-La serie descargada comprende $n = 4\,999$ observaciones de retornos
-logar\'{i}tmicos en velas de 1 minuto, correspondientes al per\'{i}odo comprendido
-entre el 24 de mayo de 2026 (17:33 UTC) y el 28 de mayo de 2026 (04:32 UTC).
-Las estad\'{i}sticas descriptivas son: media $\mu = -9{,}32 \times 10^{-6}$,
-desviaci\'{o}n est\'{a}ndar $\sigma = 4{,}5394 \times 10^{-4}$,
-asimetr\'{i}a $-0{,}3470$ y curtosis $9{,}8258$.
-
-Al igual que en el S\&P~500, los retornos logar\'{i}tmicos de Bitcoin exhiben
-$H \approx 0{,}5$, consistente con la ausencia de predictibilidad en los
-cambios de precio. El an\'{a}lisis fractal se aplica a la volatilidad realizada
-$|r_t|$ para capturar la persistencia de la magnitud de las fluctuaciones.
-
-El m\'{e}todo Varianza--Tiempo arroja $\hat{H}_{\text{VT}} = 0{,}8365$ con
-$R^2_{\text{VT}} = 0{,}9661$ e intervalo de confianza del $95\%$
-$[0{,}8292;\,0{,}8439]$. El m\'{e}todo Log--Escala obtiene
-$\hat{H}_{\text{LD}} = 0{,}6706$ con par\'{a}metro de escala $\alpha = 0{,}3411$.
-El clasificador de la Actividad~4 arroja $R^2_{\tau} = 0{,}9092$, clasificando
-la serie como \textbf{monofractal}.
-
-\begin{figure}[H]
-    \centering
-    \begin{minipage}[t]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{actividades/actividad6/imgs/btc_diagrama_vt.png}
-        \caption{Diagrama Varianza--Tiempo (BTC/USDT volatilidad). $\hat{H} = 0{,}8365$.}
-        \label{fig:a6-btc-vt}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[t]{0.48\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{actividades/actividad6/imgs/btc_diagrama_ld.png}
-        \caption{Diagrama Log--Escala (BTC/USDT volatilidad). $\hat{H} = 0{,}6706$.}
-        \label{fig:a6-btc-ld}
-    \end{minipage}
-\end{figure}
-
-El clasificador de la Actividad~4 (umbrales por defecto) arroja
-$R^2_{\tau} = 0{,}9092$, clasificando la serie como \textbf{multifractal}.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{actividades/actividad6/imgs/btc_clasificacion_fractal.png}
-    \caption{Clasificaci\'{o}n fractal de BTC/USDT (volatilidad). Panel completo:
-             diagrama VT ($\hat{H} = 0{,}8365$), diagrama LD ($\hat{H} = 0{,}6706$),
-             exponentes de escala $\tau(q)$ ($R^2_{\tau} = 0{,}9092$) y espectro
-             multifractal $D(h)$.}
-    \label{fig:a6-btc-clasif}
-\end{figure}
-
-% ------------------------------------------------------------
-\subsection{Una taxonom\'{i}a de dominios fractales}
-% ------------------------------------------------------------
-
-Los sistemas analizados en este trabajo pueden organizarse en un espacio
-conceptual bidimensional donde el eje horizontal representa el grado de
-dependencia de rango largo (de $H=0{,}5$ a $H\approx1{,}0$) y el eje vertical
-la heterogeneidad espacial (de monofractal a multifractal). Esta taxonom\'{i}a
-revela una estructura com\'{u}n que trasciende los dominios de aplicaci\'{o}n.
-
-\begin{figure}[H]
-\centering
-\begin{tikzpicture}[scale=1.3, every node/.style={font=\footnotesize}]
-    % Ejes
-    \draw[->, thick] (-0.5,-0.5) -- (10.5,-0.5) node[right] {$H$: Memoria persistente $\rightarrow$};
-    \draw[->, thick] (0,-0.5) -- (0,7) node[above, rotate=90, anchor=south] {Heterogeneidad espacial $\rightarrow$};
-    
-    % Etiquetas eje X (abajo)
-    \foreach \x/\lbl in {1/0.5, 3/0.6, 5/0.75, 7.5/0.9, 9.5/1.0} {
-        \draw (\x,-0.6) -- (\x,-0.4) node[below] {\lbl};
-    }
-    
-    % Etiquetas eje Y (izquierda)
-    \draw (-0.1,1) -- (0.1,1) node[left=5pt] {monofractal};
-    \draw (-0.1,5.5) -- (0.1,5.5) node[left=5pt] {multifractal};
-    
-    % Regiones de fondo
-    \fill[blue!5] (0,0) rectangle (10,2.8);
-    \fill[orange!5] (0,2.8) rectangle (10,7);
-    
-    % === CLUSTER BAJO LRD (izquierda) ===
-    \node[font=\small\bfseries, blue!50!black] at (2.5,0.3) {R\'{e}gimen bajo LRD};
-    
-    % NASA HTTP
-    \filldraw[teal!80] (1.5,4.5) circle (7pt);
-    \node[anchor=west, align=left] at (2,4.5) {\textbf{NASA HTTP}\\$H_{\text{VT}}=0.54$};
-    
-    % DGS10
-    \filldraw[cyan!70] (1.5,3.2) circle (7pt);
-    \node[anchor=west, align=left] at (2,3.2) {\textbf{FRED DGS10}\\$H_{\text{VT}}=0.52$};
-    
-    % === CLUSTER ALTO LRD (derecha) ===
-    \node[font=\small\bfseries, orange!70!black] at (7.5,0.3) {R\'{e}gimen alto LRD};
-    
-    % BTC/USDT
-    \filldraw[yellow!70!orange] (7,4.0) circle (7pt);
-    \node[anchor=east, align=right] at (6.5,4.0) {\textbf{BTC/USDT}\\$H_{\text{VT}}=0.84$};
-    
-    % S&P 500
-    \filldraw[green!60!black] (7,5.3) circle (7pt);
-    \node[anchor=east, align=right] at (6.5,5.3) {\textbf{S\&P~500}\\$H_{\text{VT}}=0.84$};
-    
-    % Corazon sano
-    \filldraw[orange!80] (8.5,6.0) circle (7pt);
-    \node[anchor=west, align=left] at (9,6.0) {\textbf{Coraz\'{o}n sano}\\$H\approx0.96$};
-    
-    % Corazon enfermo (mas abajo, separado)
-    \filldraw[violet!70] (8.5,2.0) circle (5pt);
-    \node[anchor=west, align=left] at (9,2.0) {\textbf{Coraz\'{o}n enfermo}\\$H\approx0.88$};
-    
-    % Umbral
-    \draw[dashed, gray, very thick] (4,-0.5) -- (4,7);
-    \node[font=\small\bfseries, gray, rotate=90] at (4.3,3.5) {umbral $H\approx0.65$};
-    
-    % Flecha transicion
-    \draw[->, very thick, dashed, gray] (2.8,3.8) -- (5.8,4.5);
-    \node[font=\footnotesize, gray, above] at (4.3,4.3) {transici\'{o}n de fase};
-\end{tikzpicture}
-\caption{Taxonom\'{i}a de dominios fractales emp\'{i}ricos. Los resultados revelan
-una \textbf{transici\'{o}n de fase} en $H\approx0{,}65$: sistemas centralizados
-(NASA HTTP, FRED DGS10) operan en el r\'{e}gimen de baja LRD ($H\approx0{,}52$--$0{,}54$),
-mientras que sistemas con retroalimentaci\'{o}n multiagente (S\&P~500, BTC/USDT,
-coraz\'{o}n sano) operan en el r\'{e}gimen de alta LRD ($H\geq0{,}84$).
-Todos los dominios exhiben naturaleza multifractal.}
-\label{fig:taxonomia}
-\end{figure}
-
-Los dominios con memoria persistente y heterogeneidad espacial ocupan el
-cuadrante noreste del mapa. A diferencia de las secuencias i.i.d.\ del
-Actividad~1, estos sistemas comparten tres caracter\'{i}sticas estructurales
-fundamentales:
-
-\begin{enumerate}[leftmargin=2em]
-    \item \textbf{Retroalimentaci\'{o}n temporal.} El estado presente depende del
-          pasado de forma no trivial. En el coraz\'{o}n, la regulaci\'{o}n aut\'{o}noma
-          integra se\~{n}ales hist\'{o}ricas del barorreflejo; en el servidor web, una
-          solicitud activa cach\'{e}s y conexiones persistentes; en las tasas soberanas,
-          las decisiones de la Reserva Federal incorporan proyecciones de
-          inflaci\'{o}n pasada; en Bitcoin, una orden de compra/venta modifica el
-          \textit{order book} y genera se\~{n}ales que otros agentes replican.
-    \item \textbf{Interacci\'{o}n multiescala.} Los procesos operan simult\'{a}neamente
-          en escalas temporales distintas. La variabilidad card\'{i}aca integra
-          oscilaciones de segundos, minutos y horas; el tr\'{a}fico web superpone
-          sesiones individuales y patrones diurnos/nocturnos; el S\&P~500 integra
-          transacciones de alta frecuencia y ciclos econ\'{o}micos; el rendimiento
-          soberano concatena fluctuaciones diarias con transiciones estructurales
-          de d\'{e}cadas; Bitcoin superpone transacciones milim\'{e}tricas con ondas de
-          adopci\'{o}n institucional.
-    \item \textbf{Heterogeneidad estructural.} Diferentes regiones o periodos
-          exhiben din\'{a}micas locales distintas. Los intervalos RR de un paciente
-          con hipertensi\'{o}n muestran espectros de singularidad m\'{a}s estrechos;
-          los picos de carga del servidor NASA poseen exponentes distintos a los
-          valles; las fases de crisis financiera exhiben din\'{a}micas de volatilidad
-          distintas a las de estabilidad; los \textit{flash crashes} de Bitcoin
-          tienen exponentes de Hurst locales distintos a los periodos de
-          consolidaci\'{o}n lateral.
-\end{enumerate}
-
-% ------------------------------------------------------------
-\subsection{An\'{a}lisis de la Actividad 6}
-% ------------------------------------------------------------
-
-El an\'{a}lisis del dataset NASA HTTP confirma que la fractalidad trasciende la
-frontera entre sistemas biol\'{o}gicos y tecnol\'{o}gicos. El par\'{a}metro de Hurst
-$\hat{H}_{\text{VT}} = 0{,}5435$ ($R^2 = 0{,}9911$) y
-$\hat{H}_{\text{LD}} = 0{,}5064$ confirman dependencia de rango largo con
-alta confiabilidad en el ajuste, mientras que $R^2_{\tau} = 0{,}4808$
-establece la naturaleza multifractal del tr\'{a}fico.
-
-La incorporaci\'{o}n de tres datasets complementarios ---S\&P~500, DGS10 y
-BTC/USDT--- eleva la tesis de universalidad a un nivel cualitativamente
-superior. Los resultados emp\'{i}ricos revelan un patr\'{o}n estructural inesperado:
-no un gradiente lineal de memoria, sino una \textbf{transici\'{o}n de fase}
-con dos clusters bien diferenciados:
-
-\begin{itemize}[leftmargin=2em]
-    \item \textbf{Cluster bajo LRD} ($H \approx 0{,}52$--$0{,}54$): NASA HTTP
-          ($\hat{H}_{\text{VT}} = 0{,}5435$) y DGS10 diferencias
-          ($\hat{H}_{\text{VT}} = 0{,}5185$). Sistemas con regulaci\'{o}n
-          centralizada (servidores web, bancos centrales) exhiben memoria
-          persistente modesta, apenas por encima del umbral de independencia.
-          La retroalimentaci\'{o}n es predominantemente unidireccional: el estado
-          actual influye en el futuro, pero los agentes no se retroalimentan
-          mutuamente de forma significativa.
-    
-    \item \textbf{Cluster alto LRD} ($H \geq 0{,}84$): S\&P~500 volatilidad
-          ($\hat{H}_{\text{VT}} = 0{,}8431$), BTC/USDT volatilidad
-          ($\hat{H}_{\text{VT}} = 0{,}8365$) y coraz\'{o}n sano
-          ($H \approx 0{,}96$). Sistemas con retroalimentaci\'{o}n multiagente
-          (mercados financieros, organismos biol\'{o}gicos) exhiben memoria
-          persistente intensa. La agregaci\'{o}n de millones de decisiones
-          aut\'{o}nomas genera retroalimentaci\'{o}n de segundo orden
-          (expectativas sobre expectativas) que amplifica la LRD.
-\end{itemize}
-
-La complementariedad entre VT y LD, observada sistem\'{a}ticamente desde la
-Actividad~1, se reproduce en todos los datasets: VT ofrece una estimaci\'{o}n m\'{a}s
-alta de $H$ con mejor ajuste lineal, mientras que LD proporciona una cota
-conservadora. Este patr\'{o}n es robusto ante cambios de dominio.
-
-El hallazgo central de esta actividad es la existencia de un \textbf{umbral
-cr\'{i}tico} en $H \approx 0{,}65$ que separa dos reg\'{i}menes din\'{a}micos
-distintos. Sistemas por debajo de este umbral (infraestructuras tecnol\'{o}gicas,
-pol\'{i}tica monetaria) operan con memoria local y control centralizado. Sistemas
-por encima (mercados financieros, organismos vivos) operan con memoria global
-y retroalimentaci\'{o}n en red. Los mercados financieros y los organismos biol\'{o}gicos
-comparten una propiedad estructural fundamental: cada agente responde no solo
-al estado del sistema, sino a las expectativas sobre el comportamiento de los
-dem\'{a}s agentes. Esta \textit{reflexividad} ---t\'{e}rmino introducido por Soros
-para los mercados y observable en la regulaci\'{o}n aut\'{o}noma del coraz\'{o}n---
-intensifica la memoria persistente hasta niveles comparables entre dominios
-aparentemente dis\'{i}miles.
-
-Todos los sistemas analizados exhiben naturaleza \textbf{multifractal}
-($R^2_{\tau} < 0{,}95$), lo que confirma que la heterogeneidad estructural es
-una propiedad universal de los sistemas complejos, independientemente del
-grado de memoria persistente. La transici\'{o}n de fase entre baja y alta LRD,
-combinada con la universalidad de la multifractalidad, constituye un hallazgo
-emp\'{i}rico que vincula la teor\'{i}a de sistemas complejos con la geometr\'{i}a
-fractal de manera in\'{e}dita.
-
-% ============================================================
-%  FIN ACTIVIDAD 6
-% ============================================================
+La estructura monofractal ($R^2_{\tau} = 0{,}99$) indica que, a
+diferencia de otros sistemas complejos con múltiples mecanismos operando
+a distintas escalas, la volatilidad bursátil se rige por un mecanismo
+dominante y uniforme: la persistencia del sentimiento de mercado. El
+clasificador de la Actividad~4, diseñado y validado sobre secuencias
+sintéticas, produce un diagnóstico coherente en un dominio financiero
+sin requerir ajuste de umbrales ni de metodología.
