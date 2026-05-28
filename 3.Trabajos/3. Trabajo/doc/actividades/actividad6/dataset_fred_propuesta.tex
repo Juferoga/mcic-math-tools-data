@@ -1,0 +1,77 @@
+% ============================================================
+%  BORRADOR PROPUESTA — Subsección: Dataset y metodología
+%  Serie macroeconómica FRED (DGS10) como reemplazo/complemento
+%  del dataset NASA HTTP en la Actividad 6.
+% ============================================================
+
+% ------------------------------------------------------------
+\subsection{Dataset y metodología}
+% ------------------------------------------------------------
+
+Se analiza la serie diaria \texttt{DGS10} —\textit{10-Year Treasury Constant
+Maturity Rate}— disponible en el repositorio FRED (Federal Reserve Economic
+Data) del Federal Reserve Bank of St.\ Louis. Esta tasa representa el retorno
+ de los bonos del Tesoro de los Estados Unidos a 10 años, uno de los activos
+ de referencia más líquidos del mundo y un barómetro clave de las
+ expectativas de política monetaria, inflación y crecimiento económico a largo
+ plazo.
+
+La serie objeto de estudio son los niveles diarios de la tasa, interpolados
+linealmente para cubrir los 717 valores faltantes correspondientes a días
+no hábiles (feriados, cierres de mercado). La interpolación preserva la
+dinámica de corto plazo sin introducir saltos artificiales. La serie
+resultante contiene $16\,801$ observaciones que abarcan el periodo
+2 de enero de 1962 al 26 de mayo de 2026, con media
+$\mu = 5{,}8139\,\%$, mediana $5{,}4300\,\%$ y desviación estándar
+$\sigma = 2{,}9353\,\%$. El coeficiente de variación ($\approx 0{,}50$)
+refleja un régimen de bajas tasas post-crisis (mínimo $0{,}52\,\%$ en 2020)
+intercalado con ciclos de tightening (máximo $15{,}84\,\%$ en 1981).
+
+Desde la óptica del análisis fractal, la serie \texttt{DGS10} es
+particularmente atractiva por tres razones estructurales. En primer lugar,
+la política monetaria moderna opera mediante suavización de tasas de
+interés: los bancos centrales ajustan el 
+federal funds rate de forma
+gradual y predecible, generando una fuerte autocorrelación de largo plazo
+en la curva de rendimientos. En segundo lugar, los shocks macroeconómicos
+(recesiones, crisis financieras, pandemias) dejan huellas persistentes en
+la tasa a 10 años, ya que los mercados de bonos descuentan expectativas de
+recuperación a horizontes de varios años. En tercer lugar, la curva de
+rendimientos actúa como un sistema de retroalimentación multiescala:
+interacciones diarias de arbitraje, decisiones trimestrales de política
+monetaria y ciclos de endeudamiento soberano de décadas coexisten en la
+misma serie temporal. Estas propiedades son análogas, mutatis mutandis, a
+las observadas en la variabilidad cardíaca (Actividades~3 y~5) y en el
+tráfico transaccional Cloud (sección anterior): retroalimentación temporal,
+interacción multiescala y heterogeneidad estructural.
+
+La enorme autocorrelación de primer orden observada ($\rho_1 = 0{,}9998$)
+es indicio inequívoco de memoria persistente. A diferencia de las
+ diferencias diarias, cuya autocorrelación decae abruptamente
+($\rho_1 = 0{,}0809$), los niveles exhiben una dinámica de
+\emph{persistencia} compatible con un proceso de dependencia de rango largo.
+Por esta razón, el análisis fractal se aplica directamente sobre la serie
+en niveles interpolada, sin transformaciones adicionales, garantizando
+comparabilidad metodológica con los dominios biológico y tecnológico
+tratados previamente.
+
+Se espera un parámetro de Hurst en el rango $\hat{H} \approx 0{,}65$–$0{,}85$.
+Este valor se justifica teóricamente: si la tasa a 10 años respondiera a un
+proceso sin memoria ($H=0{,}5$), los cambios diarios serían impredecibles y
+la serie de niveles no exhibiría la suavidad observable en los datos. La
+literatura empírica sobre tasas de interés soberanas reporta consistentemente
+$H>0{,}5$ (véase, por ejemplo, los estudios de dependencia de rango largo
+en curvas de rendimientos de Reisen y Cribari-Neto). Un valor cercano a
+$0{,}7$ indicaría que las decisiones de política monetaria y las
+expectativas de inflación generan correlaciones que decaen lentamente,
+mientras que valores superiores a $0{,}8$ sugerirían una rigidez extrema
+en la curva, típica de regímenes de 
+\emph{forward guidance} explícito.
+
+Los estimadores Varianza–Tiempo y Log–Escala, así como el clasificador
+mono/multifractal de la Actividad~4, se aplican sin modificación
+metodológica. La continuidad en la cadena de procesamiento es esencial:
+permite situar la dinámica de la deuda soberana en el mismo espacio de
+parámetros que las señales cardíacas y el tráfico web, revelando si la
+fractalidad es un epifenómeno de dominios específicos o una propiedad
+emergente de sistemas complejos con retroalimentación persistente.

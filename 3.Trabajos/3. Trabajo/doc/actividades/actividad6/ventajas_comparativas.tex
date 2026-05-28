@@ -1,0 +1,48 @@
+% ------------------------------------------------------------
+% VENTAJAS COMPARATIVAS: Binance/BTC vs NASA HTTP
+% ------------------------------------------------------------
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Relevancia temporal.}
+          El dataset NASA HTTP corresponde a julio--agosto de 1995, con
+          arquitecturas web, patrones de usuarios y tecnologías de red
+          completamente obsoletas. Los datos de Bitcoin son contemporáneos
+          y reflejan dinámicas de mercado actuales, aumentando la validez
+          externa del análisis.
+
+    \item \textbf{Regularidad muestral.}
+          La API de Binance entrega observaciones equiespaciadas en el
+          tiempo (velas 1m/5m), mientras que los tiempos entre llegadas
+          HTTP son irregulares por naturaleza. La regularidad facilita la
+          aplicación directa de estimadores fractales (VT, LD, wavelet
+          leaders) sin necesidad de resampling o interpolación que
+          introduzca artefactos.
+
+    \item \textbf{Reproducibilidad y extensibilidad.}
+          La API pública de Binance permite a cualquier lector del trabajo
+          replicar exactamente la serie descargada, o extenderla a otros
+          pares (ETH/USDT, BNB/USDT), intervalos (5m, 1h, 1d) o ventanas
+          temporales. El dataset NASA, por el contrario, es un archivo
+          estático de dominio público cuyo contenido no puede regenerarse.
+
+    \item \textbf{Fundamentación teórica robusta.}
+          Existe literatura indexada abundante sobre LRD en criptomonedas
+          (Bariviera et al., 2017; Dionisio et al., 2022), lo que permite
+          contrastar los resultados obtenidos contra valores de referencia
+          establecidos. La literatura sobre fractalidad en tráfico web de
+          1995 es mucho más limitada y de contexto histórico específico.
+
+    \item \textbf{Narrativa transversal fortalecida.}
+          Bitcoin ($H\approx0{,}6$--$0{,}7$) ocupa una posición
+          intermedia en la taxonomía entre NASA HTTP ($H\approx0{,}54$)
+          y corazón sano ($H\approx0{,}96$), transformando el eje
+          horizontal del mapa conceptual en un gradiente continuo de
+          memoria persistente en lugar de un salto abrupto entre
+          tecnología y biología.
+
+    \item \textbf{Mercado 24/7 sin gaps.}
+          La ausencia de cierres diarios elimina discontinuidades
+          estructurales que en mercados tradicionales requieren corrección
+          (ajustes por overnight risk, efectos weekend), simplificando el
+          preprocesamiento y la interpretación de los estimadores.
+\end{itemize}

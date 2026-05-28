@@ -147,7 +147,7 @@ close;
 %  PASO 7: Clasificacion mono/multifractal
 %% ============================================================
 fprintf('\n--- Paso 7: Clasificacion con clasificar_fractal.m ---\n');
-[H, clasificacion, R2_vt_class, R2_tau_class] = clasificar_fractal(interArrival, 0.85, 0.90);
+[H, clasificacion, R2_vt_class, R2_tau_class] = clasificar_fractal(interArrival);
 
 fprintf('\n  ========== RESULTADOS ==========\n');
 fprintf('  Parametro de Hurst (H):       %.4f\n', H);
