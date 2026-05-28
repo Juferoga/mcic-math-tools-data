@@ -3,32 +3,34 @@
 \contentsline {subsection}{\numberline {1.1}Prueba de Sesgo}{3}{subsection.1.1}%
 \contentsline {subsection}{\numberline {1.2}Prueba de Consistencia}{5}{subsection.1.2}%
 \contentsline {subsection}{\numberline {1.3}Prueba de Eficiencia}{6}{subsection.1.3}%
-\contentsline {subsection}{\numberline {1.4}Prueba de Robustez}{8}{subsection.1.4}%
-\contentsline {subsection}{\numberline {1.5}Resumen de la Actividad 1}{10}{subsection.1.5}%
+\contentsline {subsection}{\numberline {1.4}Prueba de Robustez}{7}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Análisis de la Actividad 1}{9}{subsection.1.5}%
 \contentsline {section}{\numberline {2}Actividad 2: Evaluación con Secuencias LRD}{10}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Prueba de Sesgo}{10}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Prueba de Eficiencia}{14}{subsection.2.2}%
-\contentsline {section}{\numberline {3}Actividad 3: Estimación de H en la European ST-T Database}{17}{section.3}%
-\contentsline {section}{\numberline {4}Actividad 4: Herramienta de clasificación mono/multifractal}{17}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Diagrama de flujo}{17}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Validación}{18}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Análisis}{20}{subsection.4.3}%
-\contentsline {section}{\numberline {5}Actividad 5: Clasificación fractal de la European ST-T Database}{21}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Metodología}{21}{subsection.5.1}%
-\contentsline {subsubsection}{\numberline {5.1.1}Filtrado de anotaciones}{21}{subsubsection.5.1.1}%
-\contentsline {subsubsection}{\numberline {5.1.2}Cálculo de intervalos RR}{22}{subsubsection.5.1.2}%
-\contentsline {subsubsection}{\numberline {5.1.3}Clasificación}{22}{subsubsection.5.1.3}%
-\contentsline {subsubsection}{\numberline {5.1.4}Datos clínicos}{23}{subsubsection.5.1.4}%
-\contentsline {subsection}{\numberline {5.2}Resultados}{23}{subsection.5.2}%
-\contentsline {subsubsection}{\numberline {5.2.1}Distribución general}{23}{subsubsection.5.2.1}%
-\contentsline {subsubsection}{\numberline {5.2.2}Comparación entre grupos}{23}{subsubsection.5.2.2}%
-\contentsline {subsubsection}{\numberline {5.2.3}Sensibilidad al umbral $R^2_{\tau }$}{24}{subsubsection.5.2.3}%
-\contentsline {subsection}{\numberline {5.3}Análisis}{25}{subsection.5.3}%
-\contentsline {subsubsection}{\numberline {5.3.1}Estructura de escala}{25}{subsubsection.5.3.1}%
-\contentsline {subsubsection}{\numberline {5.3.2}Perfil clínico}{25}{subsubsection.5.3.2}%
-\contentsline {paragraph}{Sexo.}{25}{section*.28}%
-\contentsline {paragraph}{Hipertensión arterial.}{25}{section*.29}%
-\contentsline {paragraph}{Enfermedad coronaria.}{25}{section*.30}%
-\contentsline {paragraph}{Infarto de miocardio.}{25}{section*.31}%
-\contentsline {paragraph}{Edad.}{25}{section*.32}%
-\contentsline {subsubsection}{\numberline {5.3.3}Contexto clínico de la base}{26}{subsubsection.5.3.3}%
+\contentsline {subsection}{\numberline {2.2}Prueba de Eficiencia}{12}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Prueba de Consistencia}{14}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Análisis de la Actividad 2}{16}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Actividad 3: Estimación de $H$ en la \textit {European ST-T Database}}{17}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Resultados por registro}{17}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Distribución global}{19}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Análisis de la Actividad 3}{19}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Actividad 4: Herramienta de clasificación mono/multifractal}{20}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Diagrama de flujo}{20}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Validación}{21}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Análisis de la Actividad 4}{22}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Actividad 5: Clasificación fractal de la European ST-T Database}{24}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Metodología}{24}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Filtrado de anotaciones}{24}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Cálculo de intervalos RR}{24}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}Clasificación}{25}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}Datos clínicos}{25}{subsubsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.2}Resultados}{25}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Distribución general}{25}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Comparación entre grupos}{25}{subsubsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.3}Análisis de la Actividad 5}{26}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Perfil clínico}{26}{subsubsection.5.3.1}%
+\contentsline {paragraph}{Sexo.}{26}{section*.33}%
+\contentsline {paragraph}{Hipertensión arterial.}{26}{section*.34}%
+\contentsline {paragraph}{Enfermedad coronaria.}{26}{section*.35}%
+\contentsline {paragraph}{Infarto de miocardio.}{27}{section*.36}%
+\contentsline {paragraph}{Edad.}{27}{section*.37}%
