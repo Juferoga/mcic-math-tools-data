@@ -13,8 +13,8 @@ function [H, clasificacion, R2_vt, R2_tau] = clasificar_fractal(muestra, umbral_
 %
 %   Entradas:
 %     muestra     - vector de datos
-%     umbral_vt   - R^2 minimo para VT (default: 0.90)
-%     umbral_tau  - R^2 de tau(q) lineal: >= umbral -> mono (default: 0.70)
+%     umbral_vt   - R^2 minimo para VT (default: 0.85)
+%     umbral_tau  - R^2 de tau(q) lineal: >= umbral -> mono (default: 0.95)
 %
 %   Salidas:
 %     H             - Parametro de Hurst estimado via VT
@@ -23,7 +23,7 @@ function [H, clasificacion, R2_vt, R2_tau] = clasificar_fractal(muestra, umbral_
 %     R2_tau        - R^2 del ajuste lineal de tau(q)
 
     if nargin < 2, umbral_vt  = 0.85; end
-    if nargin < 3, umbral_tau = 0.90; end
+    if nargin < 3, umbral_tau = 0.95; end
 
     %% Paso 1: Calcular VT y su R^2
     [H, R2_vt, x_vt, y_vt, p_vt] = vt_r2(muestra);
@@ -75,31 +75,67 @@ function [H, clasificacion, R2_vt, R2_tau] = clasificar_fractal(muestra, umbral_
     end
 
     %% Paso 6: Graficar VT, LD, exponentes de escala, espectro multifractal
-    figure('Position', [100 100 1200 800]);
+    fig = figure('Position', [50 50 1400 900]);
 
-    % VT
+    % Tamanos de fuente consistentes
+    titleFS = 16;
+    labelFS = 15;
+    tickFS  = 13;
+    legFS   = 12;
+
+    % ── VT ──
     subplot(2, 2, 1);
     vt(muestra);
-    title(sprintf('VT (R^2 = %.4f)', R2_vt), 'FontSize', 14);
+    title(sprintf('Diagrama Varianza-Tiempo ($R^2 = %.4f$)', R2_vt), ...
+        'FontSize', titleFS, 'Interpreter', 'latex');
+    set(gca, 'FontSize', tickFS);
+    xlabel('$\log m$', 'FontSize', labelFS, 'Interpreter', 'latex');
+    ylabel('$\log S_{X^{(m)}}^2$', 'FontSize', labelFS, 'Interpreter', 'latex');
+    lg = findobj(gca, 'Type', 'Legend');
+    if ~isempty(lg), set(lg, 'FontSize', legFS); end
 
-    % LD
+    % ── LD ──
     subplot(2, 2, 2);
     LD(muestra);
+    title('Diagrama Log-Escala (LD)', 'FontSize', titleFS);
+    set(gca, 'FontSize', tickFS);
+    xlabel('Octava $j$', 'FontSize', labelFS, 'Interpreter', 'latex');
+    ylabel('$y_j = \log_2(\mu_j)$', 'FontSize', labelFS, 'Interpreter', 'latex');
+    lg = findobj(gca, 'Type', 'Legend');
+    if ~isempty(lg), set(lg, 'FontSize', legFS); end
 
-    % Exponentes de escala tau(q)
+    % ── Exponentes de escala tau(q) ──
     subplot(2, 2, 3);
     superplot(q, tauq, 'Exponentes de Escala', '$q$', '$\tau(q)$');
     hold on;
-    plot(q, polyval(p_tau, q), 'r--', 'LineWidth', 1.5);
+    plot(q, polyval(p_tau, q), 'r--', 'LineWidth', 2);
     hold off;
+    title('Exponentes de Escala', 'FontSize', titleFS);
+    set(gca, 'FontSize', tickFS);
+    xlabel('$q$', 'FontSize', labelFS, 'Interpreter', 'latex');
+    ylabel('$\tau(q)$', 'FontSize', labelFS, 'Interpreter', 'latex');
     legend({'$\tau(q)$', sprintf('Lineal $R^2 = %.4f$', R2_tau)}, ...
-        'Interpreter', 'latex', 'Location', 'northwest');
+        'Interpreter', 'latex', 'Location', 'northwest', 'FontSize', legFS);
 
-    % Espectro multifractal D(h)
+    % ── Espectro multifractal D(h) ──
     subplot(2, 2, 4);
     superplot(h, dh, 'Espectro Multifractal', '$h$', '$D(h)$');
+    title('Espectro Multifractal $D(h)$', 'FontSize', titleFS, 'Interpreter', 'latex');
+    set(gca, 'FontSize', tickFS);
+    xlabel('$h$', 'FontSize', labelFS, 'Interpreter', 'latex');
+    ylabel('$D(h)$', 'FontSize', labelFS, 'Interpreter', 'latex');
 
-    sgtitle(sprintf('%s | H = %.4f', upper(clasificacion), H), 'FontSize', 18);
+    sgtitle(sprintf('\\textbf{%s}  |  $H = %.4f$', upper(clasificacion), H), ...
+        'FontSize', 20, 'Interpreter', 'latex');
+
+    % Forzar modo claro para exportacion headless
+    set(fig, 'Color', 'white');
+    allAxes = findall(fig, 'Type', 'axes');
+    set(allAxes, 'Color', 'white', 'XColor', 'k', 'YColor', 'k');
+    allLeg = findall(fig, 'Type', 'legend');
+    set(allLeg, 'Color', 'white', 'TextColor', 'k', 'EdgeColor', [0.5 0.5 0.5]);
+    allText = findall(fig, 'Type', 'text');
+    set(allText, 'Color', 'k');
 end
 
 %% Funcion interna: VT con R^2
