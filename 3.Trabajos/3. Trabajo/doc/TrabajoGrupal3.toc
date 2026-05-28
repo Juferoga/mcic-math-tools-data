@@ -34,11 +34,10 @@
 \contentsline {paragraph}{Enfermedad coronaria.}{27}{section*.35}%
 \contentsline {paragraph}{Infarto de miocardio.}{28}{section*.36}%
 \contentsline {paragraph}{Edad.}{28}{section*.37}%
-\contentsline {section}{\numberline {6}Actividad 6: Fractalidad en tráfico transaccional Cloud}{29}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Contexto: un arco transversal}{29}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Dataset y metodología}{29}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Estimación del parámetro de Hurst}{30}{subsection.6.3}%
-\contentsline {subsection}{\numberline {6.4}Clasificación mono/multifractal}{30}{subsection.6.4}%
-\contentsline {subsection}{\numberline {6.5}Una taxonomía de dominios fractales}{31}{subsection.6.5}%
-\contentsline {subsection}{\numberline {6.6}Análisis de la Actividad 6}{33}{subsection.6.6}%
-\contentsline {section}{\numberline {7}Conclusiones}{33}{section.7}%
+\contentsline {section}{\numberline {6}Actividad 6: Fractalidad en la volatilidad del S\&P~500}{29}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Escenario y dataset}{29}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Estimación del parámetro de Hurst}{29}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Clasificación mono/multifractal}{30}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Análisis de la Actividad 6}{30}{subsection.6.4}%
+\contentsline {section}{\numberline {7}Conclusiones}{31}{section.7}%
+\contentsline {section}{Anexos}{33}{section*.42}%

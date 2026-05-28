@@ -1,0 +1,117 @@
+% ------------------------------------------------------------
+% BORRADOR: Dataset y metodología adaptado a criptomonedas
+% Reemplazo/complemento para Actividad 6
+% ------------------------------------------------------------
+
+% ------------------------------------------------------------
+\subsection{Dataset y metodología}
+% ------------------------------------------------------------
+
+Se analiza una serie de alta frecuencia del mercado de criptoactivos,
+específicamente los retornos logarítmicos minuto a minuto del par
+BTC/USDT (Bitcoin vs.~Tether) obtenidos mediante la API pública de
+Binance, el exchange de criptomonedas con mayor volumen operativo
+del mundo\footnote{Binance API v3, endpoint \texttt{/api/v3/klines}.
+Documentación oficial: \url{https://binance-docs.github.io/apidocs/spot/en/}}.
+
+La elección de Bitcoin como objeto de estudio responde a cuatro propiedades
+estructurales que lo hacen ideal para el análisis de fractalidad:
+
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{Dependencia de rango largo documentada.}
+          Múltiples estudios empíricos reportan que los retornos de alta
+          frecuencia de Bitcoin exhiben memoria persistente con
+          $H \approx 0{,}60$--$0{,}70$
+          \cite{bariviera2017inefficiency,dionisio2022long},
+          situándose en un régimen intermedio entre procesos sin memoria
+          ($H=0{,}5$) y sistemas biológicos de alta LRD ($H\approx0{,}96$).
+
+    \item \textbf{Alta frecuencia de muestreo.}
+          La API proporciona velas (candles) con granularidad de 1 minuto,
+          lo que permite construir series de miles de observaciones en
+          ventanas temporales de pocos días, superando la resolución del
+          dataset NASA HTTP, cuya unidad nativa es la solicitud individual
+          con tiempos entre llegadas altamente irregulares.
+
+    \item \textbf{Mercado continuo 24/7.}
+          A diferencia de los mercados bursátiles tradicionales, Bitcoin
+          no tiene cierres diarios ni fines de semana, eliminando los
+          \textit{overnight gaps} que introducen discontinuidades artificiales
+          en series temporales financieras clásicas y facilitando la
+          aplicación de estimadores fractales que asumen regularidad
+          muestral.
+
+    \item \textbf{Alta liquidez y profundidad de mercado.}
+          El par BTC/USDT registra volúmenes superiores a $10^9$ USD diarios,
+          garantizando que los precios reflejen descubrimiento dinámico
+          genuino y no artefactos de baja liquidez o manipulación de
+          spreads.
+\end{enumerate}
+
+La serie objeto de estudio son los retornos logarítmicos de los precios de
+cierre:
+\begin{equation}
+    r_t = \ln\!\left(\frac{P_t}{P_{t-1}}\right),
+    \qquad t = 1, \dots, n,
+\end{equation}
+donde $P_t$ es el precio de cierre de la vela en el minuto $t$.
+Esta transformación estabiliza la varianza, centra la serie en torno a
+cero y es el estándar en econometría financiera para el análisis de
+memoria persistente.
+
+Se descargaron $n = 5\,000$ velas de intervalo 1m mediante la API pública
+de Binance, abarcando el periodo del 24 de mayo de 2026 (17:33 UTC) al
+28 de mayo de 2026 (04:52 UTC), equivalente a aproximadamente 3 días y
+11 horas de operación continua. La serie resultante contiene $n-1 = 4\,999$
+retornos logarítmicos con las siguientes estadísticas descriptivas:
+media $\mu = -9{,}32 \times 10^{-6}$, mediana $0{,}0000$,
+desviación estándar $\sigma = 4{,}5394 \times 10^{-4}$,
+mínimo $-5{,}3145 \times 10^{-3}$, máximo $3{,}1934 \times 10^{-3}$,
+curtosis $9{,}83$ y asimetría $-0{,}35$. La curtosis leptocúrtica y la
+col pesada negativa indican la presencia de eventos extremos (\textit{flash
+crashes} y \textit{pumps}) que constituyen candidatos naturales para
+heterogeneidad de escalamiento multiescala.
+
+\begin{table}[H]
+    \centering
+    \caption{Estadísticas descriptivas de los retornos logarítmicos
+             BTC/USDT (1m).}
+    \label{tab:btc-stats}
+    \begin{tabular}{@{}lr@{}}
+        \toprule
+        \textbf{Estadística} & \textbf{Valor} \\
+        \midrule
+        Observaciones ($n$) & 4\,999 \\
+        Media ($\mu$) & $-9{,}32 \times 10^{-6}$ \\
+        Mediana & $0{,}0000$ \\
+        Desv.~est.~($\sigma$) & $4{,}5394 \times 10^{-4}$ \\
+        Mínimo & $-5{,}3145 \times 10^{-3}$ \\
+        Máximo & $3{,}1934 \times 10^{-3}$ \\
+        Asimetría & $-0{,}3470$ \\
+        Curtosis & $9{,}8258$ \\
+        Precio inicial & $76\,627{,}52$ USDT \\
+        Precio final & $73\,139{,}71$ USDT \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Los estimadores VT y LD, así como el clasificador mono/multifractal de la
+Actividad~4, se aplican sin modificación metodológica, garantizando
+comparabilidad con los dominios previos. Esta continuidad es esencial:
+permite situar la serie Bitcoin en el mismo espacio de parámetros que las
+secuencias sintéticas, las señales cardíacas y el tráfico web NASA.
+
+Desde la perspectiva de la taxonomía transversal desarrollada en este
+trabajo, Bitcoin ocupa una posición estratégicamente intermedia. El tráfico
+NASA HTTP presenta memoria persistente modesta ($H \approx 0{,}54$) pero
+heterogeneidad espacial pronunciada (multifractal), mientras que la
+fisiología cardíaca exhibe LRD intensa ($H \approx 0{,}96$) con marcada
+multifractalidad. Los retornos de Bitcoin, con $H$ esperado en el rango
+$0{,}60$--$0{,}70$, llenan el vacío conceptual entre ambos extremos:
+un sistema tecnológico--financiero con memoria persistente intermedia que
+no llega a la complejidad adaptativa del sistema nervioso autónomo, pero
+que supera ampliamente la estructura de llegadas de Poisson asumida en
+modelos clásicos de tráfico web. Esta ubicación intermedia fortalece la
+hipótesis transversal: la fractalidad no es epifenómeno de un dominio
+particular, sino propiedad emergente de sistemas complejos con
+retroalimentación, multiescala y heterogeneidad estructural.
