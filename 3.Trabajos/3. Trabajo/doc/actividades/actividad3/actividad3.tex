@@ -1,3 +1,4 @@
+\newpage
 % ============================================================
 \section{Actividad 3: Estimación de $H$ en la \textit{European ST-T Database}}
 % ============================================================
@@ -35,7 +36,7 @@ $\hat{H} \approx 0.77$, alejándose del comportamiento general. Ninguna
 estimación supera $H = 1.0$.
 
 \textbf{Estimador LD (Figura~\ref{fig:errbar_ld}).} Las estimaciones son
-notablemente más dispersas: el rango cubre desde $\approx 0.53$ hasta
+notablemente más dispersas, puesto que el rango cubre desde $\approx 0.53$ hasta
 $\approx 1.29$. Una fracción considerable de registros presenta $\hat{H} > 1.0$,
 valor que no tiene interpretación física válida para un proceso estacionario.
 Los intervalos de confianza son amplios e inconsistentes entre registros,
@@ -61,7 +62,7 @@ no atípico, definido como el dato más bajo que no cae por debajo de
 $Q_1 - 1.5 \cdot \text{IQR}$. Los puntos fuera de estos límites se
 clasifican como valores atípicos y se marcan individualmente.
 
-VT produce una distribución compacta: mediana $\approx 0.96$,
+VT produce una distribución compacta, contando con una mediana $\approx 0.96$,
 $Q_1 \approx 0.95$, $Q_3 \approx 0.97$, con un rango intercuartílico de
 apenas $0.02$. El bigote superior llega a $\approx 1.00$ y el inferior a
 $\approx 0.87$, con tres valores atípicos por debajo ($\approx 0.86$,
@@ -78,41 +79,15 @@ registros genuinamente distintos al resto; en LD, la ausencia de atípicos
 refleja que la varianza intrínseca del estimador es tan alta que no permite
 distinguir comportamientos excepcionales.
 
-\subsection{Interpretación}
+\subsection{Análisis de la Actividad 3}
 
-Ambos estimadores coinciden en señalar LRD fuerte en todos los registros
-($\hat{H} > 0.5$ en la totalidad de los casos). Sin embargo, sus resultados
-difieren sustancialmente en precisión, y la elección del estimador más
-adecuado depende de factores que se analizan a continuación.
-
-Los registros de la base de datos contienen del orden de $1\,000$ a $5\,000$
-intervalos RR por archivo. En ese régimen de tamaño muestral, la evaluación
-sobre secuencias i.i.d.\ demostró que VT presenta menor varianza que LD:
-la ventaja de LD en eficiencia solo se materializa para $n \geq 5\,000$.
-Este es el argumento más directo para preferir VT en esta base de datos,
-independientemente de la naturaleza del proceso.
-
-VT presenta sesgo negativo creciente con $H$: para valores reales cercanos
-a $0.9$--$0.95$, subestima el verdadero exponente. Esto sugiere que el valor
-real de $H$ podría ser aún más próximo a $1.0$ de lo que reporta. A pesar
-de ello, produce estimaciones estrechas y físicamente interpretables
-($\hat{H} < 1.0$) en la totalidad de los registros.
-
-LD genera en varios registros $\hat{H} > 1.0$, valor sin interpretación
-física válida para un proceso estacionario. Esto no refleja una propiedad
-real de la señal, sino la alta varianza de LD cuando opera en el régimen
-de alta LRD con muestras de tamaño moderado. La ausencia de valores atípicos
-en su boxplot no es favorable: evidencia que su dispersión intrínseca es tan
-elevada que incluso los valores extremos resultan estadísticamente normales
-dentro de su distribución.
-
-Cabe señalar que la adecuación definitiva de cada estimador a esta señal
-depende también de su naturaleza mono o multifractal, cuestión que se aborda
-en la Actividad 4. Si la señal resultara monofractal y de tamaño muestral
-suficiente, LD podría ofrecer ventajas adicionales en eficiencia.
-
-En conclusión, para esta base de datos y en las condiciones actuales de
-tamaño muestral, VT produce estimaciones más confiables: $\hat{H}_{\text{VT}}
-\approx 0.96$ como valor central, con baja dispersión entre registros y
-coherencia física garantizada. Los resultados de LD deben interpretarse con
-cautela.
+Ambos estimadores detectan LRD fuerte ($\hat{H} > 0.5$), pero difieren en
+precisión. Con registros de $1\,000$--$5\,000$ intervalos RR (tiempo entre latidos consecutivos en el ECG), VT supera a LD
+en varianza (LD solo gana eficiencia para $n \geq 5\,000$). Aunque VT
+subestima $H$ para valores cercanos a $0.9$--$0.95$, produce estimaciones
+físicamente válidas ($\hat{H} < 1.0$) en todos los registros. LD genera
+valores $\hat{H} > 1.0$ en varios casos, sin interpretación física válida,
+reflejo de su alta varianza en regímenes de alta LRD con muestras moderadas.
+En conclusión, VT ofrece mayor confiabilidad para esta base de datos
+($\hat{H}_{\text{VT}} \approx 0.96$), mientras que los resultados de LD
+deben interpretarse con cautela.

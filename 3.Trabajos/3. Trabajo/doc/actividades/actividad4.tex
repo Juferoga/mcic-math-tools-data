@@ -134,7 +134,7 @@ $H = 0{,}8$.
 
 La Tabla~\ref{tab:barrido-h} presenta el barrido completo. La columna
 $R^2_{\tau(q)}$ permite ver directamente por qué el clasificador toma cada
-decisión: valores cercanos a 1 indican linealidad (monofractal), mientras que
+decisión, dado que los valores cercanos a 1 indican linealidad (monofractal), mientras que
 valores por debajo de $0{,}95$ revelan curvatura (multifractal).
 
 \begin{table}[H]
@@ -159,23 +159,21 @@ valores por debajo de $0{,}95$ revelan curvatura (multifractal).
 \end{table}
 
 % ────────────────────────────────────────────────────────────
-\subsection{Análisis}
+\subsection{Análisis de la Actividad 4}
 
 La herramienta clasifica correctamente las 8 muestras evaluadas. Las muestras
 generadas con \texttt{wfbm} presentan $R^2_{\tau}$ consistentemente superior a
 $0{,}99$, lo que confirma la linealidad de $\tau(q)$ propia de un proceso
 monofractal. En contraste, las muestras de \texttt{betamwm} exhiben
 $R^2_{\tau}$ entre $0{,}67$ y $0{,}90$, reflejando la curvatura esperada en un
-proceso multifractal. El umbral $R^2_{\tau} = 0{,}95$ se ubica en el centro del
-gap natural entre ambos clusters, maximizando el margen de separación.
+proceso multifractal. El umbral $R^2_{\tau} = 0{,}95$ se ubica en el centro de ambas mestras, maximizando el margen de separación.
 
-Para verificar que el resultado no depende de una realización afortunada, se
-ejecutaron 50 realizaciones independientes por cada combinación de generador y
+Se ejecutaron 50 iteraciones independientes por cada combinación de generador y
 $H$. La Tabla~\ref{tab:robustez} resume los resultados.
 
 \begin{table}[H]
 \centering
-\caption{Robustez del clasificador: 50 realizaciones por caso ($N = 2^{17}$).}
+\caption{Robustez del clasificador: 50 iteraciones por caso ($N = 2^{17}$).}
 \label{tab:robustez}
 \begin{tabular}{llcccc}
     \toprule
@@ -195,9 +193,9 @@ $H$. La Tabla~\ref{tab:robustez} resume los resultados.
 \end{tabular}
 \end{table}
 
-Con 400 clasificaciones en total, la herramienta alcanza un 100\,\% de accuracy.
+Con 400 clasificaciones en total, la herramienta alcanza un 100\,\% de precisión.
 Las muestras monofractales mantienen $R^2_{\tau} > 0{,}99$ con desviación
 estándar del orden de $10^{-3}$, mientras que las multifractales se mantienen por
 debajo de $0{,}90$ en todos los casos. Esto confirma que el umbral $0{,}95$ está
-bien posicionado y que la separación entre clusters es robusta frente a la
+bien posicionado y que la separación entre muestras es robusta frente a la
 variabilidad estocástica de los generadores.
