@@ -2,37 +2,44 @@
 \section{Conclusiones}
 % ============================================================
 
-El arco analítico desarrollado a lo largo de las seis actividades sigue una
-progresión metodológica coherente: validación de estimadores sobre secuencias
-de referencia (Actividades~1 y~2), aplicación a fisiología cardíaca
-(Actividades~3,~4 y~5), y extensión a infraestructura tecnológica
-(Actividad~6). Esta travesía transversal revela que la fractalidad no es
-exclusiva de los sistemas vivos, sino una propiedad emergente de sistemas
-complejos con retroalimentación temporal, interacción multiescala y
-heterogeneidad estructural.
+La superioridad teórica de un estimador no garantiza su utilidad
+práctica. LD mostró menor sesgo y mayor consistencia en secuencias
+sintéticas largas, pero al aplicarlo a registros cardíacos reales,
+con muestras de entre 1\,000 y 5\,000 puntos, produjo estimaciones
+de $H$ por encima de 1{,}0, valores que carecen de sentido físico para
+procesos estacionarios. VT, en cambio, mantuvo todas sus estimaciones en
+el rango plausible $[0{,}77;\; 0{,}99]$ con un rango intercuartílico de
+apenas 0{,}02. La ventaja asintótica de LD rara vez se materializa en
+datos reales, donde el tamaño de muestra impone las reglas.
 
-La taxonomía de dominios fractales propuesta en la Actividad~6 organiza los
-resultados en un espacio bidimensional de memoria persistente y heterogeneidad
-espacial. Los sistemas biológicos y tecnológicos con estas tres propiedades
-ocupan el mismo cuadrante operativo, lo que sugiere principios de organización
-universales que trascienden el sustrato físico.
+El clasificador fractal funcionó sin necesidad de recalibración al pasar
+de secuencias sintéticas controladas a señales cardíacas y a volatilidad
+financiera. El mismo umbral $R^2_{\tau} = 0{,}95$ separó correctamente
+los 400 casos sintéticos de validación y produjo clasificaciones
+coherentes en los 90 registros clínicos y en la serie del S\&P~500.
+Esto sugiere que la frontera mono/multifractal no depende del dominio
+de aplicación sino de la estructura del proceso generador.
 
-Respecto a los estimadores, VT y LD resultan complementarios: LD es superior
-para muestras grandes ($n \geq 5\,000$), con menor sesgo y varianza hasta
-$2{,}65$ veces menor, mientras que VT ofrece mayor confiabilidad en muestras
-moderadas y dominios de alta LRD donde LD genera valores no físicos
-($\hat{H} > 1$). No existe un método universalmente óptimo; la recomendación
-es aplicar ambos y contrastar sus resultados.
+Los resultados clínicos revelaron asociaciones que van más allá de lo
+esperado. Las 22 señales clasificadas como monofractales corresponden
+exclusivamente a hombres; las 8 mujeres del dataset resultaron
+multifractales sin excepción. Ningún paciente monofractal presentó
+hipertensión, mientras que 11 de los 12 hipertensos fueron
+multifractales. El infarto agudo de miocardio, en cambio, se distribuyó
+de forma equitativa entre ambos grupos, con 31{,}8\,\% y 33{,}3\,\%
+respectivamente. El clasificador captura alteraciones sistémicas
+crónicas, como la modulación autonómica alterada por hipertensión o
+diferencias hormonales, pero no el daño focal de un evento isquémico
+agudo.
 
-La herramienta de clasificación mono/multifractal alcanzó $100\%$ de
-precisión en validación sintética (Actividad~4) y $87{,}5\%$ de acierto en
-la cohorte clínica de la European ST-T Database (Actividad~5), donde la
-multifractalidad se asoció sistemáticamente con hipertensión arterial y
-enfermedad coronaria multivaso.
+La volatilidad del S\&P~500 presentó un contraste que merece atención.
+Los retornos logarítmicos se comportan como ruido blanco con
+$H \approx 0{,}46$, consistente con la hipótesis de mercado eficiente,
+pero sus magnitudes absolutas muestran memoria persistente fuerte con
+$H = 0{,}87$. Esa volatilidad resultó monofractal con
+$R^2_{\tau} = 0{,}99$, lo que indica que un único mecanismo de
+escalamiento, la persistencia del sentimiento de mercado, domina en
+todas las escalas temporales. Los modelos de riesgo que asumen
+decaimiento exponencial de las correlaciones de volatilidad subestiman
+cuánto dura realmente un período de crisis.
 
-Como trabajo futuro, se propone extender la taxonomía de dominios a
-criptosistemas basados en atractores caóticos de alta dimensión, explorando si
-la estructura multifractal puede servir como métrica de complejidad en claves
-criptográficas.
-
-% [Pendiente: agregar conclusiones de la Actividad X del compañero]
