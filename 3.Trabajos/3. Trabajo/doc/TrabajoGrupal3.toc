@@ -18,5 +18,23 @@
 \contentsline {subsection}{\numberline {4.1}Diagrama de flujo}{23}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Validación}{23}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Análisis}{25}{subsection.4.3}%
-\contentsline {section}{\numberline {5}Actividad 5: Clasificación fractal de la European ST-T Database}{25}{section.5}%
-\contentsline {section}{\numberline {6}Actividad 6: Escenario real con LRD}{25}{section.6}%
+\contentsline {section}{\numberline {5}Actividad 5: Clasificación fractal de la European ST-T Database}{26}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Metodología}{26}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Filtrado de anotaciones}{26}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Cálculo de intervalos RR}{27}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}Clasificación}{27}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}Datos clínicos}{28}{subsubsection.5.1.4}%
+\contentsline {subsection}{\numberline {5.2}Resultados}{28}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Distribución general}{28}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Comparación entre grupos}{28}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Sensibilidad al umbral $R^2_{\tau }$}{29}{subsubsection.5.2.3}%
+\contentsline {subsection}{\numberline {5.3}Análisis}{30}{subsection.5.3}%
+\contentsline {subsubsection}{\numberline {5.3.1}Estructura de escala}{30}{subsubsection.5.3.1}%
+\contentsline {subsubsection}{\numberline {5.3.2}Perfil clínico}{30}{subsubsection.5.3.2}%
+\contentsline {paragraph}{Sexo.}{30}{section*.34}%
+\contentsline {paragraph}{Hipertensión arterial.}{30}{section*.35}%
+\contentsline {paragraph}{Enfermedad coronaria.}{30}{section*.36}%
+\contentsline {paragraph}{Infarto de miocardio.}{30}{section*.37}%
+\contentsline {paragraph}{Edad.}{30}{section*.38}%
+\contentsline {subsubsection}{\numberline {5.3.3}Contexto clínico de la base}{31}{subsubsection.5.3.3}%
+\contentsline {section}{\numberline {6}Actividad 6: Escenario real con LRD}{31}{section.6}%
