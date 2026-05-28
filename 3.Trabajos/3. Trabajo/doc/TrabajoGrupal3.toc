@@ -8,7 +8,15 @@
 \contentsline {section}{\numberline {2}Actividad 2: Evaluación con Secuencias LRD}{10}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Prueba de Sesgo}{10}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Prueba de Eficiencia}{14}{subsection.2.2}%
-\contentsline {section}{\numberline {3}Actividad 3: Estimación de H en la European ST-T Database}{17}{section.3}%
-\contentsline {section}{\numberline {4}Actividad 4: Herramienta de clasificación mono/multifractal}{17}{section.4}%
-\contentsline {section}{\numberline {5}Actividad 5: Clasificación fractal de la European ST-T Database}{17}{section.5}%
-\contentsline {section}{\numberline {6}Actividad 6: Escenario real con LRD}{17}{section.6}%
+\contentsline {subsection}{\numberline {2.3}Prueba de Consistencia}{17}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Resumen de la Actividad 2}{19}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Actividad 3: Estimación de $H$ en la \textit {European ST-T Database}}{19}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Resultados por registro}{20}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Distribución global}{21}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Interpretación}{22}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Actividad 4: Herramienta de clasificación mono/multifractal}{22}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Diagrama de flujo}{23}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Validación}{23}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Análisis}{25}{subsection.4.3}%
+\contentsline {section}{\numberline {5}Actividad 5: Clasificación fractal de la European ST-T Database}{25}{section.5}%
+\contentsline {section}{\numberline {6}Actividad 6: Escenario real con LRD}{25}{section.6}%

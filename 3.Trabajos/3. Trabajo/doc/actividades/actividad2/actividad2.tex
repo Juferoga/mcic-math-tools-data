@@ -4,19 +4,20 @@
 
 Se evalúan los estimadores \texttt{vt2} y \texttt{LD2} sobre secuencias
 sintéticas con dependencia de rango largo (LRD), generadas con \texttt{betamwm}
-(multifractal) y \texttt{wfbm} (monofractal), para $H \in \{0.55, 0.60,
-\dots, 0.95\}$ con $1\,000$ repeticiones por valor de $H$.
+(multifractal) y \texttt{wfbm} (monofractal), para
+$H \in \{0.55,\, 0.60,\, \dots,\, 0.95\}$ con $1\,000$ repeticiones por
+valor de $H$. Las propiedades evaluadas son sesgo, eficiencia y consistencia.
 
 % ------------------------------------------------------------
 \subsection{Prueba de Sesgo}
 % ------------------------------------------------------------
 
 Para construir la Figura~\ref{fig:sesgo_a2} se realizó un sondeo sistemático
-del sesgo: por cada valor de $H \in \{0.55,\, 0.60,\, 0.65,\, \dots,\, 0.95\}$
+del sesgo: por cada valor de $H \in \{0.55,\, 0.60,\, \dots,\, 0.95\}$
 (incrementos de $0.05$, nueve puntos en total) se generaron $1\,000$
 realizaciones independientes con cada generador y se aplicaron los estimadores
 \texttt{vt2} y \texttt{LD2}. El valor medio $\hat{\mu}$ de las $1\,000$
-estimaciones se tomó como representante del estimador en ese punto, y se
+estimaciones se tomó como representante del estimador en ese punto y se
 graficó contra $H$ real. La diagonal punteada representa el estimador ideal
 $\hat{H} = H$; la distancia vertical entre cada curva y la diagonal es el
 sesgo empírico $\hat{\mu} - H$ para ese valor de $H$.
@@ -30,21 +31,22 @@ sesgo empírico $\hat{\mu} - H$ para ese valor de $H$.
 \end{figure}
 
 \textbf{Estimador VT.} Ambos generadores producen subestimación creciente
-con $H$. Para \texttt{betamwm}, el sesgo pasa de $-0.0023$ en $H=0.55$ a
-$-0.0711$ en $H=0.95$; para \texttt{wfbm}, de $-0.0016$ a $-0.0092$.
+con $H$. Para \texttt{betamwm}, el sesgo pasa de $-0.0023$ en $H = 0.55$
+hasta $-0.0711$ en $H = 0.95$; para \texttt{wfbm}, de $-0.0016$ a $-0.0092$.
 VT es considerablemente más sesgado con \texttt{betamwm} que con \texttt{wfbm}
-para valores altos de $H$, lo que evidencia sensibilidad al tipo de proceso.
+para valores altos de $H$, lo que evidencia su sensibilidad a la naturaleza
+multifractal del proceso.
 
 \textbf{Estimador LD.} Las curvas se superponen casi perfectamente con la
 diagonal ideal en ambos generadores. El sesgo máximo es $-0.0054$ para
-\texttt{betamwm} ($H=0.90$) y $-0.0010$ para \texttt{wfbm} ($H=0.95$),
-valores despreciables. LD estima $H$ con alta fidelidad independientemente
-del generador y del valor de $H$.
+\texttt{betamwm} ($H = 0.90$) y $-0.0010$ para \texttt{wfbm} ($H = 0.95$),
+valores despreciables en todo el rango. LD estima $H$ con alta fidelidad
+independientemente del generador y del valor de $H$.
 
 \begin{table}[H]
 \centering
-\caption{Parámetros de ajuste normal y sesgo para $H = 0.9$
-         ($1\,000$ repeticiones).}
+\caption{Parámetros de ajuste normal y sesgo para el caso representativo
+         $H = 0.9$ ($1\,000$ repeticiones).}
 \label{tab:sesgo_a2}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{llccc}
@@ -68,47 +70,43 @@ generador~$\times$~estimador.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.95\textwidth]{actividades/actividad2/imgs/qqplots.png}
-    \caption{QQ-plots de $\hat{H}$ para $H = 0.9$ ($1\,000$ repeticiones).}
+    \caption{QQ-plots de $\hat{H}$ para $H = 0.9$ ($1\,000$ repeticiones).
+             La disposición es: \texttt{betamwm} (fila superior) y
+             \texttt{wfbm} (fila inferior); VT (columna izquierda) y
+             LD (columna derecha).}
     \label{fig:qqplots_a2}
 \end{figure}
 
 Los cuatro paneles confirman que las distribuciones empíricas de $\hat{H}$
-siguen aproximadamente una normal, lo que valida el uso de \texttt{normfit}.
-Sin embargo, se observan diferencias cualitativas entre estimadores y
-generadores que son coherentes con los resultados de sesgo ya discutidos:
+siguen aproximadamente una normal, validando el uso de \texttt{normfit}.
+Se observan diferencias cualitativas coherentes con el análisis de sesgo:
 
 \begin{itemize}
-    \item \textbf{betamwm $|$ VT} (panel superior izquierdo): los puntos se
-    alinean bien con la recta de referencia en el cuerpo central, pero
-    presentan desviación en la cola inferior, indicando ligera asimetría.
-    La distribución está centrada en $\hat{\mu} = 0.846$, alejada del valor
-    real $H = 0.9$, lo que es consistente con el sesgo de $-0.054$ reportado.
+    \item \textbf{\texttt{betamwm} $|$ VT} (panel superior izquierdo):
+    buen ajuste en el cuerpo central con leve desviación en la cola inferior.
+    La distribución está centrada en $\hat{\mu} = 0.846$, alejada de $H = 0.9$,
+    consistente con el sesgo de $-0.054$.
 
-    \item \textbf{betamwm $|$ LD} (panel superior derecho): se observa la
-    mayor dispersión de los cuatro casos ($\hat{\sigma} = 0.038$), con
+    \item \textbf{\texttt{betamwm} $|$ LD} (panel superior derecho):
+    mayor dispersión de los cuatro casos ($\hat{\sigma} = 0.038$) con
     desviación en ambas colas. A pesar de ello, la distribución está centrada
-    cerca de $H = 0.9$ (sesgo de apenas $-0.005$), confirmando que LD
-    estima correctamente el valor de $H$ aunque con mayor varianza para
-    secuencias multifractales.
+    cerca de $H = 0.9$ (sesgo de $-0.005$), confirmando que LD estima
+    correctamente aunque con mayor varianza para procesos multifractales.
 
-    \item \textbf{wfbm $|$ VT} (panel inferior izquierdo): buen ajuste a la
-    normal con leve desviación en la cola superior. La distribución está
-    centrada en $\hat{\mu} = 0.859$, con sesgo de $-0.041$, menor que el de
-    \texttt{betamwm} pero aún apreciable.
+    \item \textbf{\texttt{wfbm} $|$ VT} (panel inferior izquierdo):
+    buen ajuste con leve desviación en la cola superior. Centrado en
+    $\hat{\mu} = 0.859$, con sesgo de $-0.041$, menor que \texttt{betamwm}
+    pero aún apreciable.
 
-    \item \textbf{wfbm $|$ LD} (panel inferior derecho): el ajuste más
-    fiel a la recta de referencia de los cuatro casos, con la menor
-    dispersión ($\hat{\sigma} = 0.014$) y el menor sesgo ($-0.001$). Este
-    panel confirma que LD sobre secuencias monofractales (\texttt{wfbm})
-    es el escenario más favorable: distribución normal, insesgada y eficiente.
+    \item \textbf{\texttt{wfbm} $|$ LD} (panel inferior derecho):
+    el ajuste más fiel a la recta de referencia, con la menor dispersión
+    ($\hat{\sigma} = 0.014$) y el menor sesgo ($-0.001$). Confirma que LD
+    sobre secuencias monofractales es el escenario más favorable.
 \end{itemize}
 
 Las Figuras~\ref{fig:vt_h09} y~\ref{fig:ld_h09} muestran las PDF y CDF
 empíricas para $H = 0.9$, donde el sesgo de VT y la diferente dispersión
-entre generadores son directamente visibles. Estos resultados son coherentes
-con los QQ-plots anteriores: la mayor anchura de la curva de \texttt{betamwm}
-se corresponde con la mayor dispersión observada, mientras que la concentración
-de \texttt{wfbm} en LD se refleja en su ajuste casi perfecto a la recta normal.
+entre generadores son directamente visibles, en coherencia con los QQ-plots.
 
 \begin{figure}[H]
     \centering
@@ -133,9 +131,9 @@ de \texttt{wfbm} en LD se refleja en su ajuste casi perfecto a la recta normal.
 % ------------------------------------------------------------
 
 La eficiencia se mide comparando la varianza de $\hat{H}$ entre estimadores
-para un mismo valor de $H$: el estimador con menor $\text{Var}(\hat{H})$
+para un mismo valor de $H$: el estimador con menor $\mathrm{Var}(\hat{H})$
 es más eficiente. Las Figuras~\ref{fig:var_betamwm} y~\ref{fig:var_wfbm}
-muestran $\text{Var}(\hat{H})$ en función de $H$ real para cada combinación
+muestran $\mathrm{Var}(\hat{H})$ en función de $H$ real para cada combinación
 estimador~$\times$~generador.
 
 \begin{figure}[H]
@@ -152,21 +150,21 @@ estimador~$\times$~generador.
     \includegraphics[width=0.95\textwidth]{actividades/actividad2/imgs/wfbm_var.png}
     \caption{Varianza de $\hat{H}$ vs.\ $H$ real para \texttt{wfbm}.
              VT (arriba) muestra varianzas del orden $10^{-4}$; LD (abajo)
-             mantiene varianza estable y menor en todo el rango.}
+             mantiene varianza menor y más estable en todo el rango.}
     \label{fig:var_wfbm}
 \end{figure}
 
-\textbf{betamwm (Figura~\ref{fig:var_betamwm}).} VT es más eficiente que LD
-en todo el rango de $H$: su varianza se mantiene por debajo de
+\textbf{\texttt{betamwm} (Figura~\ref{fig:var_betamwm}).} VT es más eficiente
+que LD en todo el rango de $H$: su varianza se mantiene por debajo de
 $2.25\times10^{-3}$, mientras que la de LD supera los $9\times10^{-3}$ para
 $H$ bajo. La naturaleza multifractal de \texttt{betamwm} penaliza
-especialmente a LD, que asume un modelo monofractal en su estimación wavelet.
+especialmente a LD, cuyo modelo wavelet asume monofractalidad.
 
-\textbf{wfbm (Figura~\ref{fig:var_wfbm}).} La situación se invierte: LD es
-más eficiente que VT en todo el rango, con varianza estable alrededor de
+\textbf{\texttt{wfbm} (Figura~\ref{fig:var_wfbm}).} La situación se invierte:
+LD es más eficiente en todo el rango, con varianza estable alrededor de
 $2\times10^{-4}$, mientras que VT fluctúa entre $2.9\times10^{-4}$ y
 $3.85\times10^{-4}$. Para secuencias monofractales, el modelo wavelet de LD
-se ajusta bien al proceso, resultando en estimaciones más concentradas.
+se ajusta al proceso, produciendo estimaciones más concentradas.
 
 \begin{table}[H]
 \centering
@@ -188,37 +186,104 @@ se ajusta bien al proceso, resultando en estimaciones más concentradas.
 En síntesis, la eficiencia de cada estimador depende del tipo de proceso:
 VT es más eficiente ante procesos multifractales (\texttt{betamwm}) y LD
 ante procesos monofractales (\texttt{wfbm}), lo que refleja la adecuación
-del modelo subyacente de cada estimador al tipo de LRD presente en la
-secuencia.
+del modelo subyacente de cada estimador al tipo de LRD presente.
+
 % ------------------------------------------------------------
-% \subsection{Resumen de la Actividad 2}
+\subsection{Prueba de Consistencia}
 % ------------------------------------------------------------
 
-% \begin{table}[H]
-% \centering
-% \caption{Comparación de estimadores VT y LD por propiedad y generador.}
-% \label{tab:resumen_a2}
-% \renewcommand{\arraystretch}{1.3}
-% \begin{tabular}{llccc}
-% \toprule
-% \textbf{Propiedad} & \textbf{Generador} & \textbf{VT} & \textbf{LD} &
-% \textbf{Ganador} \\
-% \midrule
-% Sesgo & \texttt{betamwm} & Hasta $-0.071$ & Hasta $-0.005$ & \textbf{LD} \\
-% Sesgo & \texttt{wfbm}    & Hasta $-0.009$ & Hasta $-0.001$ & \textbf{LD} \\
-% Eficiencia & \texttt{betamwm} & $\hat{\sigma}^2$ menor & $\hat{\sigma}^2$ mayor & \textbf{VT} \\
-% Eficiencia & \texttt{wfbm}    & $\hat{\sigma}^2$ mayor & $\hat{\sigma}^2$ menor & \textbf{LD} \\
-% Consistencia & \texttt{betamwm} & Decrece con $H$ & Decrece con $H$ & \textbf{VT} \\
-% Consistencia & \texttt{wfbm}    & Fluctúa         & Estable         & \textbf{LD} \\
-% \bottomrule
-% \end{tabular}
-% \end{table}
+La consistencia se evalúa fijando $H$ y aumentando el tamaño de muestra
+$N \in \{2^{10},\, 2^{12},\, 2^{14},\, 2^{16}\}$: un estimador consistente
+debe mostrar $\mathrm{Var}(\hat{H}) \to 0$ al crecer $N$, para todo valor
+de $H$ en el intervalo evaluado.
 
-% LD estima $H$ con sesgo despreciable en ambos generadores y para todo el
-% rango de $H$ evaluado. VT presenta sesgo creciente con $H$, especialmente
-% en secuencias multifractales (\texttt{betamwm}), donde el modelo subyacente
-% del diagrama varianza--tiempo no se ajusta bien a la naturaleza del proceso.
-% En cuanto a eficiencia, LD supera a VT para secuencias monofractales
-% (\texttt{wfbm}), pero la situación se invierte para secuencias multifractales,
-% donde la mayor varianza de LD refleja su sensibilidad a la estructura
-% multifractal del proceso generado por \texttt{betamwm}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{actividades/actividad2/imgs/cons_VT.png}
+    \caption{Consistencia del estimador VT: $\mathrm{Var}(\hat{H})$ vs.\
+             $N$ para \texttt{betamwm} (arriba) y \texttt{wfbm} (abajo),
+             con $H \in [0.55,\, 0.95]$ ($300$ repeticiones por punto).}
+    \label{fig:cons_vt}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{actividades/actividad2/imgs/cons_LD.png}
+    \caption{Consistencia del estimador LD: $\mathrm{Var}(\hat{H})$ vs.\
+             $N$ para \texttt{betamwm} (arriba) y \texttt{wfbm} (abajo),
+             con $H \in [0.55,\, 0.95]$ ($300$ repeticiones por punto).}
+    \label{fig:cons_ld}
+\end{figure}
+
+\textbf{Estimador VT -- \texttt{betamwm} (Figura~\ref{fig:cons_vt}, arriba).}
+Para $H = 0.55$ se observa el caso más problemático: la varianza parte en
+$1.60\times10^{-2}$ para $N = 2^{10}$ y cae bruscamente a $2.39\times10^{-3}$
+en $N = 2^{12}$, pero luego se estabiliza alrededor de $2\times10^{-3}$ para
+$N \in \{2^{14},\, 2^{16}\}$, sin continuar decreciendo. Este comportamiento
+indica que VT \textbf{no es consistente} con \texttt{betamwm} para $H$ bajo:
+la varianza converge a un piso no nulo. Para $H \geq 0.70$ la varianza sí
+decrece monótonamente, aunque de forma lenta.
+
+\textbf{Estimador VT -- \texttt{wfbm} (Figura~\ref{fig:cons_vt}, abajo).}
+Las nueve curvas descienden de manera ordenada y monótona desde
+$\approx 2\times10^{-3}$ en $N = 2^{10}$ hasta $\approx 1.5\times10^{-4}$
+en $N = 2^{16}$, sin excepción. VT es \textbf{consistente} para
+\texttt{wfbm} en todo el rango de $H$ evaluado.
+
+\textbf{Estimador LD -- \texttt{betamwm} (Figura~\ref{fig:cons_ld}, arriba).}
+La varianza decrece en todos los casos, pero con magnitudes mucho mayores
+que VT: para $H = 0.55$ parte en $5.40\times10^{-2}$ y llega a
+$6.52\times10^{-3}$ en $N = 2^{16}$, aún un orden de magnitud superior
+al piso de VT. La convergencia es clara pero lenta, especialmente para
+$H$ bajo. LD es consistente con \texttt{betamwm}, pero requiere muestras
+muy grandes para alcanzar varianzas bajas.
+
+\textbf{Estimador LD -- \texttt{wfbm} (Figura~\ref{fig:cons_ld}, abajo).}
+Es el caso más favorable: las nueve curvas se superponen casi perfectamente
+y descienden de forma pronunciada desde $\approx 5\times10^{-3}$ hasta
+$\approx 5\times10^{-5}$, una reducción de dos órdenes de magnitud.
+LD es \textbf{altamente consistente} para \texttt{wfbm}, con convergencia
+rápida e independiente del valor de $H$.
+
+
+La columna \textit{Ratio} cuantifica cuántas veces se redujo la varianza al
+pasar de $N = 2^{10}$ a $N = 2^{16}$. El caso \texttt{wfbm}~$|$~LD destaca
+con reducciones superiores a $90\times$, confirmando su alta consistencia.
+En contraste, \texttt{betamwm}~$|$~VT para $H$ bajo muestra el ratio más
+pequeño ($7.8\times$) y un piso de varianza residual, señal de inconsistencia
+asintótica en ese régimen.
+
+% ------------------------------------------------------------
+\subsection{Resumen de la Actividad 2}
+% ------------------------------------------------------------
+
+\begin{table}[H]
+\centering
+\caption{Comparación de estimadores VT y LD por propiedad y generador.}
+\label{tab:resumen_a2}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{llccc}
+\toprule
+\textbf{Propiedad} & \textbf{Generador} & \textbf{VT} & \textbf{LD} &
+\textbf{Ganador} \\
+\midrule
+Sesgo & \texttt{betamwm} & Hasta $-0.071$ & Hasta $-0.005$ & \textbf{LD} \\
+Sesgo & \texttt{wfbm}    & Hasta $-0.009$ & Hasta $-0.001$ & \textbf{LD} \\
+\midrule
+Eficiencia & \texttt{betamwm} & $\hat{\sigma}^2$ menor & $\hat{\sigma}^2$ mayor & \textbf{VT} \\
+Eficiencia & \texttt{wfbm}    & $\hat{\sigma}^2$ mayor & $\hat{\sigma}^2$ menor & \textbf{LD} \\
+\midrule
+Consistencia & \texttt{betamwm} & Inconsistente ($H$ bajo) & Consistente, lenta & \textbf{LD} \\
+Consistencia & \texttt{wfbm}    & Consistente             & Altamente consistente & \textbf{LD} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+LD supera a VT en sesgo para ambos generadores y en consistencia para ambos
+casos. En cuanto a eficiencia, el resultado depende del tipo de proceso:
+VT es más eficiente ante procesos multifractales (\texttt{betamwm}), mientras
+que LD lo es ante procesos monofractales (\texttt{wfbm}). La causa subyacente
+es el modelo asumido por cada estimador: VT está basado en la varianza del
+proceso agregado, lo que lo hace robusto ante multifractalidad pero sesgado
+para $H$ alto; LD utiliza la estructura wavelet, óptima para procesos
+monofractales pero sensible a la complejidad multifractal de \texttt{betamwm}.
