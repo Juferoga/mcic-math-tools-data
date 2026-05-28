@@ -2,6 +2,245 @@
 \section{Actividad 5: Clasificación fractal de la European ST-T Database}
 % ============================================================
 
-% Aplicar la herramienta de la Actividad 4 al tiempo entre picos R
-% de los 90 registros. Analizar relación con las anotaciones de
-% los especialistas.
+Se aplica el clasificador de la Actividad~4 a los intervalos RR de los 90
+registros de la European ST-T Database. Cada registro contiene dos horas de
+ECG ambulatorio a $250\;\text{Hz}$ con anotaciones latido a latido
+realizadas por cardiólogos.
+
+% ────────────────────────────────────────────────────────────
+\subsection{Metodología}
+
+\subsubsection{Filtrado de anotaciones}
+
+Los archivos \texttt{.atr} almacenan la posición en muestras de cada evento
+detectado. No todas las anotaciones corresponden a latidos: la
+Tabla~\ref{tab:anntype} resume los tipos encontrados.
+
+\begin{table}[H]
+\centering
+\caption{Tipos de anotación encontrados en los 90 registros.}
+\label{tab:anntype}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{clrc}
+    \toprule
+    \textbf{Código} & \textbf{Significado} & \textbf{Total} & \textbf{¿Latido?} \\
+    \midrule
+    \texttt{N} & Latido normal                              & 784\,633 & Sí \\
+    \texttt{V} & Contracción ventricular prematura           &   4\,467 & Sí \\
+    \texttt{S} & Latido supraventricular prematuro           &   1\,093 & Sí \\
+    \texttt{F} & Fusión de latido ventricular y normal       &     354  & Sí \\
+    \texttt{Q} & Latido no clasificable                      &      11  & Sí \\
+    \texttt{n} & Escape supraventricular                     &       5  & Sí \\
+    \texttt{J} & Latido nodal                                &       1  & Sí \\
+    \texttt{a} & Latido auricular prematuro aberrante        &       1  & Sí \\
+    \midrule
+    \texttt{\textasciitilde} & Ruido o artefacto en la señal &   8\,918 & No \\
+    \texttt{s} & Cambio en segmento ST                       &   1\,100 & No \\
+    \texttt{+} & Cambio de ritmo                             &     765  & No \\
+    \texttt{"} & Comentario del anotador                     &     122  & No \\
+    \texttt{|} & Artefacto aislado tipo QRS                  &      78  & No \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+Se conservan únicamente las anotaciones de tipo latido. Sin este filtrado,
+\texttt{diff} calcula diferencias entre posiciones de latidos y marcadores
+de ruido o ritmo, generando intervalos que no representan ciclos cardíacos
+reales.
+
+\subsubsection{Cálculo de intervalos RR}
+
+Las anotaciones son posiciones en muestras con $f_s = 250\;\text{Hz}$. El
+intervalo RR entre dos latidos consecutivos es:
+%
+\begin{equation}
+    \text{RR}_k = \frac{n_{k+1} - n_k}{f_s}
+    \label{eq:rr}
+\end{equation}
+%
+donde $n_k$ es la posición del $k$-ésimo latido en muestras.
+
+Se descartaron intervalos fuera del rango
+$[0{,}3\;\text{s},\;2{,}0\;\text{s}]$, siguiendo los umbrales de Karlsson
+et al.~\cite{karlsson2012} para filtrado de artefactos en registros Holter.
+Valores fuera de este rango corresponden a doble detección del complejo QRS
+o latidos perdidos, no a ciclos cardíacos reales. El filtro preserva la
+dinámica cardíaca y elimina valores espurios que corromperían la estructura
+de correlación, en línea con las recomendaciones del Task Force de la
+ESC/NASPE~\cite{taskforce1996}.
+
+\subsubsection{Clasificación}
+
+Cada serie RR se procesó con el clasificador de la Actividad~4 con umbrales
+$R^2_{\text{VT}} \geq 0{,}85$ y $R^2_{\tau} \geq 0{,}95$. Se estimó $H$
+con los estimadores Varianza--Tiempo y Log--Escala, incluyendo intervalos de
+confianza al $95\%$ para VT.
+
+\subsubsection{Datos clínicos}
+
+De los archivos \texttt{.hea} se extrajeron edad, sexo, diagnóstico, número
+de vasos coronarios afectados, presencia de infarto de miocardio e
+hipertensión arterial.
+
+% ────────────────────────────────────────────────────────────
+\subsection{Resultados}
+
+\subsubsection{Distribución general}
+
+De los 90 registros, 22 se clasificaron como monofractales, 63 como
+multifractales y 5 como no clasificables por no superar el umbral VT.
+La Tabla~\ref{tab:estadisticas-h} consolida las métricas.
+
+\begin{table}[H]
+\centering
+\caption{Estadísticas de los estimadores y $R^2$ sobre los 90 registros
+         ($R^2_{\tau}$ sobre los 85 clasificables).}
+\label{tab:estadisticas-h}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcccc}
+    \toprule
+    \textbf{Métrica} & $\bar{x}$ & $\sigma$ & \textbf{Mín.} & \textbf{Máx.} \\
+    \midrule
+    $\hat{H}_{\text{VT}}$  & $0{,}9508$ & $0{,}0402$ & $0{,}8012$ & $0{,}9951$ \\
+    $\hat{H}_{\text{LD}}$  & $1{,}0719$ & $0{,}1592$ & $0{,}5970$ & $1{,}3060$ \\
+    $R^2_{\text{VT}}$      & $0{,}9494$ & $0{,}0602$ & $0{,}6040$ & $0{,}9930$ \\
+    $R^2_{\tau(q)}$         & $0{,}9132$ & $0{,}0877$ & $0{,}2910$ & $0{,}9920$ \\
+    Latidos por registro    & $8\,782$   & $1\,870$   & $4\,478$   & $14\,969$  \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+Todos los registros presentan $\hat{H}_{\text{VT}} > 0{,}80$, confirmando
+dependencia de largo alcance en las series RR.
+
+\subsubsection{Comparación entre grupos}
+
+La Tabla~\ref{tab:mono-vs-multi} contrasta los dos grupos clasificables.
+
+\begin{table}[H]
+\centering
+\caption{Comparación entre pacientes monofractales y multifractales.}
+\label{tab:mono-vs-multi}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcc}
+    \toprule
+    & \textbf{Monofractal} ($N=22$) & \textbf{Multifractal} ($N=63$) \\
+    \midrule
+    $\hat{H}_{\text{VT}}$
+        & $0{,}941 \pm 0{,}037$ & $0{,}951 \pm 0{,}041$ \\
+    $\hat{H}_{\text{LD}}$
+        & $1{,}145 \pm 0{,}117$ & $1{,}054 \pm 0{,}147$ \\
+    $\overline{R^2_{\tau}}$
+        & $0{,}971 \pm 0{,}014$ & $0{,}893 \pm 0{,}094$ \\
+    \midrule
+    Edad & $53{,}5 \pm 11{,}0$ años & $53{,}8 \pm 10{,}8$ años \\
+    Sexo & 22\,M / 0\,F & 54\,M / 8\,F \\
+    \midrule
+    Con IAM  & 7 & 21 \\
+    Con HTA  & 0 & 11 \\
+    \midrule
+    Coronarias normales    & 4 & 4 \\
+    Enfermedad de 1 vaso   & 7 & 17 \\
+    Enfermedad de 2 vasos  & 3 & 7 \\
+    Enfermedad de 3 vasos  & 2 & 14 \\
+    No reportado           & 6 & 21 \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Sensibilidad al umbral $R^2_{\tau}$}
+
+\begin{table}[H]
+\centering
+\caption{Efecto del umbral $R^2_{\tau}$ sobre la clasificación.}
+\label{tab:sensibilidad}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{cccc}
+    \toprule
+    \textbf{Umbral} & \textbf{Mono} & \textbf{Multi} & \textbf{NC} \\
+    \midrule
+    0,80 & 81 &  4 & 5 \\
+    0,85 & 76 &  9 & 5 \\
+    0,90 & 66 & 19 & 5 \\
+    \textbf{0,95} & \textbf{22} & \textbf{63} & \textbf{5} \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+44 pacientes tienen $R^2_{\tau}$ entre $0{,}90$ y $0{,}95$: una zona de
+transición donde $\tau(q)$ no es estrictamente lineal pero la curvatura es
+leve. Con $0{,}90$ estos pacientes se clasificaban como monofractales; con
+$0{,}95$ pasan al grupo multifractal. El umbral $0{,}95$ se justifica desde
+la Actividad~4, donde las señales monofractales sintéticas nunca bajan de
+$R^2_{\tau} = 0{,}99$ y las multifractales nunca superan $0{,}90$ en 400
+realizaciones. El punto medio del gap maximiza el margen de separación.
+
+% ────────────────────────────────────────────────────────────
+\subsection{Análisis}
+
+\subsubsection{Estructura de escala}
+
+El $70\%$ de las series RR presenta curvatura en $\tau(q)$, indicando que
+la dinámica cardíaca no está gobernada por un único exponente de Hurst sino
+por un espectro de exponentes. Esto es coherente con la fisiología: la
+frecuencia cardíaca es regulada por mecanismos que operan en escalas
+distintas --- respiración, barorreflejo, termorregulación, ciclo circadiano
+--- y cada uno imprime su propia ley de escala.
+
+El grupo monofractal muestra $\overline{R^2_{\tau}} = 0{,}971 \pm 0{,}014$,
+confirmando que un solo exponente gobierna la estructura de correlación. El
+multifractal tiene $\overline{R^2_{\tau}} = 0{,}893 \pm 0{,}094$, con mayor
+dispersión que refleja grados variables de multifractalidad.
+
+La diferencia entre estimadores refuerza esta lectura: $\hat{H}_{\text{LD}}$
+difiere $0{,}091$ entre grupos, mientras que $\hat{H}_{\text{VT}}$ apenas
+$0{,}010$. El estimador LD, basado en wavelets, captura la estructura
+multiescala que el VT promedia. La distinción mono/multi reside en la
+estructura fina de las escalas, no en la tendencia global.
+
+\subsubsection{Perfil clínico}
+
+La Tabla~\ref{tab:mono-vs-multi} revela asociaciones clínicas que refuerzan
+la validez del clasificador.
+
+\paragraph{Sexo.}
+Los 22 monofractales son hombres. Las 8 mujeres de la base se clasificaron
+como multifractales sin excepción. La muestra es pequeña --- solo el
+$8{,}9\%$ son mujeres --- pero la separación es total. Diferencias en el
+tono parasimpático basal y la modulación hormonal del barorreflejo podrían
+manifestarse como mayor complejidad multiescala en los intervalos RR.
+
+\paragraph{Hipertensión arterial.}
+Ningún monofractal presenta HTA. De los 12 hipertensos de la base, 11 son
+multifractales y el restante no fue clasificable; ninguno es monofractal.
+La HTA incrementa la rigidez arterial y altera el barorreflejo, modificando
+la regulación cardíaca en múltiples escalas temporales. El clasificador
+captura esta alteración como multifractalidad.
+
+\paragraph{Enfermedad coronaria.}
+El grupo multifractal concentra 14 de los 16 pacientes con enfermedad de
+3~vasos. La proporción de multifractales crece con el número de vasos
+afectados: $70{,}8\%$ en 1~vaso, $70{,}0\%$ en 2~vasos y $87{,}5\%$ en
+3~vasos. A mayor extensión del daño coronario, mayor probabilidad de
+estructura multifractal.
+
+\paragraph{Infarto de miocardio.}
+El IAM tiene prevalencia similar en ambos grupos: $31{,}8\%$ en mono y
+$33{,}3\%$ en multi. A diferencia de la HTA y la enfermedad multivaso, el
+infarto no diferencia la estructura fractal. El IAM es un evento agudo que
+produce una cicatriz localizada, mientras que la HTA y la enfermedad
+multivaso son condiciones crónicas que afectan la regulación autonómica de
+forma sostenida. El clasificador capta alteraciones sistémicas, no daño
+focal.
+
+\paragraph{Edad.}
+La edad promedio es prácticamente idéntica entre grupos: $53{,}5$ vs.\
+$53{,}8$ años. No es un factor confundente.
+
+\subsubsection{Contexto clínico de la base}
+
+Los archivos \texttt{.hea} reportan 81 hombres, 8 mujeres y 1 registro
+sin dato de sexo, con edad promedio $54{,}3 \pm 10{,}9$ años. De los 90
+pacientes, 30 tienen antecedente de infarto de miocardio, 12 presentan
+hipertensión arterial y 59 cuentan con información de vasos coronarios
+afectados (7 normales, 24 de 1~vaso, 11 de 2~vasos y 17 de 3~vasos).

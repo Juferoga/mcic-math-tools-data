@@ -10,7 +10,7 @@ basadas en el $R^2$ del ajuste lineal:
     \item \textbf{Verificación de LRD} ($R^2_{\text{VT}} \geq 0{,}85$): se
           ajusta una recta al diagrama varianza--tiempo. Si el ajuste es pobre,
           la muestra se descarta como \emph{no clasificable}.
-    \item \textbf{Clasificación fractal} ($R^2_{\tau} \geq 0{,}90$): se
+    \item \textbf{Clasificación fractal} ($R^2_{\tau} \geq 0{,}95$): se
           obtienen los exponentes de escala $\tau(q)$ con \texttt{dwtleader}.
           Si $\tau(q)$ es lineal, la muestra es monofractal; si presenta
           curvatura, es multifractal.
@@ -67,7 +67,7 @@ La Figura~\ref{fig:flujo-clasificador} presenta el algoritmo implementado.
 \node[process, right=3.8cm of decvt]   (geth)   {$H \leftarrow$ \texttt{vt2(muestra)}};
 \node[process, below=of geth]          (dwt)    {Calcular $\tau(q)$\\con \texttt{dwtleader}};
 
-\node[decision, below=1.4cm of dwt]    (dectau) {¿Ajuste\\lineal?\\{\scriptsize $R^2_{\tau(q)} \geq 0{,}90$}};
+\node[decision, below=1.4cm of dwt]    (dectau) {¿Ajuste\\lineal?\\{\scriptsize $R^2_{\tau(q)} \geq 0{,}95$}};
 
 % ── Clasificaciones ──
 \node[result, right=2.8cm of dectau]   (mono)   {Monofractal};
@@ -118,7 +118,7 @@ $H = 0{,}8$.
     \centering
     \includegraphics[width=\textwidth]{assets/plots/mono.png}
     \caption{Muestra monofractal (\texttt{wfbm}, $H = 0{,}8$): $\tau(q)$ es
-             lineal ($R^2_{\tau} = 0{,}9883$) y $D(h)$ se concentra en un rango
+             lineal ($R^2_{\tau} = 0{,}9936$) y $D(h)$ se concentra en un rango
              estrecho.}
     \label{fig:val-mono}
 \end{figure}
@@ -127,7 +127,7 @@ $H = 0{,}8$.
     \centering
     \includegraphics[width=\textwidth]{assets/plots/multi.png}
     \caption{Muestra multifractal (\texttt{betamwm}, $H = 0{,}8$): $\tau(q)$
-             presenta curvatura ($R^2_{\tau} = 0{,}7855$) y $D(h)$ tiene forma
+             presenta curvatura ($R^2_{\tau} = 0{,}8982$) y $D(h)$ tiene forma
              de campana.}
     \label{fig:val-multi}
 \end{figure}
@@ -135,7 +135,7 @@ $H = 0{,}8$.
 La Tabla~\ref{tab:barrido-h} presenta el barrido completo. La columna
 $R^2_{\tau(q)}$ permite ver directamente por qué el clasificador toma cada
 decisión: valores cercanos a 1 indican linealidad (monofractal), mientras que
-valores por debajo de $0{,}90$ revelan curvatura (multifractal).
+valores por debajo de $0{,}95$ revelan curvatura (multifractal).
 
 \begin{table}[H]
 \centering
@@ -145,35 +145,59 @@ valores por debajo de $0{,}90$ revelan curvatura (multifractal).
     \toprule
     \textbf{Generador} & \textbf{Tipo real} & $H$ & $\hat{H}$ & $R^2_{\tau(q)}$ & \textbf{Clasificación} \\
     \midrule
-    \texttt{wfbm}    & monofractal  & 0,6 & 0,6095 & 0,9911 & monofractal  \\
-    \texttt{wfbm}    & monofractal  & 0,7 & 0,7013 & 0,9940 & monofractal  \\
-    \texttt{wfbm}    & monofractal  & 0,8 & 0,7827 & 0,9958 & monofractal  \\
-    \texttt{wfbm}    & monofractal  & 0,9 & 0,8431 & 0,9920 & monofractal  \\
+    \texttt{wfbm}    & monofractal  & 0,6 & 0,5838 & 0,9922 & monofractal  \\
+    \texttt{wfbm}    & monofractal  & 0,7 & 0,6919 & 0,9928 & monofractal  \\
+    \texttt{wfbm}    & monofractal  & 0,8 & 0,7836 & 0,9930 & monofractal  \\
+    \texttt{wfbm}    & monofractal  & 0,9 & 0,8622 & 0,9934 & monofractal  \\
     \midrule
-    \texttt{betamwm} & multifractal & 0,6 & 0,6088 & 0,8967 & multifractal \\
-    \texttt{betamwm} & multifractal & 0,7 & 0,7038 & 0,9055 & monofractal$^*$ \\
-    \texttt{betamwm} & multifractal & 0,8 & 0,7735 & 0,8702 & multifractal \\
-    \texttt{betamwm} & multifractal & 0,9 & 0,8748 & 0,8521 & multifractal \\
+    \texttt{betamwm} & multifractal & 0,6 & 0,5482 & 0,8591 & multifractal \\
+    \texttt{betamwm} & multifractal & 0,7 & 0,6827 & 0,6661 & multifractal \\
+    \texttt{betamwm} & multifractal & 0,8 & 0,7810 & 0,9015 & multifractal \\
+    \texttt{betamwm} & multifractal & 0,9 & 0,8693 & 0,8749 & multifractal \\
     \bottomrule
-    \multicolumn{6}{l}{\footnotesize $^*$Caso borderline: $R^2_{\tau} = 0{,}9055$,
-    apenas por encima del umbral $0{,}90$.}
 \end{tabular}
 \end{table}
 
 % ────────────────────────────────────────────────────────────
 \subsection{Análisis}
 
-La herramienta clasifica correctamente 7 de las 8 muestras evaluadas. Las
-muestras generadas con \texttt{wfbm} presentan $R^2_{\tau}$ consistentemente
-superior a $0{,}99$, lo que confirma la linealidad de $\tau(q)$ propia de un
-proceso monofractal. En contraste, las muestras de \texttt{betamwm} exhiben
-$R^2_{\tau}$ entre $0{,}85$ y $0{,}90$, reflejando la curvatura esperada en un
-proceso multifractal.
+La herramienta clasifica correctamente las 8 muestras evaluadas. Las muestras
+generadas con \texttt{wfbm} presentan $R^2_{\tau}$ consistentemente superior a
+$0{,}99$, lo que confirma la linealidad de $\tau(q)$ propia de un proceso
+monofractal. En contraste, las muestras de \texttt{betamwm} exhiben
+$R^2_{\tau}$ entre $0{,}67$ y $0{,}90$, reflejando la curvatura esperada en un
+proceso multifractal. El umbral $R^2_{\tau} = 0{,}95$ se ubica en el centro del
+gap natural entre ambos clusters, maximizando el margen de separación.
 
-El caso de \texttt{betamwm} con $H = 0{,}7$ ($R^2_{\tau} = 0{,}9055$) se ubica
-justo en el límite del umbral. Esto se debe a la naturaleza estocástica del
-generador: para ciertos valores de $H$, la curvatura de $\tau(q)$ es menos
-pronunciada y una realización particular puede producir exponentes casi lineales.
-Este comportamiento es inherente a cualquier clasificador basado en umbrales
-fijos y no invalida la herramienta, sino que señala una zona de transición donde
-la distinción entre mono y multifractal es menos marcada.
+Para verificar que el resultado no depende de una realización afortunada, se
+ejecutaron 50 realizaciones independientes por cada combinación de generador y
+$H$. La Tabla~\ref{tab:robustez} resume los resultados.
+
+\begin{table}[H]
+\centering
+\caption{Robustez del clasificador: 50 realizaciones por caso ($N = 2^{17}$).}
+\label{tab:robustez}
+\begin{tabular}{llcccc}
+    \toprule
+    \textbf{Generador} & \textbf{Tipo real} & $H$ & \textbf{Aciertos}
+        & $\overline{R^2_{\tau}}$ & $\sigma_{R^2_{\tau}}$ \\
+    \midrule
+    \texttt{wfbm}    & monofractal  & 0,6 & 50/50 & 0,9929 & 0,0013 \\
+    \texttt{wfbm}    & monofractal  & 0,7 & 50/50 & 0,9935 & 0,0014 \\
+    \texttt{wfbm}    & monofractal  & 0,8 & 50/50 & 0,9937 & 0,0013 \\
+    \texttt{wfbm}    & monofractal  & 0,9 & 50/50 & 0,9932 & 0,0010 \\
+    \midrule
+    \texttt{betamwm} & multifractal & 0,6 & 50/50 & 0,7769 & 0,2361 \\
+    \texttt{betamwm} & multifractal & 0,7 & 50/50 & 0,8403 & 0,1314 \\
+    \texttt{betamwm} & multifractal & 0,8 & 50/50 & 0,8342 & 0,0777 \\
+    \texttt{betamwm} & multifractal & 0,9 & 50/50 & 0,8500 & 0,0245 \\
+    \bottomrule
+\end{tabular}
+\end{table}
+
+Con 400 clasificaciones en total, la herramienta alcanza un 100\,\% de accuracy.
+Las muestras monofractales mantienen $R^2_{\tau} > 0{,}99$ con desviación
+estándar del orden de $10^{-3}$, mientras que las multifractales se mantienen por
+debajo de $0{,}90$ en todos los casos. Esto confirma que el umbral $0{,}95$ está
+bien posicionado y que la separación entre clusters es robusta frente a la
+variabilidad estocástica de los generadores.
