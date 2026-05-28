@@ -52,30 +52,27 @@ $100\,000$ & $0.4996$ & $0.0099$ & $0.4999$ & $0.0063$ \\
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{actividades/actividad1/imgs/qqplot_muestra_vt.png}
-        \caption{QQ-plot estimador VT ($n = 100\,000$).}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \includegraphics[width=\textwidth]{actividades/actividad1/imgs/qqplot_muestra_ld.png}
-        \caption{QQ-plot estimador LD ($n = 100\,000$).}
     \end{subfigure}
-    \caption{La alineación con la recta de referencia confirma distribución
-             normal en ambos estimadores, justificando el uso de \texttt{normfit}.}
+    \caption{QQ-plots para los estimadores VT y LD con muestra de tamaño $n = 100\,000$.}
     \label{fig:qqplots}
 \end{figure}
 
 Para $n = 1\,000$ (Figura~\ref{fig:sesgo_1000}), ambos estimadores muestran
 sesgo despreciable ($-0.0033$ para VT y $-0.0018$ para LD), pero las
 distribuciones son notablemente anchas. En este régimen VT es ligeramente
-más eficiente: su desviación estándar ($0.0289$) es un 17\,\% menor que la
+más eficiente, puesto que su desviación estándar ($0.0289$) es un 17\,\% menor que la
 de LD ($0.0347$), es decir, para muestras pequeñas LD no ofrece ventaja en
 varianza.
 
-Para $n = 100\,000$ (Figura~\ref{fig:sesgo_100000}), la situación se invierte:
+Para $n = 100\,000$ (Figura~\ref{fig:sesgo_100000}),
 ambas distribuciones se concentran fuertemente en $H_0 = 0.5$ y el sesgo
 permanece negligible, pero ahora LD presenta una desviación estándar un
 36\,\% menor que VT ($0.0063$ vs.\ $0.0099$). Esta inversión queda también
-reflejada en los QQ-plots (Figura~\ref{fig:qqplots}): VT exhibe una leve
+reflejada en los QQ-plots (Figura~\ref{fig:qqplots}), donde VT exhibe una leve
 desviación en las colas, mientras que LD se ajusta con mayor fidelidad a la
 recta de referencia para muestras grandes.
 
@@ -83,7 +80,7 @@ recta de referencia para muestras grandes.
 \subsection{Prueba de Consistencia}
 % ------------------------------------------------------------
 
-Se evaluó la convergencia de cada estimador al aumentar el tamaño de muestra.
+Se evaluó la consistencia de cada estimador al aumentar el tamaño de muestra.
 Se generaron $1\,000$ realizaciones para cada $N \in \{2^{14},\,2^{16},\,
 2^{18},\,2^{20}\}$ con distribución $\mathcal{N}(0,1)$.
 
@@ -91,26 +88,21 @@ Se generaron $1\,000$ realizaciones para cada $N \in \{2^{14},\,2^{16},\,
     \centering
     \begin{subfigure}[b]{0.88\textwidth}
         \includegraphics[width=\textwidth]{actividades/actividad1/imgs/consistencia_ld.png}
-        \caption{Estimador LD: la PDF se estrecha progresivamente y la
-                 varianza cae de $2.13\times10^{-4}$ ($N=2^{14}$) a
-                 $6.7\times10^{-5}$ ($N=2^{20}$).}
+        \caption{Estimador LD: la PDF se estrecha progresivamente.}
     \end{subfigure}
     \vspace{0.4em}
     \begin{subfigure}[b]{0.88\textwidth}
         \includegraphics[width=\textwidth]{actividades/actividad1/imgs/consistencia_vt.png}
-        \caption{Estimador VT: convergencia más lenta; la varianza cae de
-                 $2.65\times10^{-4}$ ($N=2^{14}$) a $2.7\times10^{-4}$
-                 ($N=2^{20}$).}
+        \caption{Estimador VT: convergencia más lenta.}
     \end{subfigure}
     \caption{Consistencia de los estimadores VT y LD. Las PDFs se concentran
-             en $H_0 = 0.5$ al crecer $N$, y las varianzas disminuyen
-             monotónicamente (panel inferior de cada subfigura).}
+             en $H_0 = 0.5$ al crecer $N$, y las varianzas disminuyen.}
     \label{fig:consistencia}
 \end{figure}
 
-Ambos estimadores son consistentes: las densidades se estrechan y centran en
+Ambos estimadores son consistentes, esto quiere decir que las densidades se estrechan y centran en
 $H_0 = 0.5$ al aumentar $N$, y las varianzas decrecen monótonamente.
-LD converge más rápido: para $N = 2^{20}$ su varianza es
+LD converge más rápido, esto se da para $N = 2^{20}$ su varianza es
 $\approx 6.7\times10^{-5}$, frente a $\approx 2.7\times10^{-4}$ de VT,
 una reducción cuatro veces mayor.
 
@@ -124,16 +116,16 @@ $n \in \{1000,\,2000,\,5000,\,10000,\,\allowbreak20000,\,\allowbreak50000,\,\all
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[b]{0.88\textwidth}
+    \begin{subfigure}[b]{0.78\textwidth}
         \includegraphics[width=\textwidth]{actividades/actividad1/imgs/eficiencia_ld.png}
         \caption{Estimador LD.}
     \end{subfigure}
     \vspace{0.4em}
-    \begin{subfigure}[b]{0.88\textwidth}
+    \begin{subfigure}[b]{0.78\textwidth}
         \includegraphics[width=\textwidth]{actividades/actividad1/imgs/eficiencia_vt.png}
         \caption{Estimador VT.}
     \end{subfigure}
-    \caption{PDF empírica y comportamiento de las varianzas de VT y LD
+    \caption{PDF y comportamiento de las varianzas de VT y LD
              para distintos tamaños de muestra $n$.}
     \label{fig:eficiencia}
 \end{figure}
@@ -189,7 +181,7 @@ y $\text{Beta}(2,5)$, con $n = 100\,000$ y $1\,000$ repeticiones.
     \label{fig:robustez}
 \end{figure}
 
-Ambos estimadores exhiben alta robustez: las PDF y CDF para las cuatro
+Ambos estimadores exhiben alta robustez, esto se evidencia en las PDF y CDF para las cuatro
 distribuciones se superponen casi perfectamente en ambos casos, centradas en
 $H_0 = 0.5$. LD presenta mayor concentración (pico $\approx 63$ vs.\
 $\approx 40$ de VT), lo que refleja su menor varianza independientemente de
@@ -197,7 +189,7 @@ la distribución de entrada. Ninguno de los dos estimadores muestra
 sensibilidad apreciable ante cambios distribucionales para muestras grandes.
 
 % ------------------------------------------------------------
-\subsection{Resumen de la Actividad 1}
+\subsection{Análisis de la Actividad 1}
 % ------------------------------------------------------------
 
 \begin{table}[H]
