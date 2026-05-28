@@ -1,34 +1,38 @@
 % ============================================================
-\section*{Conclusiones}
+\section{Conclusiones}
 % ============================================================
 
-% Conclusiones traidas de otras secciones:
+El arco analítico desarrollado a lo largo de las seis actividades sigue una
+progresión metodológica coherente: validación de estimadores sobre secuencias
+de referencia (Actividades~1 y~2), aplicación a fisiología cardíaca
+(Actividades~3,~4 y~5), y extensión a infraestructura tecnológica
+(Actividad~6). Esta travesía transversal revela que la fractalidad no es
+exclusiva de los sistemas vivos, sino una propiedad emergente de sistemas
+complejos con retroalimentación temporal, interacción multiescala y
+heterogeneidad estructural.
 
-% Act 2:
-% Con esto se puede concluir que la eficiencia de cada estimador depende del tipo de proceso, se observa la tendencia de que 
-% VT es más eficiente ante procesos multifractales (\texttt{betamwm}) y LD
-% ante procesos monofractales (\texttt{wfbm}), lo que refleja la adecuación
-% del modelo subyacente de cada estimador al tipo de LRD presente.
+La taxonomía de dominios fractales propuesta en la Actividad~6 organiza los
+resultados en un espacio bidimensional de memoria persistente y heterogeneidad
+espacial. Los sistemas biológicos y tecnológicos con estas tres propiedades
+ocupan el mismo cuadrante operativo, lo que sugiere principios de organización
+universales que trascienden el sustrato físico.
 
-% LD supera a VT en sesgo para ambos generadores y en consistencia para ambos
-% casos. En cuanto a eficiencia, el resultado depende del tipo de proceso:
-% VT es más eficiente ante procesos multifractales (\texttt{betamwm}), mientras
-% que LD lo es ante procesos monofractales (\texttt{wfbm}). La causa subyacente
-% es el modelo asumido por cada estimador: VT está basado en la varianza del
-% proceso agregado, lo que lo hace robusto ante multifractalidad pero sesgado
-% para $H$ alto; LD utiliza la estructura wavelet, óptima para procesos
-% monofractales pero sensible a la complejidad multifractal de \texttt{betamwm}.
+Respecto a los estimadores, VT y LD resultan complementarios: LD es superior
+para muestras grandes ($n \geq 5\,000$), con menor sesgo y varianza hasta
+$2{,}65$ veces menor, mientras que VT ofrece mayor confiabilidad en muestras
+moderadas y dominios de alta LRD donde LD genera valores no físicos
+($\hat{H} > 1$). No existe un método universalmente óptimo; la recomendación
+es aplicar ambos y contrastar sus resultados.
 
-Las herramientas fractales (VT, LD, wavelet leaders) demostraron ser robustas para caracterizar LRD en series temporales. La fractalidad no es exótica: aparece naturalmente en tráfico de red, fisiología cardíaca y flujos transaccionales Cloud.
+La herramienta de clasificación mono/multifractal alcanzó $100\%$ de
+precisión en validación sintética (Actividad~4) y $87{,}5\%$ de acierto en
+la cohorte clínica de la European ST-T Database (Actividad~5), donde la
+multifractalidad se asoció sistemáticamente con hipertensión arterial y
+enfermedad coronaria multivaso.
 
-En cuanto a estimadores, LD fue superior a VT para muestras grandes ($n \geq 5\,000$), con menor sesgo y varianza hasta $2{,}65$ veces menor. VT, en cambio, es más simple y funciona mejor para muestras pequeñas. La elección depende del tamaño de la muestra: no hay uno mejor, son complementarios.
-
-En fisiología, los registros sanos de la ST-T Database mostraron espectros multifractales amplios (complejidad adaptativa), mientras que las patologías tendieron a monofractalidad o periodicidad. La enfermedad reduce la complejidad fractal.
-
-En tráfico Cloud, el análisis del dataset NASA confirmó LRD ($H > 0{,}5$) y comportamiento multifractal. Esto invalida los modelos de colas basados en Poisson para diseño de infraestructura.
-
-La clasificación mono/multifractal alcanzó $87{,}5$~\% de acierto en validación, mostrando potencial como métrica objetiva en diagnóstico y análisis de sistemas complejos.
-
-Como trabajo futuro, se propone extender estas herramientas al diseño de criptosistemas basados en atractores caóticos de alta dimensión.
+Como trabajo futuro, se propone extender la taxonomía de dominios a
+criptosistemas basados en atractores caóticos de alta dimensión, explorando si
+la estructura multifractal puede servir como métrica de complejidad en claves
+criptográficas.
 
 % [Pendiente: agregar conclusiones de la Actividad X del compañero]

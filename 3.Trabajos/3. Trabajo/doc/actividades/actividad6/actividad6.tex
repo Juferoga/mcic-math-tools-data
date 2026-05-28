@@ -1,265 +1,258 @@
 \newpage
 % ============================================================
-\subsection*{Actividad 6: Dependencia de rango largo en tráfico transaccional Cloud}
+\section{Actividad 6: Fractalidad en tráfico transaccional Cloud}
 % ============================================================
 
-Para la sexta actividad, nos sumergimos en el análisis de tráfico transaccional de la NASA, un dataset clásico que ha sido estudiado durante décadas por su riqueza y complejidad. Este tráfico no es solo un flujo de datos: es un reflejo de cómo los usuarios interactúan con la web, cómo las páginas se cargan, y cómo los servidores responden a esas demandas.
+% ------------------------------------------------------------
+\subsection{Contexto: un arco transversal}
+% ------------------------------------------------------------
 
-\subsubsection*{El problema: ¿Por qué el tráfico web NO se comporta como una fila de supermercado?}
+El arco analítico desarrollado en las actividades previas sigue una progresión
+metodológica deliberada. Las Actividades~1 y~2 validaron las propiedades
+estadísticas de los estimadores Varianza--Tiempo y Log--Escala sobre secuencias
+sintéticas de referencia: secuencias i.i.d.\ con $H=0{,}5$ como límite de
+independencia, y procesos LRD monofractales (\texttt{wfbm}) y multifractales
+(\texttt{betamwm}) como banco de prueba controlado. Las Actividades~3,~4 y~5
+trasladaron estas herramientas al dominio fisiológico, caracterizando la
+estructura fractal de la variabilidad cardíaca y construyendo un clasificador
+mono/multifractal con asociaciones clínicas significativas.
 
-Supongamos una autopista. Si el tráfico fuera Poisson, sería como si cada auto decidiera entrar a la ruta completamente al azar, sin importar lo que pase adelante. No habría tacos, no habría ráfagas: solo autos espaciados como gotas de lluvia en un día de llovizna suave.
+La pregunta que orienta esta actividad es de naturaleza transversal: ¿la
+fractalidad es un fenómeno exclusivo de sistemas biológicos, o emerge también en
+infraestructuras tecnológicas? A diferencia de la fisiología cardíaca, donde la
+regulación autónoma produce memoria persistente con $H\approx0{,}96$ y
+heterogeneidad multiescala, el tráfico transaccional Cloud opera bajo dinámicas
+de usuarios concurrentes, cachés en cascada y ráfagas de solicitudes
+correlacionadas. Este hallazgo trasciende el dominio tecnológico: si la
+fractalidad aparece tanto en un corazón sano como en un servidor web bajo carga,
+debe existir un conjunto de propiedades estructurales comunes que la generen.
 
-Pero en la realidad, ¿qué pasa? Hay horas pico, hay accidentes que generan tacos de 5 km, hay ráfagas de autos que vienen todos juntos después de que se abre una barrera. El tráfico web es EXACTAMENTE igual.
+% ------------------------------------------------------------
+\subsection{Dataset y metodología}
+% ------------------------------------------------------------
 
-Cuando un usuario pide una página de la NASA, no viene solo. Viene con imágenes, con scripts, con requests en cascada. Y si hay mucha gente conectada, se generan ráfagas (bursts) que el modelo Poisson no puede explicar. Poisson asume que cada evento es independiente, sin memoria del pasado. Pero la web tiene memoria: si hubo mucho tráfico hace un ratito, probablemente siga habiendo mucho tráfico ahora. Esa ``memoria'' es lo que llamamos dependencia de rango largo (LRD).
+Se analiza el dataset NASA HTTP, un registro de solicitudes HTTP al servidor web
+de la NASA durante los meses de julio y agosto de 1995. La serie objeto de
+estudio son los tiempos entre llegadas consecutivas (\textit{inter-arrival
+times}), que capturan la dinámica de acceso de miles de usuarios concurrentes.
 
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
-        % Panel izquierdo: Poisson (uniforme)
-        \node[anchor=west] at (0,2.5) {\textbf{Modelo Poisson (sin memoria)}};
-        \draw[thick,->] (0,0) -- (6,0) node[right] {tiempo};
-        \foreach \x in {0.5,1.5,2.3,3.2,4.0,4.8,5.6} {
-            \node[draw,circle,fill=blue!60,minimum size=6pt,inner sep=0] at (\x,0.5) {};
-        }
-        \draw[dashed,gray] (0,0.5) -- (6,0.5);
-        \node at (3,-0.6) {autos espaciados, independientes};
-
-        % Panel derecho: Real (bursty)
-        \node[anchor=west] at (7.5,2.5) {\textbf{Tráfico real (con memoria)}};
-        \draw[thick,->] (7.5,0) -- (13.5,0) node[right] {tiempo};
-        % Ráfaga
-        \foreach \x in {8.0,8.3,8.6,8.9,9.2} {
-            \node[draw,circle,fill=red!70,minimum size=6pt,inner sep=0] at (\x,0.5) {};
-        }
-        % Espacio
-        \node[draw,circle,fill=red!70,minimum size=6pt,inner sep=0] at (10.5,0.5) {};
-        % Otra ráfaga
-        \foreach \x in {11.5,11.8,12.1,12.4} {
-            \node[draw,circle,fill=red!70,minimum size=6pt,inner sep=0] at (\x,0.5) {};
-        }
-        \draw[dashed,gray] (7.5,0.5) -- (13.5,0.5);
-        % taco label
-        \draw[decorate,decoration={brace,amplitude=4pt,raise=2pt}] (8.0,0.8) -- (9.2,0.8)
-            node[midway,above=6pt,font=\footnotesize] {taco / ráfaga};
-        \node at (10.5,-0.6) {ráfagas y silencios: hay memoria};
-    \end{tikzpicture}
-    \caption{Poisson asume independencia total (izquierda). El tráfico real exhibe ráfagas porque ``si hay taco, sigue habiendo taco'' (derecha).}
-    \label{fig:a6-concepto-poisson}
-\end{figure}
-
-La Figura~\ref{fig:a6-serie} presenta la serie de tiempo real extraída del log NASA: $975\,721$ observaciones con media $\mu = 2{,}7450$~s, mediana $1{,}0000$~s y desviación estándar $137{,}6685$~s. Las ráfagas saltan a la vista.
+La serie contiene $975\,721$ muestras con media $\mu = 2{,}7450\,\text{s}$,
+mediana $1{,}0000\,\text{s}$ y desviación estándar
+$\sigma = 137{,}6685\,\text{s}$. La enorme dispersión (coeficiente de
+variación $>50$) es indicio de heterogeneidad estructural: la mayoría de los
+intervalos son breves, pero episodios de congestión producen colas de espera de
+varios minutos.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{actividades/actividad6/imgs/serie_tiempo.png}
-    \caption{Serie de tiempo de los inter-arrival times del tráfico HTTP NASA. La línea roja discontinua marca la media ($\mu = 2{,}7450$~s).}
-    \label{fig:a6-serie}
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{actividades/actividad6/imgs/serie_tiempo.png}
+        \caption{Serie de tiempos entre llegadas del dataset NASA HTTP.
+                 Se observan ráfagas intensas seguidas de periodos de
+                 actividad reducida.}
+        \label{fig:a6-serie}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{actividades/actividad6/imgs/histograma.png}
+        \caption{Histograma de los inter-arrival times. La cola pesada
+                 refleja la presencia de eventos de larga duración.}
+        \label{fig:a6-hist}
+    \end{minipage}
 \end{figure}
 
-La Figura~\ref{fig:a6-histograma} compara la distribución empírica con la exponencial teórica de Poisson. La cola pesada y la concentración en valores bajos demuestran que Poisson no alcanza.
+Los estimadores VT y LD, así como el clasificador de la Actividad~4, se aplican
+sin modificación metodológica, garantizando comparabilidad con los dominios
+previos. Esta continuidad metodológica es esencial: permite situar el tráfico
+NASA en el mismo espacio de parámetros que las secuencias sintéticas y las
+señales cardíacas.
+
+% ------------------------------------------------------------
+\subsection{Estimación del parámetro de Hurst}
+% ------------------------------------------------------------
+
+El método Varianza--Tiempo arroja $\hat{H}_{\text{VT}} = 0{,}5435$ con
+$R^2_{\text{VT}} = 0{,}9911$ e intervalo de confianza del $95\%$
+$[0{,}5408;\,0{,}5462]$. El ajuste lineal del diagrama log-log es excelente,
+confirmando que el escalamiento de varianza sigue una ley de potencias
+consistente con dependencia de rango largo ($H > 0{,}5$).
+
+El método Log--Escala obtiene $\hat{H}_{\text{LD}} = 0{,}5064$ con parámetro de
+escala $\alpha = 0{,}0127$. La estimación es más conservadora que VT, en línea
+con los hallazgos de las Actividades~1 y~3, donde LD exhibió mayor varianza en
+muestras de gran tamaño con alta LRD.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{actividades/actividad6/imgs/histograma.png}
-    \caption{Histograma de inter-arrival times vs.~distribución exponencial teórica (Poisson). Las colas pesadas invalidan el modelo sin memoria.}
-    \label{fig:a6-histograma}
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{actividades/actividad6/imgs/diagrama_vt.png}
+        \caption{Diagrama Varianza--Tiempo. La pendiente del ajuste lineal
+                 determina $\hat{H} = 0{,}5435$, confirmando LRD.}
+        \label{fig:a6-vt}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{actividades/actividad6/imgs/diagrama_ld.png}
+        \caption{Diagrama Log--Escala con wavelets de Haar.
+                 Confirma LRD con $\hat{H} = 0{,}5064$.}
+        \label{fig:a6-ld}
+    \end{minipage}
 \end{figure}
 
-\subsubsection*{La solución: El parámetro de Hurst y la ``memoria'' del tráfico}
+Ambos estimadores se ubican por encima del umbral $H_0 = 0{,}5$, descartando la
+hipótesis de un proceso sin memoria. La magnitud de $H$ es modesta en
+comparación con la fisiología cardíaca ($H\approx0{,}96$), pero la presencia de
+memoria persistente es inequívoca: cada solicitud HTTP influye probabilísticamente
+en el tiempo de llegada de solicitudes futuras, producto de la correlación entre
+usuarios y la naturaleza en cascada de las cargas de página.
 
-¿Cómo medimos esa ``memoria''? Acá entra el parámetro de Hurst ($H$), que el hidrólogo Harold Edwin Hurst usó en los años 50 para estudiar las crecidas del Nilo.
+% ------------------------------------------------------------
+\subsection{Clasificación mono/multifractal}
+% ------------------------------------------------------------
 
-$H$ es un número entre 0 y 1 que indica qué tan persistente es una serie temporal:
-
-\begin{itemize}[leftmargin=2em]
-    \item $H = 0{,}5$: proceso Browniano, sin memoria. Cada paso es independiente. Es el mundo Poisson.
-    \item $0{,}5 < H < 1$: dependencia de rango largo. Si el tráfico estuvo alto, tiende a seguir alto. Efecto ``si hay taco, sigue habiendo taco''.
-    \item $0 < H < 0{,}5$: anti-persistencia. Si estuvo alto, tiende a bajar (muy raro en tráfico web).
-\end{itemize}
+Se aplicó el clasificador de la Actividad~4 al dataset NASA. La función de
+escalamiento $\tau(q)$, obtenida mediante \texttt{dwtleader}, presenta curvatura
+significativa con $R^2_{\tau} = 0{,}4808$, valor considerablemente inferior al
+umbral de $0{,}95$ establecido para linealidad.
 
 \begin{figure}[H]
     \centering
-    \begin{tikzpicture}[scale=1.1, every node/.style={font=\small}]
-        % Escala
-        \draw[thick,->] (0,0) -- (10,0) node[right] {$H$};
-        \foreach \x/\label in {1/0.1, 3/0.3, 5/0.5, 7/0.7, 9/0.9} {
-            \draw (\x,0.1) -- (\x,-0.1) node[below] {\label};
-        }
-        % Marcas de referencia
-        \fill[blue!60] (5,0) circle (4pt);
-        \node[above,blue!60] at (5,0.2) {sin memoria};
-
-        \fill[red!70] (7.5,0) circle (4pt);
-        \node[above,red!70] at (7.5,0.2) {persistente / LRD};
-
-        % Flecha del tráfico NASA
-        \draw[->,very thick,orange] (5,0.7) -- (6.5,0.7) node[midway,above,font=\footnotesize] {tráfico NASA};
-        \fill[orange] (6.5,0) circle (5pt);
-        \node[below,orange] at (6.5,-0.2) {$0{,}5435$};
-    \end{tikzpicture}
-    \caption{Escala del parámetro de Hurst. El tráfico NASA cae en la zona de memoria persistente ($H > 0{,}5$).}
-    \label{fig:a6-escala-hurst}
+    \includegraphics[width=0.88\textwidth]{actividades/actividad6/imgs/clasificacion_fractal.png}
+    \caption{Clasificación del tráfico NASA. La curvatura de $\tau(q)$
+             ($R^2_{\tau} = 0{,}4808$) confirma naturaleza multifractal.}
+    \label{fig:a6-clasif}
 \end{figure}
 
-En nuestro análisis encontramos $H = 0{,}5435$, con un ajuste impecable ($R^2 = 0{,}9911$) e intervalo de confianza del 95\,\% $[0{,}5408;\,0{,}5462]$. Conclusión: el tráfico NASA tiene memoria, tiene ráfagas estructuradas y NO se puede modelar con Poisson.
+El tráfico NASA se clasifica como \textbf{multifractal}. Esto implica que no
+existe un único exponente de escalamiento global; diferentes periodos de carga
+(pico vs.~valle) poseen dinámicas de escalamiento local distintas. La
+multifractalidad en tráfico web invalida modelos de colas con un único parámetro
+para todo el rango operativo, dado que subestiman sistemáticamente la
+probabilidad de ráfagas concurrentes y la magnitud de los picos de congestión.
 
-\subsubsection*{Método 1: Varianza--Tiempo --- ``¿Qué tan predecible es el caos?''}
+% ------------------------------------------------------------
+\subsection{Una taxonomía de dominios fractales}
+% ------------------------------------------------------------
 
-La idea del método VT es simple: agrupamos los datos en bloques cada vez más grandes y miramos cómo decae la varianza.
-
-Imaginate la serie minuto a minuto (muchos bloques chicos), después de a 10 minutos (bloques medianos) y de a 100 minutos (bloques grandes). En un proceso Poisson, la varianza baja de forma predecible: se divide por el tamaño del bloque. Es como promediar números al azar: cuantos más promediés, más estable se vuelve el resultado.
-
-Pero en un proceso con LRD, la varianza baja más lento. ¿Por qué? Porque los bloques grandes todavía tienen ``memoria'' entre sí. La ráfaga que empezó en el primer minuto sigue influyendo en el minuto 50. Entonces, agrupar no ``apaga'' la variabilidad tan rápido.
+Los sistemas analizados en este trabajo pueden organizarse en un espacio
+conceptual bidimensional donde el eje horizontal representa el grado de
+dependencia de rango largo (de $H=0{,}5$ a $H\approx1{,}0$) y el eje vertical
+la heterogeneidad espacial (de monofractal a multifractal). Esta taxonomía
+revela una estructura común que trasciende los dominios de aplicación.
 
 \begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[scale=0.85, every node/.style={font=\small}]
-        % Panel izquierdo: agrupamiento
-        \node[anchor=west] at (0,4.5) {\textbf{Agrupamiento en bloques}};
-        \foreach \y/\label in {3.5/1,2.5/2,1.5/4,0.5/8} {
-            \node[right] at (-0.5,\y) {$m=\label$};
-            \foreach \x in {0,0.5,...,4} {
-                \draw[fill=gray!30] (\x,\y) rectangle (\x+0.4,\y+0.4);
-            }
-            \draw[thick,red] (0,\y) rectangle (4,\y+0.4);
-        }
-        \node at (2,-0.2) {a mayor bloque, menor varianza... pero más lento en LRD};
-
-        % Panel derecho: mini gráfico log-log
-        \begin{scope}[shift={(6,0.5)}]
-            \node[anchor=west] at (0,4) {\textbf{log-log: varianza vs.~bloque}};
-            \draw[->] (0,0) -- (4.5,0) node[right] {\small $\log m$};
-            \draw[->] (0,0) -- (0,3.5) node[above] {\small $\log \sigma^2$};
-            % Recta Poisson (más empinada)
-            \draw[thick,blue,dashed] (0.3,2.8) -- (3.8,0.5) node[right,font=\footnotesize] {Poisson};
-            % Recta LRD (menos empinada)
-            \draw[thick,red] (0.3,2.8) -- (3.8,1.4) node[right,font=\footnotesize] {LRD};
-            % Punto NASA
-            \fill[orange] (2.5,2.0) circle (3pt);
-        \end{scope}
-    \end{tikzpicture}
-    \caption{VT agrupa en bloques crecientes (izquierda). En log-log, la pendiente de LRD es menos empinada porque la varianza decae más lento (derecha).}
-    \label{fig:a6-concepto-vt}
+\centering
+\begin{tikzpicture}[scale=0.95, every node/.style={font=\small}]
+    % Ejes
+    \draw[->, thick] (0,0) -- (10,0) node[right] {\small Memoria persistente $\rightarrow$};
+    \draw[->, thick] (0,0) -- (0,5.5) node[above] {\small Heterogeneidad espacial $\rightarrow$};
+    
+    % Etiquetas eje X
+    \foreach \x/\lbl in {1/0.5, 3/0.7, 5/0.8, 7/0.9, 9/1.0} {
+        \draw (\x,0.1) -- (\x,-0.1) node[below] {\lbl};
+    }
+    \node[below] at (0,-0.5) {$H=0.5$};
+    \node[below] at (10,-0.5) {$H\approx1.0$};
+    
+    % Etiquetas eje Y
+    \draw (0.1,1) -- (-0.1,1) node[left] {mono};
+    \draw (0.1,4.5) -- (-0.1,4.5) node[left] {multi};
+    
+    % Regiones
+    \fill[blue!6] (0,0) rectangle (10,2.5);
+    \fill[orange!6] (0,2.5) rectangle (10,5.5);
+    
+    % Puntos sintéticos
+    \filldraw[blue!70] (1,1) circle (4pt) node[right=3pt, font=\footnotesize] {i.i.d. (Act~1)};
+    \filldraw[blue!50] (3,1.2) circle (3pt);
+    \filldraw[blue!50] (5,1.2) circle (3pt);
+    \filldraw[blue!50] (7,1.2) circle (3pt);
+    \node[right=3pt, blue!60, font=\footnotesize] at (7.2,1.2) {\texttt{wfbm} (Act~2)};
+    
+    % Puntos multifractales sintéticos
+    \filldraw[red!50] (3,4.3) circle (3pt);
+    \filldraw[red!50] (5,4.3) circle (3pt);
+    \filldraw[red!50] (7,4.3) circle (3pt);
+    \node[right=3pt, red!60, font=\footnotesize] at (7.2,4.3) {\texttt{betamwm} (Act~2)};
+    
+    % Tráfico NASA
+    \filldraw[teal!80] (1.4,4.0) circle (5pt) node[right=3pt, font=\footnotesize] {Tráfico NASA (Act~6)};
+    
+    % Corazón sano
+    \filldraw[orange!80] (9.2,4.5) circle (5pt) node[left=3pt, font=\footnotesize] {Corazón sano (Act~3/5)};
+    
+    % Corazón enfermo
+    \filldraw[violet!70] (8.8,2.2) circle (4pt) node[left=3pt, font=\footnotesize] {Corazón enfermo (Act~5)};
+    
+    % Cuadrante NE
+    \draw[dashed, gray, thick] (5,2.5) rectangle (10,5.5);
+    \node[font=\footnotesize\bfseries, gray] at (7.5,5.1) {CUADRANTE NE};
+\end{tikzpicture}
+\caption{Taxonomía de dominios fractales. Los sistemas con memoria persistente
+         y heterogeneidad espacial (cuadrante NE) incluyen tanto fisiología
+         cardíaca como tráfico transaccional Cloud, revelando propiedades
+         estructurales comunes. Los sintéticos puros ocupan la diagonal:
+         \texttt{wfbm} es monofractal por construcción y \texttt{betamwm} es
+         multifractal por construcción.}
+\label{fig:taxonomia}
 \end{figure}
 
-El script \texttt{vt.m} hace exactamente eso: agrupa en $m = 1, 2, 4, 8, \dots$, calcula la varianza de cada agregación y grafica $\log(\text{varianza})$ vs.~$\log(m)$. La pendiente de esa recta nos da $H$.
+Los dominios con memoria persistente y heterogeneidad espacial ---corazón sano
+tratado en las Actividades~3 y~5, y tráfico web objeto de esta actividad---
+ocupan el cuadrante noreste del mapa. A diferencia de las secuencias i.i.d.\ del
+Actividad~1, que carecen de ambas propiedades y permanecen en el origen, estos
+sistemas comparten tres características estructurales fundamentales:
 
-Resultado: $\hat{H} = 0{,}5435$ con $R^2_{\text{VT}} = 0{,}9911$. LRD confirmada.
+\begin{enumerate}[leftmargin=2em]
+    \item \textbf{Retroalimentación temporal.} El estado presente depende del
+          pasado de forma no trivial. En el corazón, la regulación autónoma
+          integra señales históricas del barorreflejo; en el servidor web, una
+          solicitud activa cachés y conexiones persistentes que modifican la
+          distribución de tiempos de llegada futuros.
+    \item \textbf{Interacción multiescala.} Los procesos operan simultáneamente
+          en escalas temporales distintas. La variabilidad cardíaca integra
+          oscilaciones de segundos (respiratoria), minutos (barorreflejo) y
+          horas (ciclo circadiano); el tráfico web superpone sesiones de
+          usuarios individuales, ráfagas de contenido viral y patrones
+          diurnos/nocturnos de uso global.
+    \item \textbf{Heterogeneidad estructural.} Diferentes regiones o periodos
+          exhiben dinámicas locales distintas. Los intervalos RR de un paciente
+          con hipertensión (Actividad~5) muestran espectros de singularidad más
+          estrechos que los sanos; los picos de carga del servidor NASA poseen
+          exponentes de escalamiento diferentes a los valles de actividad.
+\end{enumerate}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{actividades/actividad6/imgs/diagrama_vt.png}
-    \caption{Diagrama de Varianza--Tiempo (VT). La pendiente del ajuste lineal determina $H = 0{,}5435$, significativamente por encima de $H_0 = 0{,}5$.}
-    \label{fig:a6-vt}
-\end{figure}
+Esta convergencia estructural sugiere que la fractalidad no es un epifenómeno
+del dominio biológico, sino una propiedad emergente de sistemas complejos con
+retroalimentación, multiescala y heterogeneidad.
 
-\subsubsection*{Método 2: Log--Escala --- ``El zoom que revela patrones ocultos''}
+% ------------------------------------------------------------
+\subsection{Análisis de la Actividad 6}
+% ------------------------------------------------------------
 
-El método de Log--Escala (LD) detecta LRD mirando la energía de las fluctuaciones a diferentes escalas. Es como usar un microscopio con distintos aumentos para ver si una textura se parece a sí misma sin importar el zoom.
+El análisis del dataset NASA HTTP confirma que la fractalidad trasciende la
+frontera entre sistemas biológicos y tecnológicos. El parámetro de Hurst
+$\hat{H}_{\text{VT}} = 0{,}5435$ ($R^2 = 0{,}9911$) y
+$\hat{H}_{\text{LD}} = 0{,}5064$ confirman dependencia de rango largo con
+alta confiabilidad en el ajuste, mientras que $R^2_{\tau} = 0{,}4808$
+establece la naturaleza multifractal del tráfico.
 
-La idea es descomponer la señal en escalas (como las capas de una cebolla) y medir cuánta ``energía'' hay en cada una. En Poisson, la energía decae de forma predecible al aumentar la escala. En LRD, decae más lento porque las fluctuaciones grandes persisten.
+A diferencia de la fisiología cardíaca, donde la LRD es intensa
+($H\approx0{,}96$) y está vinculada a la complejidad adaptativa del sistema
+nervioso autónomo, el tráfico web exhibe una memoria persistente más modesta
+pero igualmente significativa. La multifractalidad en este dominio tiene
+implicaciones prácticas directas: invalida la hipótesis de llegadas de Poisson
+que subyace a los modelos clásicos de teoría de colas, y exige estrategias de
+provisionamiento dinámico que reconozcan la coexistencia de regímenes de carga
+con distintas dinámicas de escalamiento.
 
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
-        % Zoom in / zoom out
-        \node[anchor=west] at (0,3.5) {\textbf{Descomposición multiescala (wavelets)}};
-        % Escala grande
-        \draw[thick,gray] (0,2) -- (4,2);
-        \draw[thick,red] (0.5,2) sin (1.5,2.6) cos (2.5,2) sin (3.5,1.4) cos (4,2);
-        \node[above] at (2,2.8) {\footnotesize escala grande (zoom out)};
-        % Escala mediana
-        \draw[thick,gray] (0,1) -- (4,1);
-        \draw[thick,red!70] (0.3,1) sin (0.9,1.4) cos (1.5,1) sin (2.1,0.6) cos (2.7,1) sin (3.3,1.4) cos (4,1);
-        \node[above] at (2,1.4) {\footnotesize escala mediana};
-        % Escala chica
-        \draw[thick,gray] (0,0) -- (4,0);
-        \draw[thick,red!40] (0.2,0) -- (0.4,0.3) -- (0.6,-0.2) -- (0.8,0.1) -- (1.0,0) -- (1.3,0.4) -- (1.6,-0.3) -- (1.9,0.2) -- (2.2,0) -- (2.5,0.3) -- (2.8,-0.2) -- (3.1,0.1) -- (3.4,0) -- (3.7,0.3) -- (4.0,-0.1);
-        \node[above] at (2,0.5) {\footnotesize escala chica (zoom in)};
-        % Flechas
-        \draw[->,thick] (4.5,0) -- (4.5,2) node[midway,right,font=\footnotesize] {aumento de escala};
-
-        % Mini gráfico log-log
-        \begin{scope}[shift={(6.5,0.5)}]
-            \node[anchor=west] at (0,3) {\textbf{log-log: energía vs.~escala}};
-            \draw[->] (0,0) -- (3.5,0) node[right] {\small $\log j$};
-            \draw[->] (0,0) -- (0,2.5) node[above] {\small $\log S(j)$};
-            \draw[thick,blue,dashed] (0.3,2.0) -- (2.8,0.5) node[right,font=\footnotesize] {Poisson};
-            \draw[thick,red] (0.3,2.0) -- (2.8,1.1) node[right,font=\footnotesize] {LRD};
-            \fill[orange] (1.8,1.4) circle (3pt);
-        \end{scope}
-    \end{tikzpicture}
-    \caption{LD descompone la señal en escalas con wavelets (izquierda). En log-log, la pendiente de LRD es menos empinada porque la energía persiste (derecha).}
-    \label{fig:a6-concepto-ld}
-\end{figure}
-
-\texttt{LD.m} usa wavelets de Haar, grafica $\log(\text{energía})$ vs.~$\log(\text{escala})$ y la pendiente estima $H$.
-
-Resultado: $\hat{H} = 0{,}5064$, $\alpha = 0{,}0127$. Consistente con VT, aunque más conservador ---algo que ya vimos en la Actividad~1, donde LD mostró mayor varianza en muestras grandes.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.85\textwidth]{actividades/actividad6/imgs/diagrama_ld.png}
-    \caption{Diagrama log--escala (LD) con wavelets de Haar. Confirma LRD con $H = 0{,}5064$.}
-    \label{fig:a6-ld}
-\end{figure}
-
-\subsubsection*{Clasificación: ¿Mono o multifractal?}
-
-No todo proceso con LRD es igual. Hay dos tipos:
-
-\begin{itemize}[leftmargin=2em]
-    \item \textbf{Monofractal}: $H$ es el mismo en toda la serie. Es como una autopista donde el tráfico se comporta igual de caótico en todos los tramos.
-    \item \textbf{Multifractal}: $H$ varía según la zona de la serie. Es como una ciudad donde algunas calles tienen tráfico caótico ($H$ alto) y otras están tranquilas ($H$ bajo).
-\end{itemize}
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[scale=0.9, every node/.style={font=\small}]
-        % Panel izquierdo: monofractal
-        \node[anchor=west] at (0,3) {\textbf{Monofractal}};
-        \draw[thick,gray] (0,1.5) -- (5,1.5);
-        \draw[thick,blue] (0,1.5) sin (1,2.2) cos (2,1.5) sin (3,0.8) cos (4,1.5) sin (5,2.2);
-        \node at (2.5,0.5) {misma ``rugosidad'' en toda la serie};
-        \node at (2.5,-0.1) {$H \approx \text{constante}$};
-
-        % Panel derecho: multifractal
-        \begin{scope}[shift={(6.5,0)}]
-            \node[anchor=west] at (0,3) {\textbf{Multifractal}};
-            \draw[thick,gray] (0,1.5) -- (5,1.5);
-            % Zona rugosa
-            \draw[thick,red] (0,1.5) -- (0.3,2.0) -- (0.6,1.0) -- (0.9,2.0) -- (1.2,1.5);
-            % Zona suave
-            \draw[thick,red!50] (1.2,1.5) sin (2.2,1.8) cos (3.2,1.5) sin (4.2,1.2) cos (5,1.5);
-            \node at (2.5,0.5) {``rugosidad'' cambia de zona en zona};
-            \node at (2.5,-0.1) {$H$ varía localmente};
-            % labels
-            \draw[decorate,decoration={brace,amplitude=3pt,raise=2pt}] (0,2.3) -- (1.2,2.3) node[midway,above=4pt,font=\footnotesize] {$H$ alto};
-            \draw[decorate,decoration={brace,amplitude=3pt,raise=2pt}] (1.2,2.3) -- (5,2.3) node[midway,above=4pt,font=\footnotesize] {$H$ bajo};
-        \end{scope}
-    \end{tikzpicture}
-    \caption{Monofractal: un solo $H$ gobierna toda la serie. Multifractal: diferentes regímenes de escalamiento coexisten.}
-    \label{fig:a6-concepto-multi}
-\end{figure}
-
-\texttt{clasificar\_fractal.m} compara VT y LD y analiza la curvatura de $\tau(q)$:
-\begin{itemize}[leftmargin=2em]
-    \item Si $H_{\text{VT}} \approx H_{\text{LD}}$ y $\tau(q)$ es lineal $\rightarrow$ monofractal.
-    \item Si divergen y $\tau(q)$ es curvo $\rightarrow$ multifractal.
-\end{itemize}
-
-Resultado: $R^2_{\tau} = 0{,}4808$ (muy por debajo de $0{,}90$). El tráfico NASA es \textbf{multifractal}: hay momentos de alta persistencia (ráfagas intensas) y momentos de baja persistencia (tráfico estable).
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{actividades/actividad6/imgs/panel_completo.png}
-    \caption{Panel integrado: serie de tiempo, diagrama VT ($H = 0{,}5435$), diagrama LD ($H = 0{,}5064$) y distribución vs.~Poisson.}
-    \label{fig:a6-panel}
-\end{figure}
-
-\subsubsection*{Implicaciones para la orquestación Cloud}
-
-¿Por qué importa esto? Si diseñamos servidores, CDNs o políticas de auto-escalado asumiendo Poisson, vamos a subestimar las colas, vamos a subestimar los picos de congestión, y vamos a diseñar una infraestructura que se cae en las horas pico. Es como diseñar una autopista asumiendo que los autos llegan uno por uno perfectamente espaciados, cuando en realidad vienen en caravanas.
-
-El parámetro de Hurst nos da una herramienta cuantitativa para medir esa memoria y tomar decisiones de infraestructura más inteligentes: reservar capacidad antes de que llegue la ráfaga, en lugar de reaccionar cuando ya es tarde.
+La complementariedad entre VT y LD, observada sistemáticamente desde la
+Actividad~1, se reproduce una vez más: VT ofrece una estimación más alta de $H$
+con mejor ajuste lineal, mientras que LD proporciona una cota conservadora. Este
+patrón es robusto ante cambios de dominio, lo que refuerza la recomendación de
+utilizar ambos estimadores de forma conjunta en cualquier análisis de series
+temporales con estructura fractal.
